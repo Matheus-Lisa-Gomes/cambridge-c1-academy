@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Personal Cambridge C1 & C2 English Training Platform for Writing & Speaking. Master advanced academic vocabulary, complex syntax, and native RP pronunciation.">
+  <meta name="keywords" content="Cambridge English, CAE, CPE, C1 Advanced, C2 Proficiency, English Writing, Speaking Pronunciation, CEFR">
+  <title>Cambridge C1+ Writing & Speaking Academy</title>
+  
+  <!-- Google Fonts: Playfair Display, Outfit, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-crest" title="Cambridge Assessment English Structure">C1⁺</div>
+        <div class="brand-titles">
+          <h1>Cambridge C1+ Academy</h1>
+          <div class="brand-tagline">Advanced Writing & Speaking Evaluation</div>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <div class="cefr-badge-group">
+          <span class="cefr-badge-label">Target Standard</span>
+          <span class="cefr-pill" id="currentCefrBadge">CAE (C1) / CPE (C2)</span>
+        </div>
+
+        <div class="exam-timer" title="Official Cambridge Exam Time Limit">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span id="examTimerDisplay">45:00</span>
+          <button id="toggleTimerBtn" class="timer-btn" title="Start/Pause Cambridge Exam Timer">
+            <svg id="timerPlayIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </button>
+          <button id="resetTimerBtn" class="timer-btn" title="Reset Exam Timer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+          </button>
+        </div>
+
+        <button id="historyDrawerBtn" class="btn btn-secondary" title="View Training Log">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path></svg>
+          History
+        </button>
+      </div>
+    </header>
+
+    <!-- Phase Stepper -->
+    <nav class="phase-stepper" aria-label="Training stages">
+      <div class="step-card active" id="stepIndicator1">
+        <div class="step-number">1</div>
+        <div class="step-info">
+          <h4>Cambridge Topic & Lexis</h4>
+          <p>Prompt & Compulsory C1 Vocabulary</p>
+        </div>
+      </div>
+      <div class="step-card" id="stepIndicator2">
+        <div class="step-number">2</div>
+        <div class="step-info">
+          <h4>Writing & C1 Evaluation</h4>
+          <p>220-260 Words & Syntactic Complexity</p>
+        </div>
+      </div>
+      <div class="step-card" id="stepIndicator3">
+        <div class="step-number" id="step3LockIcon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        </div>
+        <div class="step-info">
+          <h4>Speaking & Pronunciation</h4>
+          <p>Aloud Reading & Native Cadence</p>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Workspace (Phases 1 & 2) -->
+    <main class="main-workspace" id="mainWritingWorkspace">
+      
+      <!-- Left Column: Topic & Compulsory C1 Vocabulary -->
+      <section class="glass-panel" aria-labelledby="topicHeading">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            <h2 id="topicHeading">Cambridge Exam Task</h2>
+          </div>
+          <button id="randomTopicBtn" class="btn btn-secondary" title="Pick another official Cambridge topic">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"></path></svg>
+            Randomize Topic
+          </button>
+        </div>
+
+        <!-- Topic Details -->
+        <div class="topic-meta-row">
+          <span class="meta-pill" id="topicCategory">Technology & Ethics</span>
+          <span class="meta-pill" id="topicType">Cambridge Part 1 Essay</span>
+          <span class="meta-pill" id="topicTime">45 minutes recommended</span>
+        </div>
+
+        <h3 class="topic-title" id="topicTitle">Artificial Intelligence, Moral Agency & Societal Autonomy</h3>
+
+        <div class="topic-context-box" id="topicContext">
+          Your class has attended a panel discussion on the rapid integration of autonomous artificial intelligence systems in professional and ethical decision-making.
+        </div>
+
+        <ul class="topic-points-list" id="topicPoints">
+          <li>The displacement of human moral accountability in high-stakes decisions</li>
+          <li>The socio-economic implications of algorithmic workplace automation</li>
+        </ul>
+
+        <p class="topic-task-prompt" id="topicTask">
+          Write an essay discussing both points from your notes. You should explain which point is more pressing, giving reasons in support of your opinion.
+        </p>
+
+        <!-- Compulsory Vocabulary Pack -->
+        <div class="vocabulary-section">
+          <div class="section-subtitle">
+            <span>Compulsory C1/C2 Target Vocabulary (<span id="vocabUsedCounter">0/8</span> Used)</span>
+            <small style="color: var(--text-muted); font-size: 11px;">Stems & inflections accepted</small>
+          </div>
+
+          <div class="vocab-grid" id="vocabGrid">
+            <!-- Dynamically populated vocabulary chips -->
+          </div>
+        </div>
+
+        <!-- Recommended Advanced Grammar Accordion -->
+        <div class="structures-accordion">
+          <div class="structures-header" id="toggleStructuresBtn">
+            <span>Cambridge C1/C2 Advanced Grammatical Devices</span>
+            <svg id="structuresCaret" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="structures-body" id="structuresBody" style="display: none;">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Model Band 5 Excerpt toggle -->
+        <div style="margin-top: 16px;">
+          <button id="toggleSampleExcerptBtn" class="btn btn-secondary" style="width: 100%; font-size: 12px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            View Model Cambridge Band 5 Excerpt
+          </button>
+          <div id="sampleExcerptBox" style="display: none; margin-top: 10px; padding: 14px; background: rgba(0,0,0,0.3); border-radius: var(--radius-md); font-size: 13px; font-style: italic; color: #cbd5e1; border: 1px solid var(--border-subtle); line-height: 1.6;">
+            <!-- Excerpt text inserted here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Writing Studio -->
+      <section class="glass-panel writing-studio" aria-labelledby="writingStudioHeading">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            <h2 id="writingStudioHeading">Writing Studio</h2>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="loadSampleEssayBtn" class="btn btn-secondary" style="font-size: 12px;" title="Insert model draft to test evaluation & speaking">
+              Load Model Draft
+            </button>
+            <button id="clearEssayBtn" class="btn btn-secondary btn-icon-only" title="Clear text">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Toolbar -->
+        <div class="editor-toolbar">
+          <div class="editor-metrics-live">
+            <div class="metric-live-item">
+              <span>Words:</span>
+              <span class="metric-live-val" id="liveWordCount">0</span>
+              <span style="font-size: 11px; color: var(--text-muted);">(220-260 target)</span>
+            </div>
+            <div class="metric-live-item">
+              <span>Paragraphs:</span>
+              <span class="metric-live-val" id="liveParaCount">0</span>
+            </div>
+          </div>
+          <div id="lengthGuidanceBadge" class="radar-badge" style="font-size: 11px;">
+            Awaiting input
+          </div>
+        </div>
+
+        <!-- Editor Area -->
+        <div class="editor-wrapper">
+          <textarea 
+            id="essayInput" 
+            class="essay-textarea" 
+            placeholder="Compose your Cambridge C1 essay here... Incorporate the compulsory target vocabulary words shown on the left, address both prompt points objectively, and employ complex syntactic structures (e.g., inversions, cleft sentences)."
+            spellcheck="true"
+          ></textarea>
+        </div>
+
+        <!-- Real-time C1 Syntax & Register Radar -->
+        <div class="live-radar-box">
+          <div class="radar-header">
+            <span>C1/C2 Grammar & Syntax Radar</span>
+            <span id="radarCountDisplay">0 structures detected</span>
+          </div>
+          <div class="radar-badges-row" id="radarBadgesRow">
+            <span class="radar-badge-empty">Write complex structures (e.g. "Seldom has...", "What is of paramount...", "It is widely contended that...") to activate radar.</span>
+          </div>
+        </div>
+
+        <!-- Submit Evaluation Button -->
+        <button id="evaluateEssayBtn" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 15px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          Evaluate Cambridge C1 Level
+        </button>
+      </section>
+
+    </main>
+
+    <!-- Phase 3: Speaking & Pronunciation Studio (Visible when C1 passed or in practice mode) -->
+    <section class="speaking-studio" id="speakingStudio" aria-labelledby="speakingStudioHeading">
+      <div class="teleprompter-container">
+        <div class="teleprompter-header">
+          <div class="panel-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            <h2 id="speakingStudioHeading">Phase 3: Speaking & Pronunciation Evaluation</h2>
+          </div>
+          <button id="returnToWritingBtn" class="btn btn-secondary" style="font-size: 12px;">
+            ← Return to Essay
+          </button>
+        </div>
+
+        <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 16px;">
+          Read your written text aloud into your microphone. Our speech recognition engine aligns your spoken words with the text in real-time to assess <strong>pronunciation accuracy</strong>, <strong>word stress</strong>, and <strong>fluency cadence (130-160 WPM target)</strong> according to the official Cambridge Speaking Scale.
+        </p>
+
+        <!-- Teleprompter Karaoke Display -->
+        <div class="teleprompter-text" id="teleprompterText">
+          <!-- Populated with span.teleprompter-word elements -->
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="speaking-controls-bar" style="margin-top: 20px;">
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <!-- Start/Stop Recording -->
+            <button id="startSpeakingBtn" class="btn btn-emerald">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              Start Reading Aloud
+            </button>
+            <button id="stopSpeakingBtn" class="btn btn-crimson" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12"></rect></svg>
+              Finish & Evaluate Speech
+            </button>
+
+            <!-- Native Model Audio Playback -->
+            <button id="playModelAudioBtn" class="btn btn-secondary" title="Listen to model British RP accent pronunciation of your essay">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              Listen to Model (British RP)
+            </button>
+            <button id="stopModelAudioBtn" class="btn btn-secondary" style="display: none;">
+              Stop Audio
+            </button>
+          </div>
+
+          <!-- Canvas Audio Waveform Visualizer -->
+          <canvas id="visualizerCanvas" class="visualizer-canvas" width="280" height="52"></canvas>
+
+          <!-- Live Metrics during speech -->
+          <div class="speaking-live-metrics">
+            <div class="live-speaking-stat">
+              <div class="val" id="liveSpeakingWpm">0</div>
+              <div class="lbl">Words / Min</div>
+            </div>
+            <div class="live-speaking-stat">
+              <div class="val" id="liveSpeakingAcc">0%</div>
+              <div class="lbl">Pronunciation</div>
+            </div>
+            <div class="live-speaking-stat">
+              <div class="val" id="liveSpeakingTime">00:00</div>
+              <div class="lbl">Duration</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div style="display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); margin-top: 10px; flex-wrap: wrap;">
+          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: rgba(16, 185, 129, 0.4); border: 1px solid var(--emerald); border-radius: 2px;"></span> Accurately Pronounced</span>
+          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: rgba(245, 158, 11, 0.4); border: 1px solid var(--amber); border-radius: 2px;"></span> Accent Slur / Minor Deviation</span>
+          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; background: rgba(244, 63, 94, 0.3); border: 1px solid var(--crimson); border-radius: 2px;"></span> Omitted / Mispronounced</span>
+          <span style="margin-left: auto; font-style: italic; color: var(--gold-light);">Tip: Click any word to hear its native British pronunciation!</span>
+        </div>
+
+      </div>
+
+      <!-- Speaking Evaluation Results (Populated on completion) -->
+      <div id="speakingReportPanel" class="speaking-results-panel" style="display: none;">
+        <!-- Dynamically rendered -->
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Cambridge C1 Assessment Modal / Gatekeeper -->
+  <div class="modal-backdrop" id="evalModalBackdrop">
+    <div class="modal-dialog">
+      <div class="eval-header">
+        <div style="font-size: 12px; text-transform: uppercase; color: var(--gold-primary); letter-spacing: 1.5px; font-weight: 700; margin-bottom: 6px;">
+          Official Assessment Report
+        </div>
+        <h2>Cambridge Writing Evaluation</h2>
+        <button id="closeEvalModalBtn" class="btn btn-secondary btn-icon-only" style="position: absolute; right: 0; top: 0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Band Summary Card -->
+      <div class="eval-summary-card">
+        <div class="band-score-circle">
+          <div class="score-big" id="evalScoreTotal">16.5</div>
+          <div class="score-sub">out of 20 (<span id="evalPercentage">82%</span>)</div>
+        </div>
+        <div>
+          <div class="cefr-verdict-title" id="evalVerdictTitle">Band 4 (C1 - Certified / CAE)</div>
+          <p class="cefr-verdict-desc" id="evalVerdictDesc">
+            Meets full Cambridge C1 standard. Sustained formal academic register, flexible use of complex structures, and precise lexical choice.
+          </p>
+        </div>
+      </div>
+
+      <!-- Cambridge 4 Scales Grid -->
+      <div class="scales-grid">
+        <!-- Content -->
+        <div class="scale-card">
+          <div class="scale-card-header">
+            <span class="scale-name">1. Content</span>
+            <span class="scale-score-pill" id="scaleContentScore">4.5 / 5</span>
+          </div>
+          <ul class="scale-feedback-list" id="scaleContentFeedback"></ul>
+        </div>
+
+        <!-- Communicative Achievement -->
+        <div class="scale-card">
+          <div class="scale-card-header">
+            <span class="scale-name">2. Communicative Achievement</span>
+            <span class="scale-score-pill" id="scaleCommScore">4.0 / 5</span>
+          </div>
+          <ul class="scale-feedback-list" id="scaleCommFeedback"></ul>
+        </div>
+
+        <!-- Organisation -->
+        <div class="scale-card">
+          <div class="scale-card-header">
+            <span class="scale-name">3. Organisation</span>
+            <span class="scale-score-pill" id="scaleOrgScore">4.0 / 5</span>
+          </div>
+          <ul class="scale-feedback-list" id="scaleOrgFeedback"></ul>
+        </div>
+
+        <!-- Language -->
+        <div class="scale-card">
+          <div class="scale-card-header">
+            <span class="scale-name">4. Language (Lexis & Syntax)</span>
+            <span class="scale-score-pill" id="scaleLangScore">4.0 / 5</span>
+          </div>
+          <ul class="scale-feedback-list" id="scaleLangFeedback"></ul>
+        </div>
+      </div>
+
+      <!-- Gatekeeper Action Banner -->
+      <div class="gatekeeper-banner" id="gatekeeperBanner">
+        <div class="gatekeeper-info">
+          <h3 id="gatekeeperHeading">C1 Proficiency Threshold Achieved</h3>
+          <p id="gatekeeperSubtext">You are eligible to progress to Phase 3: Speaking & Pronunciation Evaluation.</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button id="gatekeeperActionBtn" class="btn btn-emerald">
+            Proceed to Speaking Phase →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History & Progress Drawer -->
+  <aside class="history-drawer" id="historyDrawer">
+    <div class="drawer-header">
+      <h3>Training History</h3>
+      <button id="closeHistoryBtn" class="btn btn-secondary btn-icon-only">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="history-list" id="historyList">
+      <!-- Populated dynamically -->
+    </div>
+    <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between;">
+      <button id="clearHistoryBtn" class="btn btn-secondary" style="font-size: 11px;">Clear History</button>
+      <span style="font-size: 11px; color: var(--text-muted); align-self: center;">Saved locally</span>
+    </div>
+  </aside>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Main Application Script (Self-contained, works with file:// and http://) -->
+  <script src="js/bundle.js"></script>
+</body>
+</html>

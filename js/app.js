@@ -16,11 +16,6 @@ class CambridgeApp {
     this.lastEvaluationResult = null;
     this.meetsC1Threshold = false;
 
-    // Exam timer (45 minutes = 2700s)
-    this.examTimerSeconds = 45 * 60;
-    this.timerInterval = null;
-    this.isTimerRunning = false;
-
     this.dom = {};
     this.init();
   }
@@ -35,11 +30,7 @@ class CambridgeApp {
 
   cacheDomElements() {
     this.dom = {
-      // Header & Timer
-      examTimerDisplay: document.getElementById('examTimerDisplay'),
-      toggleTimerBtn: document.getElementById('toggleTimerBtn'),
-      resetTimerBtn: document.getElementById('resetTimerBtn'),
-      timerPlayIcon: document.getElementById('timerPlayIcon'),
+      // Header
       historyDrawerBtn: document.getElementById('historyDrawerBtn'),
       historyDrawer: document.getElementById('historyDrawer'),
       closeHistoryBtn: document.getElementById('closeHistoryBtn'),
@@ -57,7 +48,7 @@ class CambridgeApp {
       speakingStudio: document.getElementById('speakingStudio'),
 
       // Topic Card
-      randomTopicBtn: document.getElementById('randomTopicBtn'),
+      nextTopicBtn: document.getElementById('nextTopicBtn'),
       topicCategory: document.getElementById('topicCategory'),
       topicType: document.getElementById('topicType'),
       topicTime: document.getElementById('topicTime'),
@@ -124,7 +115,7 @@ class CambridgeApp {
 
   bindEvents() {
     // Topic events
-    this.dom.randomTopicBtn.addEventListener('click', () => this.pickRandomTopic());
+    this.dom.nextTopicBtn.addEventListener('click', () => this.cycleNextTopic());
     this.dom.toggleStructuresBtn.addEventListener('click', () => this.toggleStructuresAccordion());
     this.dom.toggleSampleExcerptBtn.addEventListener('click', () => this.toggleSampleExcerpt());
 
@@ -147,10 +138,6 @@ class CambridgeApp {
     this.dom.stopSpeakingBtn.addEventListener('click', () => this.stopSpeakingSession());
     this.dom.playModelAudioBtn.addEventListener('click', () => this.playModelAudio());
     this.dom.stopModelAudioBtn.addEventListener('click', () => this.stopModelAudio());
-
-    // Timer events
-    this.dom.toggleTimerBtn.addEventListener('click', () => this.toggleExamTimer());
-    this.dom.resetTimerBtn.addEventListener('click', () => this.resetExamTimer());
 
     // History drawer events
     this.dom.historyDrawerBtn.addEventListener('click', () => this.openHistoryDrawer());
@@ -225,13 +212,10 @@ class CambridgeApp {
     this.handleEditorInput();
   }
 
-  pickRandomTopic() {
-    let nextIndex = Math.floor(Math.random() * this.topics.length);
-    if (nextIndex === this.currentTopicIndex && this.topics.length > 1) {
-      nextIndex = (nextIndex + 1) % this.topics.length;
-    }
+  cycleNextTopic() {
+    const nextIndex = (this.currentTopicIndex + 1) % this.topics.length;
     this.loadTopic(nextIndex);
-    this.showToast(`Loaded Cambridge topic: "${this.currentTopic.title.slice(0, 35)}..."`, "info");
+    this.showToast(`Loaded Cambridge topic (${nextIndex + 1}/${this.topics.length}): "${this.currentTopic.title.slice(0, 35)}..."`, "info");
   }
 
   renderVocabularyChips() {
@@ -610,50 +594,6 @@ class CambridgeApp {
     this.speechEngine.stopSpeakingModel();
     this.dom.playModelAudioBtn.style.display = 'inline-flex';
     this.dom.stopModelAudioBtn.style.display = 'none';
-  }
-
-  // ==========================================
-  // EXAM TIMER (45 min Cambridge Part 1)
-  // ==========================================
-
-  toggleExamTimer() {
-    if (this.isTimerRunning) {
-      this.pauseExamTimer();
-    } else {
-      this.startExamTimer();
-    }
-  }
-
-  startExamTimer() {
-    this.isTimerRunning = true;
-    this.dom.timerPlayIcon.innerHTML = `<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>`;
-    this.timerInterval = setInterval(() => {
-      if (this.examTimerSeconds > 0) {
-        this.examTimerSeconds--;
-        this.updateTimerDisplay();
-      } else {
-        this.pauseExamTimer();
-        this.showToast("Time's up! Official 45-minute Cambridge writing duration reached.", "error");
-      }
-    }, 1000);
-  }
-
-  pauseExamTimer() {
-    this.isTimerRunning = false;
-    clearInterval(this.timerInterval);
-    this.dom.timerPlayIcon.innerHTML = `<polygon points="5 3 19 12 5 21 5 3"></polygon>`;
-  }
-
-  resetExamTimer() {
-    this.pauseExamTimer();
-    this.examTimerSeconds = 45 * 60;
-    this.updateTimerDisplay();
-  }
-
-  updateTimerDisplay() {
-    const mins = Math.floor(this.examTimerSeconds / 60);
-    const secs = this.examTimerSeconds % 60;
-    this.dom.examTimerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   }
 
   formatSeconds(totalSeconds) {

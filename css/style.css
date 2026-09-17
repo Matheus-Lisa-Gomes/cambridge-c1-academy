@@ -170,35 +170,6 @@ body {
   border: 1px solid var(--border-gold);
 }
 
-.exam-timer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(0, 0, 0, 0.35);
-  padding: 8px 16px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
-  font-family: var(--font-mono);
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
-.timer-btn {
-  background: none;
-  border: none;
-  color: var(--gold-primary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  transition: var(--transition);
-}
-
-.timer-btn:hover {
-  transform: scale(1.1);
-  color: var(--gold-light);
-}
-
 /* Phase Indicators */
 .phase-stepper {
   display: grid;

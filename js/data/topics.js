@@ -681,7 +681,233 @@ export const CAMBRIDGE_TOPICS = [
       }
     ],
     sampleExcerpt: "Scarcely can a linear economic model be deemed tenable in an era of acute ecological fragility. For decades, profligate corporate practices have relied upon planned obsolescence to artificially stimulate consumer turnover. What is urgently required is a paradigm shift toward a regenerative circular economy. Were legislators to penalize built-in product expiry while subsidizing repair infrastructure, businesses would rapidly decouple profitability from gratuitous resource depletion."
-  }
+  },
+  {
+    id: "genetic-enhancement-human-future",
+    title: "Genetic Enhancement, Human Evolution & Social Equality",
+    category: "Science, Ethics & Society",
+    type: "Cambridge Part 1 Essay",
+    cefrTarget: "C1 / C2",
+    recommendedTime: "45 minutes",
+    prompt: {
+      context: "Your class has attended a panel discussion on the rapid development of genetic technologies capable of preventing inherited diseases and potentially enhancing human abilities.",
+      points: [
+        "The ethical implications of using genetic technologies to enhance human capabilities",
+        "The potential for unequal access to genetic enhancement to deepen existing social inequalities"
+      ],
+      task: "Write an essay discussing both points from your notes. You should explain which point is more pressing, giving reasons in support of your opinion. You may make use of the points, but should use your own words as far as possible."
+    },
+    targetVocabulary: [
+      {
+        word: "pervasive",
+        ipa: "/pəˈveɪ.sɪv/",
+        pos: "adjective",
+        definition: "Existing or spreading widely throughout something.",
+        collocation: "pervasive influence",
+        example: "The pervasive influence of genetic technologies could fundamentally alter how society understands human potential.",
+        stems: ["pervasive", "pervasively", "pervasiveness"]
+      },
+      {
+        word: "hereditary",
+        ipa: "/həˈred.ɪ.tər.i/",
+        pos: "adjective",
+        definition: "Passed genetically from parents to their children.",
+        collocation: "hereditary condition",
+        example: "Gene-editing technologies may eventually eliminate certain hereditary conditions before they can be passed to future generations.",
+        stems: ["hereditary", "hereditarily"]
+      },
+      {
+        word: "disparity",
+        ipa: "/dɪˈspær.ə.ti/",
+        pos: "noun",
+        definition: "A significant difference between two or more things, especially in a way that is considered unfair.",
+        collocation: "socio-economic disparity",
+        example: "Unrestricted access to genetic enhancement could exacerbate existing socio-economic disparities.",
+        stems: ["disparity", "disparities"]
+      },
+      {
+        word: "contentious",
+        ipa: "/kənˈten.ʃəs/",
+        pos: "adjective",
+        definition: "Likely to cause disagreement or controversy.",
+        collocation: "contentious ethical issue",
+        example: "The distinction between treating disease and enhancing ability remains a contentious ethical issue.",
+        stems: ["contentious", "contentiously", "contentiousness"]
+      },
+      {
+        word: "exacerbate",
+        ipa: "/ɪɡˈzæs.ə.beɪt/",
+        pos: "verb",
+        definition: "To make a problem or negative situation worse.",
+        collocation: "exacerbate inequality",
+        example: "Commercially driven enhancement could exacerbate inequality if access remains restricted to affluent communities.",
+        stems: ["exacerbate", "exacerbated", "exacerbating", "exacerbation", "exacerbates"]
+      },
+      {
+        word: "imperative",
+        ipa: "/ɪmˈper.ə.tɪv/",
+        pos: "adjective",
+        definition: "Extremely important or necessary.",
+        collocation: "ethical imperative",
+        example: "Establishing transparent regulatory standards is an ethical imperative as genetic technologies become more accessible.",
+        stems: ["imperative", "imperatively"]
+      },
+      {
+        word: "inadvertently",
+        ipa: "/ˌɪn.ədˈvɜː.tənt.li/",
+        pos: "adverb",
+        definition: "Without intending to do so; accidentally.",
+        collocation: "inadvertently reinforce",
+        example: "Attempts to optimise human characteristics could inadvertently reinforce narrow definitions of normality.",
+        stems: ["inadvertent", "inadvertently", "inadvertence"]
+      },
+      {
+        word: "profound",
+        ipa: "/prəˈfaʊnd/",
+        pos: "adjective",
+        definition: "Very great, intense, or having a significant effect.",
+        collocation: "profound implications",
+        example: "The ability to modify human traits could have profound implications for future generations.",
+        stems: ["profound", "profoundly", "profundity"]
+      }
+    ],
+    recommendedStructures: [
+      {
+        name: "Inverted Conditional",
+        pattern: "Had / Were / Should + subject + past participle / adjective / verb + ...",
+        example: "Were genetic enhancement to become commercially available, existing inequalities could be significantly intensified."
+      },
+      {
+        name: "Not Only...But Also Inversion",
+        pattern: "Not only + auxiliary + subject + verb, but + subject + also + verb",
+        example: "Not only could genetic enhancement transform individual lives, but it could also redefine society's conception of equality."
+      },
+      {
+        name: "Participle Clause",
+        pattern: "Present / Past participle + main clause",
+        example: "Driven primarily by commercial interests, genetic enhancement could develop in ways that society has not adequately anticipated."
+      },
+      {
+        name: "Concessive Inversion",
+        pattern: "Much as / Try as + subject + may/might + verb, ...",
+        example: "Much as genetic intervention may alleviate human suffering, its long-term social consequences cannot be dismissed."
+      }
+    ],
+    sampleExcerpt: "Were genetic enhancement to become widely accessible, its implications would extend far beyond the realm of individual choice. Not only could such technologies eliminate a range of hereditary conditions, but they could also inadvertently reinforce profound socio-economic disparities. Much as proponents may emphasise the therapeutic potential of genetic intervention, the prospect of enhancement becoming a privilege reserved for the affluent remains a contentious ethical concern."
+  },
+  {
+    id: "four-day-workweek-productivity",
+    title: "The Four-Day Workweek, Productivity & the Future of Employment",
+    category: "Work & Society",
+    type: "Cambridge Part 1 Essay",
+    cefrTarget: "C1 / C2",
+    recommendedTime: "45 minutes",
+    prompt: {
+      context: "Your class has attended a panel discussion on whether traditional working patterns remain appropriate in an economy increasingly focused on productivity, employee wellbeing and flexible employment.",
+      points: [
+        "The potential effects of shorter working weeks on productivity and organisational performance",
+        "The implications of reduced working hours for employee wellbeing and social life"
+      ],
+      task: "Write an essay discussing both points from your notes. You should explain which point is more pressing, giving reasons in support of your opinion. You may make use of the points, but should use your own words as far as possible."
+    },
+    targetVocabulary: [
+      {
+        word: "productivity",
+        ipa: "/ˌprɒd.ʌkˈtɪv.ə.ti/",
+        pos: "noun",
+        definition: "The rate at which goods or services are produced, or the efficiency with which work is performed.",
+        collocation: "enhance productivity",
+        example: "Advocates argue that a shorter working week could enhance productivity by reducing fatigue and improving concentration.",
+        stems: ["productivity", "productive", "productively", "productiveness"]
+      },
+      {
+        word: "recalibrate",
+        ipa: "/ˌriːˈkæl.ɪ.breɪt/",
+        pos: "verb",
+        definition: "To adjust something carefully in order to make it more appropriate or effective.",
+        collocation: "recalibrate expectations",
+        example: "Employers may need to recalibrate expectations regarding how working time translates into meaningful output.",
+        stems: ["recalibrate", "recalibrated", "recalibrating", "recalibration", "recalibrates"]
+      },
+      {
+        word: "sustainable",
+        ipa: "/səˈsteɪ.nə.bəl/",
+        pos: "adjective",
+        definition: "Able to continue over a long period without causing serious problems or exhaustion.",
+        collocation: "sustainable working practices",
+        example: "Companies are increasingly examining whether conventional working patterns constitute sustainable practices in the long term.",
+        stems: ["sustainable", "sustainably", "sustainability"]
+      },
+      {
+        word: "counterproductive",
+        ipa: "/ˌkaʊn.tə.prəˈdʌk.tɪv/",
+        pos: "adjective",
+        definition: "Having the opposite effect to the one intended.",
+        collocation: "counterproductive measure",
+        example: "Excessive working hours may ultimately prove counterproductive by undermining concentration and employee motivation.",
+        stems: ["counterproductive", "counterproductively", "counterproductiveness"]
+      },
+      {
+        word: "remuneration",
+        ipa: "/rɪˌmjuː.nəˈreɪ.ʃən/",
+        pos: "noun",
+        definition: "Payment or other financial compensation received for work.",
+        collocation: "competitive remuneration",
+        example: "A reduction in working hours raises difficult questions about remuneration and the value attributed to different forms of labour.",
+        stems: ["remuneration", "remunerate", "remunerated", "remunerating"]
+      },
+      {
+        word: "alleviate",
+        ipa: "/əˈliː.vi.eɪt/",
+        pos: "verb",
+        definition: "To make a problem, difficulty or unpleasant situation less severe.",
+        collocation: "alleviate workplace stress",
+        example: "Greater flexibility could alleviate workplace stress while allowing employees to devote more time to their families.",
+        stems: ["alleviate", "alleviated", "alleviating", "alleviation", "alleviates"]
+      },
+      {
+        word: "feasibility",
+        ipa: "/ˌfiː.zəˈbɪl.ə.ti/",
+        pos: "noun",
+        definition: "The degree to which something is possible or practical.",
+        collocation: "assess the feasibility",
+        example: "Before implementing a four-day week, organisations must assess its feasibility across different sectors and occupational roles.",
+        stems: ["feasibility", "feasible", "feasibly"]
+      },
+      {
+        word: "repercussion",
+        ipa: "/ˌriː.pəˈkʌʃ.ən/",
+        pos: "noun",
+        definition: "An unintended or indirect consequence of an action or event.",
+        collocation: "far-reaching repercussions",
+        example: "A widespread reduction in working hours could have far-reaching repercussions for businesses, households and the wider economy.",
+        stems: ["repercussion", "repercussions"]
+      }
+    ],
+    recommendedStructures: [
+      {
+        name: "Inverted Conditional",
+        pattern: "Were / Should + subject + verb, ...",
+        example: "Were shorter working weeks to become the norm, employers would need to reconsider how productivity is measured."
+      },
+      {
+        name: "Fronted Negative Adverbial",
+        pattern: "Only + adverbial phrase + auxiliary + subject + verb",
+        example: "Only by reassessing conventional assumptions about productivity can organisations determine whether fewer hours genuinely improve performance."
+      },
+      {
+        name: "Reduced Relative Clause",
+        pattern: "Noun + present/past participle phrase",
+        example: "Employees working fewer hours may experience greater motivation and a stronger sense of control over their personal lives."
+      },
+      {
+        name: "Concessive Clause",
+        pattern: "However + adjective/adverb + subject + may/might + verb, ...",
+        example: "However attractive a shorter working week may appear, its feasibility will inevitably vary between industries."
+      }
+    ],
+    sampleExcerpt: "Only by reassessing deeply entrenched assumptions about productivity can employers determine whether long working hours genuinely translate into superior performance. However attractive a four-day working week may appear, its feasibility will inevitably vary between sectors, particularly where continuous staffing is indispensable. Nevertheless, should organisations succeed in maintaining output while reducing working hours, the repercussions could extend well beyond the workplace, potentially recalibrating society's expectations regarding the relationship between employment, remuneration and quality of life."
+  },
 ];
 
 export const CAMBRIDGE_CEFR_DESCRIPTORS = {

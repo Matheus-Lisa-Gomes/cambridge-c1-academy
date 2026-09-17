@@ -18,7 +18,7 @@ export class CambridgeSpeechEngine {
     this.isSpeakingModel = false;
     this.startTime = null;
     this.elapsedSeconds = 0;
-    this.timerInterval = null;
+    this.durationInterval = null;
 
     this.targetTokens = []; // Array of word objects { text, clean, status: 'pending'|'matched'|'deviation'|'omitted' }
     this.spokenTranscripts = [];
@@ -52,7 +52,7 @@ export class CambridgeSpeechEngine {
     this.recognition.onstart = () => {
       this.isListening = true;
       this.startTime = Date.now();
-      this.startDurationTimer();
+      this.startDurationTracker();
       if (this.onStateChange) this.onStateChange({ status: 'recording' });
     };
 
@@ -86,7 +86,7 @@ export class CambridgeSpeechEngine {
     this.recognition.onend = () => {
       // If stopped naturally or manually
       this.isListening = false;
-      this.stopDurationTimer();
+      this.stopDurationTracker();
       this.stopAudioVisualizer();
       if (this.onStateChange) this.onStateChange({ status: 'idle' });
     };
@@ -205,13 +205,13 @@ export class CambridgeSpeechEngine {
       }
     }
     this.isListening = false;
-    this.stopDurationTimer();
+    this.stopDurationTracker();
     this.stopAudioVisualizer();
   }
 
-  startDurationTimer() {
-    this.stopDurationTimer();
-    this.timerInterval = setInterval(() => {
+  startDurationTracker() {
+    this.stopDurationTracker();
+    this.durationInterval = setInterval(() => {
       this.elapsedSeconds++;
       if (this.onMetricsUpdate) {
         const minutes = Math.max(0.05, this.elapsedSeconds / 60);
@@ -222,10 +222,10 @@ export class CambridgeSpeechEngine {
     }, 1000);
   }
 
-  stopDurationTimer() {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-      this.timerInterval = null;
+  stopDurationTracker() {
+    if (this.durationInterval) {
+      clearInterval(this.durationInterval);
+      this.durationInterval = null;
     }
   }
 

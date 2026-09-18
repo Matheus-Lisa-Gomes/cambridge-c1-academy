@@ -5,8 +5,6 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
 ---
 
 ## 1. Topic & Curriculum Enhancements
-- [ ] **Topic Category Filter / Dropdown**: Allow users to filter or jump directly to specific domain categories (e.g., *Technology & Ethics*, *Science & Society*, *Economics & Ecology*) instead of only linear cycling.
-- [ ] **Custom Topic Creator**: Allow candidates to input custom essay prompts and define their own compulsory C1/C2 lexis chips.
 - [ ] **C2 Proficiency (CPE) Dedicated Mode**: Introduce CPE Part 1 and Part 2 essay prompts with stricter word count limits (280–320 words) and higher syntactic thresholds.
 - [ ] **Topic Progress Indicators**: Visual badge or checkmark on the topic card indicating whether an essay has already been written and evaluated for that specific prompt.
 

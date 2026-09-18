@@ -1878,6 +1878,7 @@ class CambridgeApp {
       speakingStudio: document.getElementById('speakingStudio'),
 
       // Topic Card
+      prevTopicBtn: document.getElementById('prevTopicBtn'),
       nextTopicBtn: document.getElementById('nextTopicBtn'),
       topicCategory: document.getElementById('topicCategory'),
       topicType: document.getElementById('topicType'),
@@ -1945,6 +1946,7 @@ class CambridgeApp {
 
   bindEvents() {
     // Topic events
+    this.dom.prevTopicBtn.addEventListener('click', () => this.cyclePrevTopic());
     this.dom.nextTopicBtn.addEventListener('click', () => this.cycleNextTopic());
     this.dom.toggleStructuresBtn.addEventListener('click', () => this.toggleStructuresAccordion());
     this.dom.toggleSampleExcerptBtn.addEventListener('click', () => this.toggleSampleExcerpt());
@@ -2040,6 +2042,12 @@ class CambridgeApp {
 
     // Reset editor analysis for new topic
     this.handleEditorInput();
+  }
+
+  cyclePrevTopic() {
+    const prevIndex = (this.currentTopicIndex - 1 + this.topics.length) % this.topics.length;
+    this.loadTopic(prevIndex);
+    this.showToast(`Loaded Cambridge topic (${prevIndex + 1}/${this.topics.length}): "${this.currentTopic.title.slice(0, 35)}..."`, "info");
   }
 
   cycleNextTopic() {

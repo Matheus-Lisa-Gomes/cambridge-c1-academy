@@ -2,11 +2,16 @@
 
 > Personal English training web application engineered strictly according to the **Cambridge Assessment English** structure for **C1 Advanced (CAE)** and **C2 Proficiency (CPE)** certification.
 
+[![GitHub Pages](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-2ea44f?style=for-the-badge&logo=github)](https://matheus-lisa.github.io/cambridge-c1-academy/)
+
+🌐 **Live Web Application**: [https://matheus-lisa.github.io/cambridge-c1-academy/](https://matheus-lisa.github.io/cambridge-c1-academy/)
+
 ---
 
 ## Features
 
 ### 1. Cambridge C1/C2 Curriculum & Compulsory Lexis
+- **Bidirectional Topic Navigation**: Seamlessly navigate through official Cambridge prompts with dedicated **Previous Topic** and **Next Topic** controls.
 - Authentic Cambridge Part 1 essay tasks covering contemporary academic domains:
   - *Artificial Intelligence Autonomy & Moral Agency*
   - *Sustainable Megacities & High-Density Urban Architecture*
@@ -53,13 +58,17 @@
 
 ## Quick Start
 
-### Option 1: Double-Click Launcher (Windows)
+### Option 1: Live Web App (GitHub Pages)
+Launch the platform directly in any web browser without installation:
+👉 **[https://matheus-lisa.github.io/cambridge-c1-academy/](https://matheus-lisa.github.io/cambridge-c1-academy/)**
+
+### Option 2: Double-Click Launcher (Windows Local)
 Double-click `Start_Cambridge_Academy.bat` to launch the local server and open the web app in your default browser.
 
-### Option 2: Direct File Open
+### Option 3: Direct File Open
 Double-click `index.html` to run the app directly in Chrome, Edge, or Safari. The self-contained universal bundle runs without needing build steps or node modules.
 
-### Option 3: Local Server
+### Option 4: Local Server
 Run via PowerShell:
 ```powershell
 powershell -ExecutionPolicy Bypass -File server.ps1

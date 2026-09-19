@@ -252,13 +252,11 @@ class CambridgeApp {
   cyclePrevTopic() {
     const prevIndex = (this.currentTopicIndex - 1 + this.topics.length) % this.topics.length;
     this.loadTopic(prevIndex);
-    this.showToast(`Loaded Cambridge topic (${prevIndex + 1}/${this.topics.length}): "${this.currentTopic.title.slice(0, 35)}..."`, "info");
   }
 
   cycleNextTopic() {
     const nextIndex = (this.currentTopicIndex + 1) % this.topics.length;
     this.loadTopic(nextIndex);
-    this.showToast(`Loaded Cambridge topic (${nextIndex + 1}/${this.topics.length}): "${this.currentTopic.title.slice(0, 35)}..."`, "info");
   }
 
   renderVocabularyChips() {

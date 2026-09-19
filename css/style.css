@@ -336,6 +336,33 @@ body {
 }
 
 
+/* Keyboard hotkey badge inside buttons */
+.hotkey-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-style: normal;
+  line-height: 1.6;
+  pointer-events: none;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.btn-primary .hotkey-badge {
+  color: rgba(8, 14, 26, 0.65);
+  background: rgba(0, 0, 0, 0.18);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;

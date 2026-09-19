@@ -36,7 +36,7 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
 
 - [ ] **Performance Analytics Dashboard**: Aggregate score history across Cambridge assessment scales (Content, Communicative Achievement, Organisation, Language) over time with charts.
 - [ ] **Theme Preferences**: Accent color customization (Oxford Navy, Cambridge Gold, Deep Emerald).
-- [ ] **Keyboard Shortcuts**: Hotkeys for rapid workflow (e.g., `Ctrl+Enter` to evaluate, `Space` to start/stop speaking recording).
+- [ ] **Keyboard Shortcuts**: Hotkeys for rapid workflow (e.g., `Ctrl+Enter` to evaluate, `Space` to start/stop speaking recording). Add some future hotkeys when the toggle change between c1 and c2 is implemented. 
 
 ---
 

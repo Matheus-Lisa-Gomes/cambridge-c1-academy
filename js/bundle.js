@@ -2079,6 +2079,7 @@ class CambridgeApp {
   init() {
     this.cacheDomElements();
     this.bindEvents();
+    this.bindHotkeys();
     this.setupSpeechEngineCallbacks();
     this.loadTopic(0);
     this.renderHistory();
@@ -2203,6 +2204,34 @@ class CambridgeApp {
     this.dom.historyDrawerBtn.addEventListener('click', () => this.openHistoryDrawer());
     this.dom.closeHistoryBtn.addEventListener('click', () => this.closeHistoryDrawer());
     this.dom.clearHistoryBtn.addEventListener('click', () => this.clearHistory());
+  }
+
+  bindHotkeys() {
+    document.addEventListener('keydown', (e) => {
+      const modalOpen = this.dom.evalModalBackdrop.classList.contains('visible') ||
+                        this.dom.evalModalBackdrop.style.display === 'flex';
+      const inTextField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+
+      // Alt+ArrowLeft  →  Previous Topic
+      if (e.altKey && e.key === 'ArrowLeft' && !inTextField && !modalOpen) {
+        e.preventDefault();
+        this.cyclePrevTopic();
+        return;
+      }
+
+      // Alt+ArrowRight  →  Next Topic
+      if (e.altKey && e.key === 'ArrowRight' && !inTextField && !modalOpen) {
+        e.preventDefault();
+        this.cycleNextTopic();
+        return;
+      }
+
+      // Ctrl+Enter  →  Evaluate (works even from inside the essay textarea)
+      if (e.ctrlKey && e.key === 'Enter' && !modalOpen) {
+        e.preventDefault();
+        this.triggerEvaluation();
+      }
+    });
   }
 
   setupSpeechEngineCallbacks() {

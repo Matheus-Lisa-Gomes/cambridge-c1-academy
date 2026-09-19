@@ -48,6 +48,8 @@ class CambridgeApp {
       speakingStudio: document.getElementById('speakingStudio'),
 
       // Topic Card
+      topicCounterCurrent: document.getElementById('topicCounterCurrent'),
+      topicCounterTotal: document.getElementById('topicCounterTotal'),
       prevTopicBtn: document.getElementById('prevTopicBtn'),
       nextTopicBtn: document.getElementById('nextTopicBtn'),
       topicCategory: document.getElementById('topicCategory'),
@@ -186,6 +188,10 @@ class CambridgeApp {
   loadTopic(index) {
     this.currentTopicIndex = index;
     this.currentTopic = this.topics[index];
+
+    // Update topic counter badge
+    this.dom.topicCounterCurrent.textContent = index + 1;
+    this.dom.topicCounterTotal.textContent = this.topics.length;
 
     this.dom.topicCategory.textContent = this.currentTopic.category;
     this.dom.topicType.textContent = this.currentTopic.type;

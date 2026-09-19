@@ -908,6 +908,232 @@ export const CAMBRIDGE_TOPICS = [
     ],
     sampleExcerpt: "Only by reassessing deeply entrenched assumptions about productivity can employers determine whether long working hours genuinely translate into superior performance. However attractive a four-day working week may appear, its feasibility will inevitably vary between sectors, particularly where continuous staffing is indispensable. Nevertheless, should organisations succeed in maintaining output while reducing working hours, the repercussions could extend well beyond the workplace, potentially recalibrating society's expectations regarding the relationship between employment, remuneration and quality of life."
   },
+  {
+    id: "digital-privacy-surveillance",
+    title: "Digital Privacy, Mass Surveillance & Personal Autonomy",
+    category: "Technology & Society",
+    type: "Cambridge Part 1 Essay",
+    cefrTarget: "C1 / C2",
+    recommendedTime: "45 minutes",
+    prompt: {
+      context: "Your class has attended a panel discussion on the growing collection of personal data by governments and technology companies and its implications for individual freedom in an increasingly connected society.",
+      points: [
+        "The benefits of large-scale data collection for security and the provision of personalised digital services",
+        "The potential threat that pervasive surveillance poses to individual privacy and personal autonomy"
+      ],
+      task: "Write an essay discussing both points from your notes. You should explain which point is more pressing, giving reasons in support of your opinion. You may make use of the points, but should use your own words as far as possible."
+    },
+    targetVocabulary: [
+      {
+        word: "intrusive",
+        ipa: "/ɪnˈtruː.sɪv/",
+        pos: "adjective",
+        definition: "Having an unwanted effect on someone's private life or activities.",
+        collocation: "intrusive surveillance",
+        example: "The widespread use of facial recognition has raised concerns about increasingly intrusive forms of surveillance.",
+        stems: ["intrusive", "intrusively", "intrusiveness"]
+      },
+      {
+        word: "pervasive",
+        ipa: "/pəˈveɪ.sɪv/",
+        pos: "adjective",
+        definition: "Existing or spreading widely throughout something.",
+        collocation: "pervasive monitoring",
+        example: "The pervasive monitoring of online behaviour has made it increasingly difficult for individuals to remain anonymous.",
+        stems: ["pervasive", "pervasively", "pervasiveness"]
+      },
+      {
+        word: "consent",
+        ipa: "/kənˈsent/",
+        pos: "noun",
+        definition: "Permission for something to happen or agreement to something being done.",
+        collocation: "informed consent",
+        example: "Users are frequently asked to provide consent without fully understanding how their personal information will be processed.",
+        stems: ["consent", "consent", "consented", "consenting"]
+      },
+      {
+        word: "anonymisation",
+        ipa: "/ˌæn.ə.maɪˈzeɪ.ʃən/",
+        pos: "noun",
+        definition: "The process of removing or modifying information so that an individual cannot readily be identified.",
+        collocation: "data anonymisation",
+        example: "Effective data anonymisation can allow organisations to conduct research while reducing the risks associated with exposing personal information.",
+        stems: ["anonymisation", "anonymise", "anonymised", "anonymising"]
+      },
+      {
+        word: "encroachment",
+        ipa: "/ɪnˈkrəʊtʃ.mənt/",
+        pos: "noun",
+        definition: "The gradual taking away of someone's rights, freedom or space.",
+        collocation: "encroachment on privacy",
+        example: "The gradual encroachment on digital privacy may go unnoticed when each individual technological development appears relatively harmless.",
+        stems: ["encroachment", "encroach", "encroached", "encroaching"]
+      },
+      {
+        word: "scrutiny",
+        ipa: "/ˈskruː.tɪ.ni/",
+        pos: "noun",
+        definition: "Careful and detailed examination of something.",
+        collocation: "under intense scrutiny",
+        example: "Technology companies should be subject to greater scrutiny when handling sensitive personal information.",
+        stems: ["scrutiny", "scrutinise", "scrutinised", "scrutinising", "scrutinises"]
+      },
+      {
+        word: "disseminate",
+        ipa: "/dɪˈsem.ɪ.neɪt/",
+        pos: "verb",
+        definition: "To spread information, ideas or something similar widely.",
+        collocation: "disseminate personal information",
+        example: "Once personal information has been collected, it can be difficult to control how widely it is disseminated.",
+        stems: ["disseminate", "disseminated", "disseminating", "dissemination", "disseminates"]
+      },
+      {
+        word: "impunity",
+        ipa: "/ɪmˈpjuː.nə.ti/",
+        pos: "noun",
+        definition: "Freedom from punishment or negative consequences for doing something wrong.",
+        collocation: "act with impunity",
+        example: "Without meaningful regulatory oversight, organisations may be able to exploit personal data with relative impunity.",
+        stems: ["impunity"]
+      }
+    ],
+    recommendedStructures: [
+      {
+        name: "Inversion with Only",
+        pattern: "Only + adverbial phrase + auxiliary + subject + verb",
+        example: "Only through rigorous regulation can individuals retain meaningful control over their personal information."
+      },
+      {
+        name: "Mixed Conditional",
+        pattern: "If + past perfect, subject + would + base verb",
+        example: "If citizens had understood the extent of data collection earlier, many might now demand substantially stricter safeguards."
+      },
+      {
+        name: "Fronted Participle Clause",
+        pattern: "Having + past participle, subject + main verb",
+        example: "Having surrendered vast quantities of personal data, users may find it virtually impossible to reclaim control over their digital identities."
+      },
+      {
+        name: "Concessive Inversion",
+        pattern: "Much as + subject + may/might + verb, ...",
+        example: "Much as mass data collection may improve the efficiency of digital services, its implications for individual autonomy cannot be overlooked."
+      }
+    ],
+    sampleExcerpt: "Only through rigorous scrutiny can society determine whether the convenience afforded by pervasive data collection justifies its implications for individual privacy. Much as personalised digital services may enhance efficiency, the gradual encroachment upon personal autonomy is a disconcerting prospect, particularly when meaningful consent is difficult to obtain. Having surrendered vast quantities of personal information, individuals may ultimately find themselves unable to determine who can access it, how it is disseminated, or for what purposes it is subsequently employed."
+  },
+  {
+    id: "failure-resilience-success",
+    title: "Failure, Resilience & the Pursuit of Success",
+    category: "Society & Personal Development",
+    type: "Cambridge Part 1 Essay",
+    cefrTarget: "C1 / C2",
+    recommendedTime: "45 minutes",
+    prompt: {
+      context: "Your class has attended a discussion on the growing emphasis placed on achievement and success in contemporary society and whether failure should be regarded as an obstacle or as an essential part of personal development.",
+      points: [
+        "The role of failure in developing resilience and long-term personal growth",
+        "The pressure to succeed and its influence on people's decisions and behaviour"
+      ],
+      task: "Write an essay discussing both points from your notes. You should explain which point is more pressing, giving reasons in support of your opinion. You may make use of the points, but should use your own words as far as possible."
+    },
+    targetVocabulary: [
+      {
+        word: "adversity",
+        ipa: "/ədˈvɜː.sə.ti/",
+        pos: "noun",
+        definition: "A difficult or unpleasant situation that someone has to deal with.",
+        collocation: "overcome adversity",
+        example: "Learning to overcome adversity can equip individuals with the resilience required to cope with future challenges.",
+        stems: ["adversity"]
+      },
+      {
+        word: "setback",
+        ipa: "/ˈset.bæk/",
+        pos: "noun",
+        definition: "A problem or difficulty that delays or prevents progress.",
+        collocation: "temporary setback",
+        example: "A temporary setback need not determine the eventual outcome of an individual's efforts.",
+        stems: ["setback", "setbacks"]
+      },
+      {
+        word: "resilience",
+        ipa: "/rɪˈzɪl.i.əns/",
+        pos: "noun",
+        definition: "The ability to recover from difficulties and continue despite challenges.",
+        collocation: "develop resilience",
+        example: "Experiencing manageable difficulties during childhood may help individuals develop resilience later in life.",
+        stems: ["resilience", "resilient", "resiliently"]
+      },
+      {
+        word: "perseverance",
+        ipa: "/ˌpɜː.sɪˈvɪə.rəns/",
+        pos: "noun",
+        definition: "Continued effort and determination despite difficulties or delays.",
+        collocation: "demonstrate perseverance",
+        example: "Long-term achievement often depends less on innate ability than on the perseverance to continue after repeated failures.",
+        stems: ["perseverance", "persevere", "persevered", "persevering"]
+      },
+      {
+        word: "expectation",
+        ipa: "/ˌek.spekˈteɪ.ʃən/",
+        pos: "noun",
+        definition: "A belief that something will happen or that someone should behave in a particular way.",
+        collocation: "societal expectations",
+        example: "Unrealistic societal expectations can cause people to perceive ordinary setbacks as evidence of personal inadequacy.",
+        stems: ["expectation", "expect", "expected", "expecting", "expectantly"]
+      },
+      {
+        word: "adversely",
+        ipa: "/ˈæd.vɜːs.li/",
+        pos: "adverb",
+        definition: "In a way that produces an unwanted or harmful effect.",
+        collocation: "adversely affect",
+        example: "Constant pressure to achieve may adversely affect people's willingness to take risks or pursue unfamiliar opportunities.",
+        stems: ["adverse", "adversely", "adversity"]
+      },
+      {
+        word: "formidable",
+        ipa: "/ˈfɔː.mɪ.də.bəl/",
+        pos: "adjective",
+        definition: "Very difficult or impressive and therefore deserving serious consideration.",
+        collocation: "formidable challenge",
+        example: "What initially appears to be a formidable challenge can become a valuable learning experience.",
+        stems: ["formidable", "formidably"]
+      },
+      {
+        word: "self-perpetuating",
+        ipa: "/ˌself.pəˈpetʃ.u.ə.tɪŋ/",
+        pos: "adjective",
+        definition: "Continuing or increasing because of its own effects, without needing an external cause.",
+        collocation: "self-perpetuating cycle",
+        example: "Fear of failure can create a self-perpetuating cycle in which people avoid challenging situations and consequently lose confidence.",
+        stems: ["self-perpetuating", "self-perpetuate", "self-perpetuation"]
+      }
+    ],
+    recommendedStructures: [
+      {
+        name: "Inverted Conditional",
+        pattern: "Had + subject + past participle, subject + would/could/might + have + past participle",
+        example: "Had every setback been interpreted as a definitive failure, many significant achievements would never have materialised."
+      },
+      {
+        name: "Emphatic It-Cleft",
+        pattern: "It is/was + emphasised element + that/who + clause",
+        example: "It is often through confronting failure that individuals develop a realistic understanding of their own limitations."
+      },
+      {
+        name: "Comparative Correlative",
+        pattern: "The + comparative + ..., the + comparative + ...",
+        example: "The more heavily success is emphasised, the more intimidating the prospect of failure may become."
+      },
+      {
+        name: "Concessive Clause",
+        pattern: "While / Although + subject + may/might + verb, ...",
+        example: "While repeated failure may undermine confidence, it can also provide insights that success alone would never reveal."
+      }
+    ],
+    sampleExcerpt: "The more heavily society equates achievement with personal worth, the more intimidating the prospect of failure becomes. Yet it is often through confronting adversity that individuals acquire the resilience required to navigate future challenges. While repeated setbacks may initially undermine confidence, they can also expose weaknesses that would otherwise remain unnoticed. Had failure invariably been regarded as evidence of inadequacy, many individuals might never have developed the perseverance necessary to overcome formidable obstacles."
+  },
 ];
 
 export const CAMBRIDGE_CEFR_DESCRIPTORS = {

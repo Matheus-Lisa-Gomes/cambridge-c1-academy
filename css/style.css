@@ -299,6 +299,43 @@ body {
   font-weight: 600;
 }
 
+/* Topic counter badge  e.g. "3 / 10" */
+.topic-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(223, 177, 91, 0.08);
+  border: 1px solid var(--border-gold);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  box-shadow: 0 0 10px rgba(223, 177, 91, 0.08);
+  transition: var(--transition);
+}
+
+.topic-counter-current {
+  color: var(--gold-primary);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.topic-counter-sep {
+  color: var(--text-muted);
+  font-size: 11px;
+  margin: 0 1px;
+}
+
+.topic-counter-total {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+
 /* Buttons */
 .btn {
   display: inline-flex;

@@ -16,7 +16,7 @@
   --border-gold: rgba(223, 177, 91, 0.35);
   --border-gold-glow: rgba(223, 177, 91, 0.65);
 
-  --text-primary: #f8fafc;
+  --text-primary: #E6E6E6;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --text-gold: #e2ba6a;
@@ -223,7 +223,7 @@ body {
 
 .step-card.completed .step-number {
   background: var(--emerald);
-  color: #fff;
+  color: #E6E6E6;
 }
 
 .step-info h4 {
@@ -404,7 +404,7 @@ body {
 
 .btn-emerald {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #ffffff;
+  color: #E6E6E6;
   box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
 }
 
@@ -415,7 +415,7 @@ body {
 
 .btn-crimson {
   background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
-  color: #ffffff;
+  color: #E6E6E6;
 }
 
 .btn-icon-only {

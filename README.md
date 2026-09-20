@@ -86,6 +86,31 @@ The Common European Framework of Reference for Languages (CEFR) proficiency leve
 
 ---
 
+## 🌐 Browser Compatibility & Speech Recognition Requirements
+
+The Writing Studio, C1/C2 Syntax Radar, Model Audio Playback, and Gatekeeper Evaluation operate across all modern browsers. However, **live microphone speech recognition** in the Speaking Studio relies on the browser's native Web Speech API implementation:
+
+| Browser | Writing Studio & Syntax Radar | Native Model Audio (RP) | Live Speech Recognition & Evaluation | Notes |
+| :--- | :---: | :---: | :---: | :--- |
+| **Google Chrome** | ✅ | ✅ | ✅ **Full Support** | **Recommended**: Native real-time word tracking and pronunciation evaluation. |
+| **Microsoft Edge** | ✅ | ✅ | ✅ **Full Support** | **Recommended**: Native real-time word tracking via Microsoft Speech services. |
+| **Apple Safari** | ✅ | ✅ | ⚠️ **Partial Support** | Supported on macOS/iOS; requires granting microphone permission per session. |
+| **Brave Browser** | ✅ | ✅ | ❌ **Not Supported** | Brave blocks Google cloud speech endpoints for privacy; recognition fails immediately with a network error. |
+| **Mozilla Firefox** | ✅ | ✅ | ❌ **Not Supported** | The Web Speech Recognition API is not enabled by default in Firefox. |
+
+### Why doesn't Live Speech Recognition work in Brave?
+Brave Browser is built on Chromium, so the `webkitSpeechRecognition` programming interface is present. However, Brave intentionally blocks outbound connections to Google's proprietary Cloud Speech-to-Text servers for privacy reasons. 
+
+When you click **Start Reading Aloud** in Brave:
+1. Brave prompts for microphone duration (*Until I close this site / 24 hours / 1 week / Forever*).
+2. The browser immediately rejects the speech recognition network request.
+3. The microphone disconnects right away and the button resets, causing Brave to re-prompt on the next attempt.
+
+> [!TIP]
+> **For speaking practice with live word-by-word phonemic tracking, open FluentEdge in Google Chrome or Microsoft Edge.**
+
+---
+
 ## Quick Start
 
 ### Option 1: Live Web App

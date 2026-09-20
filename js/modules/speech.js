@@ -77,14 +77,30 @@ export class SpeechEngine {
 
     this.recognition.onerror = (event) => {
       console.error("Speech recognition error:", event.error);
+      if (event.error === 'no-speech') {
+        // Natural pause in speech while reading; do not terminate session
+        return;
+      }
       if (event.error === 'not-allowed') {
-        if (this.onError) this.onError("Microphone permission denied. Please allow microphone access to evaluate speaking.");
+        if (this.onError) this.onError("Microphone permission denied. Please allow microphone access in your browser settings.");
+      } else if (event.error === 'network') {
+        if (this.onError) this.onError("Speech recognition network error. Note: Brave and Firefox block cloud speech recognition; please use Google Chrome or Microsoft Edge.");
+      } else if (event.error === 'audio-capture') {
+        if (this.onError) this.onError("Microphone capture failed. Ensure your microphone is connected and not locked by another application.");
       }
       this.stopListening();
     };
 
     this.recognition.onend = () => {
-      // If stopped naturally or manually
+      // If recognition paused automatically (e.g., brief silence) while session is active, restart it
+      if (this.isListening) {
+        try {
+          this.recognition.start();
+          return;
+        } catch (e) {
+          // If restart fails, proceed to clean teardown
+        }
+      }
       this.isListening = false;
       this.stopDurationTracker();
       this.stopAudioVisualizer();
@@ -184,15 +200,23 @@ export class SpeechEngine {
       return;
     }
 
+    if (this.isListening) return;
+
     try {
-      this.initRecognition();
+      if (!this.recognition) {
+        this.initRecognition();
+      }
       this.recognition.start();
       if (canvasElement) {
-        await this.startAudioVisualizer(canvasElement);
+        this.startAudioVisualizer(canvasElement).catch(err => {
+          console.warn("Visualizer optional mic stream error:", err);
+        });
       }
     } catch (err) {
-      console.error("Failed to start speech recognition:", err);
-      if (this.onError) this.onError("Could not start microphone: " + err.message);
+      if (err.name !== 'InvalidStateError') {
+        console.error("Failed to start speech recognition:", err);
+        if (this.onError) this.onError("Could not start microphone: " + err.message);
+      }
     }
   }
 
@@ -397,16 +421,30 @@ export class SpeechEngine {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
 
-      this.audioContext = new AudioCtx();
-      this.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-      const source = this.audioContext.createMediaStreamSource(this.mediaStream);
-      this.analyser = this.audioContext.createAnalyser();
-      this.analyser.fftSize = 256;
-      source.connect(this.analyser);
+      if (!this.audioContext || this.audioContext.state === 'closed') {
+        this.audioContext = new AudioCtx();
+      } else if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+      }
+
+      // Reuse active media stream if already acquired in this page session
+      if (this.mediaStream && this.mediaStream.active) {
+        this.mediaStream.getAudioTracks().forEach(track => { track.enabled = true; });
+      } else {
+        this.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        const source = this.audioContext.createMediaStreamSource(this.mediaStream);
+        this.analyser = this.audioContext.createAnalyser();
+        this.analyser.fftSize = 256;
+        source.connect(this.analyser);
+      }
 
       const ctx = canvas.getContext('2d');
       const bufferLength = this.analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
+
+      if (this.visualizerAnimationId) {
+        cancelAnimationFrame(this.visualizerAnimationId);
+      }
 
       const draw = () => {
         if (!this.isListening) return;
@@ -449,17 +487,18 @@ export class SpeechEngine {
       cancelAnimationFrame(this.visualizerAnimationId);
       this.visualizerAnimationId = null;
     }
-    if (this.mediaStream) {
-      this.mediaStream.getTracks().forEach(track => track.stop());
-      this.mediaStream = null;
+    // Mute tracks while idle so the indicator goes off without destroying the permission handle
+    if (this.mediaStream && this.mediaStream.active) {
+      this.mediaStream.getAudioTracks().forEach(track => {
+        track.enabled = false;
+      });
     }
-    if (this.audioContext && this.audioContext.state !== 'closed') {
+    if (this.audioContext && this.audioContext.state === 'running') {
       try {
-        this.audioContext.close();
+        this.audioContext.suspend();
       } catch (e) {
         // ignore
       }
-      this.audioContext = null;
     }
   }
 }

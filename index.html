@@ -5,10 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
-    content="Personal Cambridge C1 & C2 English Training Platform for Writing & Speaking. Master advanced academic vocabulary, complex syntax, and native RP pronunciation.">
+    content="Personal FluentEdge C1 & C2 English Training Platform for Writing & Speaking. Master advanced academic vocabulary, complex syntax, and native RP pronunciation.">
   <meta name="keywords"
-    content="Cambridge English, CAE, CPE, C1 Advanced, C2 Proficiency, English Writing, Speaking Pronunciation, CEFR">
-  <title>Cambridge C1+ Writing & Speaking Academy</title>
+    content="FluentEdge, C1 Advanced, C2 Proficiency, English Writing, Speaking Pronunciation, CEFR, Academic English">
+  <title>FluentEdge — C1–C2 English Training</title>
 
   <!-- Google Fonts: Playfair Display, Outfit, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,17 +28,17 @@
     <!-- Header -->
     <header class="app-header">
       <div class="brand-section">
-        <div class="brand-crest" title="Cambridge Assessment English Structure">C1⁺</div>
+        <div class="brand-crest" title="FluentEdge C1–C2 English Training">FE</div>
         <div class="brand-titles">
-          <h1>Cambridge C1+ Academy</h1>
-          <div class="brand-tagline">Advanced Writing & Speaking Evaluation</div>
+          <h1>FluentEdge</h1>
+          <div class="brand-tagline">C1–C2 English Training</div>
         </div>
       </div>
 
       <div class="header-controls">
         <div class="cefr-badge-group">
           <span class="cefr-badge-label">Target Standard</span>
-          <span class="cefr-pill" id="currentCefrBadge">CAE (C1) / CPE (C2)</span>
+          <span class="cefr-pill" id="currentCefrBadge">C1 Advanced / C2 Proficiency</span>
         </div>
 
         <button id="historyDrawerBtn" class="btn btn-secondary" title="View Training Log">
@@ -55,14 +55,14 @@
       <div class="step-card active" id="stepIndicator1">
         <div class="step-number">1</div>
         <div class="step-info">
-          <h4>Cambridge Topic & Lexis</h4>
+          <h4>Topic & Advanced Lexis</h4>
           <p>Prompt & Compulsory C1 Vocabulary</p>
         </div>
       </div>
       <div class="step-card" id="stepIndicator2">
         <div class="step-number">2</div>
         <div class="step-info">
-          <h4>Writing & C1 Evaluation</h4>
+          <h4>Writing & C1–C2 Evaluation</h4>
           <p>220-260 Words & Syntactic Complexity</p>
         </div>
       </div>
@@ -91,7 +91,7 @@
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
-            <h2 id="topicHeading">Cambridge Exam Task</h2>
+            <h2 id="topicHeading">C1/C2 Essay Task</h2>
             <span class="topic-counter" id="topicCounter" aria-label="Topic index">
               <span class="topic-counter-current" id="topicCounterCurrent">1</span>
               <span class="topic-counter-sep">/</span>
@@ -119,7 +119,7 @@
         <!-- Topic Details - Removed from UI but needed for functionality of previous and next buttons-->
         <div class="topic-meta-row">
           <span class="meta-pill" id="topicCategory">Technology & Ethics</span>
-          <span class="meta-pill" id="topicType">Cambridge Part 1 Essay</span>
+          <span class="meta-pill" id="topicType">C1/C2 Academic Essay</span>
           <span class="meta-pill" id="topicTime">45 minutes recommended</span>
         </div>
 
@@ -155,7 +155,7 @@
         <!-- Recommended Advanced Grammar Accordion -->
         <div class="structures-accordion">
           <div class="structures-header" id="toggleStructuresBtn">
-            <span>Cambridge C1/C2 Advanced Grammatical Devices</span>
+            <span>C1/C2 Advanced Grammatical Devices</span>
             <svg id="structuresCaret" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="2">
               <polyline points="6 9 12 15 18 9"></polyline>
@@ -176,7 +176,7 @@
               <line x1="16" y1="17" x2="8" y2="17"></line>
               <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
-            View Model Cambridge Band 5 Excerpt
+            View Model Band 5 Excerpt
           </button>
           <div id="sampleExcerptBox"
             style="display: none; margin-top: 10px; padding: 14px; background: rgba(0,0,0,0.3); border-radius: var(--radius-md); font-size: 13px; font-style: italic; color: #cbd5e1; border: 1px solid var(--border-subtle); line-height: 1.6;">
@@ -230,7 +230,7 @@
         <!-- Editor Area -->
         <div class="editor-wrapper">
           <textarea id="essayInput" class="essay-textarea"
-            placeholder="Compose your Cambridge C1 essay here... Incorporate the compulsory target vocabulary words shown on the left, address both prompt points objectively, and employ complex syntactic structures (e.g., inversions, cleft sentences)."
+            placeholder="Compose your C1/C2 essay here... Incorporate the compulsory target vocabulary words shown on the left, address both prompt points objectively, and employ complex syntactic structures (e.g., inversions, cleft sentences)."
             spellcheck="true"></textarea>
         </div>
 
@@ -253,7 +253,7 @@
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-          Evaluate Cambridge C1 Level
+          Evaluate C1/C2 Level
           <kbd class="hotkey-badge">Ctrl+↵</kbd>
         </button>
       </section>
@@ -281,7 +281,7 @@
         <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 16px;">
           Read your written text aloud into your microphone. Our speech recognition engine aligns your spoken words with
           the text in real-time to assess <strong>pronunciation accuracy</strong>, <strong>word stress</strong>, and
-          <strong>fluency cadence (130-160 WPM target)</strong> according to the official Cambridge Speaking Scale.
+          <strong>fluency cadence (130-160 WPM target)</strong> according to the standard C1/C2 Speaking Scale.
         </p>
 
         <!-- Teleprompter Karaoke Display -->
@@ -367,7 +367,7 @@
 
   </div>
 
-  <!-- Cambridge C1 Assessment Modal / Gatekeeper -->
+  <!-- C1/C2 Assessment Modal / Gatekeeper -->
   <div class="modal-backdrop" id="evalModalBackdrop">
     <div class="modal-dialog">
       <div class="eval-header">
@@ -375,7 +375,7 @@
           style="font-size: 12px; text-transform: uppercase; color: var(--gold-primary); letter-spacing: 1.5px; font-weight: 700; margin-bottom: 6px;">
           Official Assessment Report
         </div>
-        <h2>Cambridge Writing Evaluation</h2>
+        <h2>FluentEdge Writing Evaluation</h2>
         <button id="closeEvalModalBtn" class="btn btn-secondary btn-icon-only"
           style="position: absolute; right: 0; top: 0;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -392,15 +392,15 @@
           <div class="score-sub">out of 20 (<span id="evalPercentage">82%</span>)</div>
         </div>
         <div>
-          <div class="cefr-verdict-title" id="evalVerdictTitle">Band 4 (C1 - Certified / CAE)</div>
+          <div class="cefr-verdict-title" id="evalVerdictTitle">Band 4 (C1 - Certified)</div>
           <p class="cefr-verdict-desc" id="evalVerdictDesc">
-            Meets full Cambridge C1 standard. Sustained formal academic register, flexible use of complex structures,
+            Meets full C1 standard. Sustained formal academic register, flexible use of complex structures,
             and precise lexical choice.
           </p>
         </div>
       </div>
 
-      <!-- Cambridge 4 Scales Grid -->
+      <!-- CEFR 4 Scales Grid -->
       <div class="scales-grid">
         <!-- Content -->
         <div class="scale-card">

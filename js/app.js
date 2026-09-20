@@ -1,18 +1,18 @@
 /**
- * Cambridge C1+ Academy - Main Application Controller
+ * FluentEdge: C1–C2 English Training - Main Application Controller
  */
 
-import { CAMBRIDGE_TOPICS } from './data/topics.js';
+import { TOPICS } from './data/topics.js';
 import { analyzeQuickMetrics, evaluateEssay, checkTargetWordUsage } from './modules/evaluator.js';
-import { CambridgeSpeechEngine } from './modules/speech.js';
+import { SpeechEngine } from './modules/speech.js';
 
-class CambridgeApp {
+class FluentEdgeApp {
   constructor() {
-    this.topics = CAMBRIDGE_TOPICS;
+    this.topics = TOPICS;
     this.currentTopicIndex = 0;
     this.currentTopic = this.topics[0];
 
-    this.speechEngine = new CambridgeSpeechEngine();
+    this.speechEngine = new SpeechEngine();
     this.lastEvaluationResult = null;
     this.meetsC1Threshold = false;
 
@@ -326,7 +326,7 @@ class CambridgeApp {
     this.dom.liveWordCount.textContent = metrics.wordCount;
     this.dom.liveParaCount.textContent = metrics.paragraphCount;
 
-    // Word count color indicator (Cambridge CAE Part 1 target is 220-260 words)
+    // Word count color indicator (C1 target is 220-260 words)
     this.dom.liveWordCount.className = "metric-live-val";
     if (metrics.wordCount >= 220 && metrics.wordCount <= 280) {
       this.dom.liveWordCount.classList.add("optimal");
@@ -377,7 +377,7 @@ class CambridgeApp {
   loadSampleDraft() {
     this.dom.essayInput.value = this.currentTopic.sampleExcerpt;
     this.handleEditorInput();
-    this.showToast("Loaded sample Cambridge draft for evaluation.", "info");
+    this.showToast("Loaded sample C1/C2 draft for evaluation.", "info");
   }
 
   clearEssay() {
@@ -388,7 +388,7 @@ class CambridgeApp {
   }
 
   // ==========================================
-  // CAMBRIDGE C1 WRITING ASSESSMENT & GATEKEEPER
+  // FLUENTEDGE C1/C2 WRITING ASSESSMENT & GATEKEEPER
   // ==========================================
 
   triggerEvaluation() {
@@ -399,7 +399,7 @@ class CambridgeApp {
     }
 
     if (text.split(/\s+/).length < 50) {
-      this.showToast("Essay is too short for a full Cambridge C1 evaluation. Write at least 150 words.", "error");
+      this.showToast("Essay is too short for a full C1/C2 evaluation. Write at least 150 words.", "error");
       return;
     }
 
@@ -428,8 +428,8 @@ class CambridgeApp {
     // Gatekeeper Banner
     if (evalResult.meetsC1) {
       this.dom.gatekeeperBanner.className = "gatekeeper-banner unlocked";
-      this.dom.gatekeeperHeading.textContent = "✓ Cambridge C1 Standard Confirmed";
-      this.dom.gatekeeperSubtext.textContent = "Your text demonstrates the syntactic complexity and vocabulary breadth required by Cambridge University. Proceed to read your text aloud for pronunciation evaluation.";
+      this.dom.gatekeeperHeading.textContent = "✓ C1 Standard Confirmed";
+      this.dom.gatekeeperSubtext.textContent = "Your text demonstrates the syntactic complexity and vocabulary breadth required for C1–C2 mastery. Proceed to read your text aloud for pronunciation evaluation.";
       this.dom.gatekeeperActionBtn.className = "btn btn-emerald";
       this.dom.gatekeeperActionBtn.textContent = "Proceed to Phase 3: Speaking →";
       
@@ -440,7 +440,7 @@ class CambridgeApp {
     } else {
       this.dom.gatekeeperBanner.className = "gatekeeper-banner locked";
       this.dom.gatekeeperHeading.textContent = "Threshold Not Reached (Revision Recommended)";
-      this.dom.gatekeeperSubtext.textContent = `Your draft scored below Cambridge C1 requirements (${evalResult.percentage}%). We recommend revising your text using the examiner notes above, or you may choose to practice speaking in Practice Mode.`;
+      this.dom.gatekeeperSubtext.textContent = `Your draft scored below C1 requirements (${evalResult.percentage}%). We recommend revising your text using the examiner notes above, or you may choose to practice speaking in Practice Mode.`;
       this.dom.gatekeeperActionBtn.className = "btn btn-secondary";
       this.dom.gatekeeperActionBtn.textContent = "Practice Speaking Anyway (Override)";
     }
@@ -560,7 +560,7 @@ class CambridgeApp {
     this.dom.speakingReportPanel.style.display = 'block';
     this.dom.speakingReportPanel.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h3>Official Cambridge Speaking Assessment</h3>
+        <h3>Official C1–C2 Speaking Assessment</h3>
         <span class="cefr-pill ${report.meetsC1Speaking ? 'badge-c1' : 'badge-b2'}">${report.speakingBand}</span>
       </div>
 
@@ -649,9 +649,9 @@ class CambridgeApp {
 
   saveSessionToHistory(entry) {
     try {
-      const history = JSON.parse(localStorage.getItem('cambridge_history') || '[]');
+      const history = JSON.parse(localStorage.getItem('fluentedge_history') || '[]');
       history.unshift(entry);
-      localStorage.setItem('cambridge_history', JSON.stringify(history.slice(0, 30)));
+      localStorage.setItem('fluentedge_history', JSON.stringify(history.slice(0, 30)));
       this.renderHistory();
     } catch (e) {
       console.warn("Could not save to localStorage:", e);
@@ -660,7 +660,7 @@ class CambridgeApp {
 
   renderHistory() {
     try {
-      const history = JSON.parse(localStorage.getItem('cambridge_history') || '[]');
+      const history = JSON.parse(localStorage.getItem('fluentedge_history') || '[]');
       if (history.length === 0) {
         this.dom.historyList.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 24px; font-size: 13px;">No past sessions yet. Complete an essay or speaking test to track your C1 progression.</div>`;
         return;
@@ -695,8 +695,8 @@ class CambridgeApp {
   }
 
   clearHistory() {
-    if (confirm("Clear your Cambridge training logs?")) {
-      localStorage.removeItem('cambridge_history');
+    if (confirm("Clear your FluentEdge training logs?")) {
+      localStorage.removeItem('fluentedge_history');
       this.renderHistory();
       this.showToast("History cleared.", "info");
     }
@@ -723,5 +723,5 @@ class CambridgeApp {
 
 // Bootstrap Application on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
-  window.app = new CambridgeApp();
+  window.app = new FluentEdgeApp();
 });

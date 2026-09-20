@@ -1,6 +1,6 @@
 /* ==========================================================================
-   CAMBRIDGE C1+ WRITING & SPEAKING ACADEMY - DESIGN SYSTEM
-   Theme: Oxford Prestige Dark Glassmorphism & Royal Gold
+   FLUENTEDGE C1–C2 ENGLISH TRAINING - DESIGN SYSTEM
+   Theme: Prestige Dark Glassmorphism & Royal Gold
    ========================================================================== */
 
 :root {
@@ -903,7 +903,7 @@ body {
   line-height: 1.5;
 }
 
-/* Cambridge 4 Scales breakdown */
+/* CEFR 4 Scales breakdown */
 .scales-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

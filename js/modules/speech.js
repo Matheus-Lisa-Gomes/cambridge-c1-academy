@@ -1,11 +1,11 @@
 /**
- * Cambridge Speaking & Pronunciation Evaluation Engine
+ * FluentEdge Speaking & Pronunciation Evaluation Engine
  * Uses Web Speech Recognition for live spoken analysis,
  * Web Speech Synthesis for native British English model pronunciation,
  * and Web Audio API for real-time waveform visualization.
  */
 
-export class CambridgeSpeechEngine {
+export class SpeechEngine {
   constructor() {
     this.recognition = null;
     this.synth = window.speechSynthesis || null;
@@ -47,7 +47,7 @@ export class CambridgeSpeechEngine {
     this.recognition = new SpeechRecognition();
     this.recognition.continuous = true;
     this.recognition.interimResults = true;
-    this.recognition.lang = 'en-GB'; // British English for Cambridge standard
+    this.recognition.lang = 'en-GB'; // British English standard
 
     this.recognition.onstart = () => {
       this.isListening = true;
@@ -230,7 +230,7 @@ export class CambridgeSpeechEngine {
   }
 
   /**
-   * Final Cambridge Speaking Assessment based on recorded performance
+   * Final C1/C2 Speaking Assessment based on recorded performance
    */
   getFinalSpeakingAssessment() {
     const totalWords = this.targetTokens.length;
@@ -247,7 +247,7 @@ export class CambridgeSpeechEngine {
       ? Math.min(100, Math.round(((matchedCount + (deviationCount * 0.65)) / totalWords) * 100))
       : 0;
 
-    // Cambridge Speaking Scales (0-5)
+    // CEFR Speaking Scales (0-5)
     // 1. Pronunciation (Individual sounds, stress, intelligibility)
     let pronunciationScore = 5.0;
     const pronunciationFeedback = [];
@@ -265,12 +265,12 @@ export class CambridgeSpeechEngine {
       pronunciationFeedback.push("Frequent mispronunciations or omitted clauses requiring deliberate articulation practice.");
     }
 
-    // 2. Fluency & Discourse Speed (Cambridge C1 Target: 130 - 160 WPM)
+    // 2. Fluency & Discourse Speed (C1/C2 Target: 130 - 160 WPM)
     let fluencyScore = 5.0;
     const fluencyFeedback = [];
     if (wpm >= 130 && wpm <= 165) {
       fluencyScore = 5.0;
-      fluencyFeedback.push(`Optimal Cambridge native-speed pacing at ${wpm} WPM with confident, uninterrupted delivery.`);
+      fluencyFeedback.push(`Optimal native-speed pacing at ${wpm} WPM with confident, uninterrupted delivery.`);
     } else if ((wpm >= 110 && wpm < 130) || (wpm > 165 && wpm <= 185)) {
       fluencyScore = 4.0;
       fluencyFeedback.push(`Acceptable speaking rate (${wpm} WPM). Aim for consistent 135-150 WPM cadence with natural thought-group pauses.`);
@@ -306,7 +306,7 @@ export class CambridgeSpeechEngine {
       speakingBand = "Band 5 (C2 - Exceptional Fluency & Native Cadence)";
       meetsC1Speaking = true;
     } else if (overallPercentage >= 70 && pronunciationAccuracy >= 75) {
-      speakingBand = "Band 4 (C1 - Passed / Cambridge Advanced Level)";
+      speakingBand = "Band 4 (C1 - Passed / Advanced Level)";
       meetsC1Speaking = true;
     } else if (overallPercentage >= 50) {
       speakingBand = "Band 2-3 (B2 - Competent but Needs Fluidity Practice)";
@@ -348,7 +348,7 @@ export class CambridgeSpeechEngine {
     this.stopSpeakingModel();
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = rate; // Cambridge standard pacing
+    utterance.rate = rate; // Fluent standard pacing
     utterance.pitch = 1.0;
 
     // Search for high quality British English voices
@@ -423,7 +423,7 @@ export class CambridgeSpeechEngine {
         for (let i = 0; i < bufferLength; i++) {
           barHeight = (dataArray[i] / 255) * (canvas.height * 0.85);
 
-          // Elegant Cambridge Gold-to-Cyan gradient
+          // Elegant Gold-to-Cyan gradient
           const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
           gradient.addColorStop(0, 'rgba(223, 177, 91, 0.2)');
           gradient.addColorStop(0.6, 'rgba(223, 177, 91, 0.8)');

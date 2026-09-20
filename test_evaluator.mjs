@@ -1,8 +1,8 @@
-// Automated verification for Cambridge Assessment Evaluator
-import { CAMBRIDGE_TOPICS } from './data/topics.js';
-import { evaluateEssay, analyzeQuickMetrics } from './modules/evaluator.js';
+// Automated verification for FluentEdge Assessment Evaluator
+import { TOPICS } from './js/data/topics.js';
+import { evaluateEssay, analyzeQuickMetrics } from './js/modules/evaluator.js';
 
-const topic = CAMBRIDGE_TOPICS[0]; // AI topic
+const topic = TOPICS[0]; // AI topic
 
 console.log("=== TEST 1: Authentic C1/C2 Model Essay ===");
 const c1ModelEssay = topic.sampleExcerpt + " Furthermore, robust regulatory frameworks are imperative to mitigate systemic risks and clearly delineate boundaries between algorithmic assistance and unmitigated autonomy. Without such safeguards, the ubiquitous integration of smart tools will serve as a catalyst for disconcerting socio-economic upheaval, accelerating an inexorable transformation of human labor.";
@@ -25,7 +25,7 @@ console.log("Meets C1:", evalFail.meetsC1);
 console.log("Informalities flagged:", evalFail.metrics.informalMatches);
 
 if (evalPass.meetsC1 && !evalFail.meetsC1) {
-  console.log("\n>>> ALL TESTS PASSED: Cambridge Assessment Evaluator accurately distinguishes C1/C2 from B1/B2! <<<");
+  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator accurately distinguishes C1/C2 from B1/B2! <<<");
 } else {
   console.error("\n>>> TEST FAILED! <<<");
 }

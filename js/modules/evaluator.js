@@ -1,14 +1,14 @@
 /**
- * Cambridge C1/C2 Text Assessment Engine
- * Evaluates written submissions according to official Cambridge English C1 Advanced (CAE)
- * and C2 Proficiency (CPE) assessment scales:
+ * FluentEdge C1/C2 Text Assessment Engine
+ * Evaluates written submissions according to CEFR C1 Advanced
+ * and C2 Proficiency assessment scales:
  * 1. Content (0-5)
  * 2. Communicative Achievement (0-5)
  * 3. Organisation (0-5)
  * 4. Language (0-5)
  */
 
-import { CAMBRIDGE_CEFR_DESCRIPTORS } from '../data/topics.js';
+import { CEFR_DESCRIPTORS } from '../data/topics.js';
 
 // Advanced CEFR C1/C2 Academic Markers & Collocations
 const ACADEMIC_C1_MARKERS = [
@@ -20,12 +20,12 @@ const ACADEMIC_C1_MARKERS = [
   "unprecedented", "inexorable", "disconcerting", "ameliorate", "tenable"
 ];
 
-// Informal expressions penalized in Cambridge C1/C2 formal essays
+// Informal expressions penalized in formal C1/C2 essays
 const INFORMAL_PATTERNS = [
   /\b(gonna|wanna|kinda|sorta|dunno)\b/i,
   /\b(a lot of|lots of|tons of|heaps of)\b/i,
   /\b(kids|guys|cops|stuff|things)\b/i,
-  /\b(can't|don't|won't|isn't|aren't|didn't|doesn't|haven't|hasn't|hadn't)\b/i // Contractions discouraged in formal Cambridge essays
+  /\b(can't|don't|won't|isn't|aren't|didn't|doesn't|haven't|hasn't|hadn't)\b/i // Contractions discouraged in formal essays
 ];
 
 // Complex C1/C2 Syntactic Patterns
@@ -155,7 +155,7 @@ export function analyzeQuickMetrics(text, targetVocabulary = []) {
 }
 
 /**
- * Full Cambridge C1/C2 Assessment Algorithm
+ * Full FluentEdge C1/C2 Assessment Algorithm
  */
 export function evaluateEssay(text, currentTopic) {
   const words = text.trim() ? text.trim().split(/\s+/) : [];
@@ -226,7 +226,7 @@ export function evaluateEssay(text, currentTopic) {
   });
 
   // ==========================================
-  // SCORING ACCORDING TO CAMBRIDGE SCALES (0-5)
+  // SCORING ACCORDING TO CEFR SCALES (0-5)
   // ==========================================
 
   // Scale 1: CONTENT (Target: 220-260 words, covers prompt points)
@@ -234,15 +234,15 @@ export function evaluateEssay(text, currentTopic) {
   const feedbackContent = [];
   if (wordCount < 180) {
     contentScore -= 2.0;
-    feedbackContent.push(`Essay length (${wordCount} words) is critically below Cambridge C1 recommendation (220-260 words). Insufficient development of arguments.`);
+    feedbackContent.push(`Essay length (${wordCount} words) is critically below C1 recommendation (220-260 words). Insufficient development of arguments.`);
   } else if (wordCount < 220) {
     contentScore -= 0.8;
     feedbackContent.push(`Slightly under the 220-word threshold (${wordCount} words). Expand on your analytical justifications.`);
   } else if (wordCount > 340) {
     contentScore -= 0.5;
-    feedbackContent.push(`Essay is verbose (${wordCount} words). Cambridge examiners penalize lack of conciseness and redundancy.`);
+    feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic examiners penalize lack of conciseness and redundancy.`);
   } else {
-    feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to Cambridge C1 Part 1 guidelines.`);
+    feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C1 guidelines.`);
   }
 
   if (paragraphs.length < 3) {
@@ -259,7 +259,7 @@ export function evaluateEssay(text, currentTopic) {
   if (informalMatches.length > 0) {
     const penalty = Math.min(2.0, informalMatches.length * 0.5);
     commScore -= penalty;
-    feedbackComm.push(`Detected informal colloquialisms or contractions: "${informalMatches.slice(0, 4).join(', ')}". In Cambridge C1/C2, avoid contractions ("don't", "can't") and maintain an objective scholarly register.`);
+    feedbackComm.push(`Detected informal colloquialisms or contractions: "${informalMatches.slice(0, 4).join(', ')}". In formal C1/C2 essays, avoid contractions ("don't", "can't") and maintain an objective scholarly register.`);
   } else {
     commScore += 0.5;
     feedbackComm.push("Flawless formal academic register maintained with no informal contractions or conversational vernacular.");
@@ -267,7 +267,7 @@ export function evaluateEssay(text, currentTopic) {
 
   if (identifiedStructures.some(s => s.id === 'passiveReporting' || s.id === 'cleftSentence')) {
     commScore += 0.5;
-    feedbackComm.push("Masterful use of objective hedging and cleft framing typical of Cambridge band 5 essays.");
+    feedbackComm.push("Masterful use of objective hedging and cleft framing typical of Band 5 essays.");
   }
   commScore = Math.max(1, Math.min(5, commScore));
 
@@ -283,7 +283,7 @@ export function evaluateEssay(text, currentTopic) {
     feedbackOrg.push("Adequate transitional markers, but could incorporate more nuanced logical connectors (e.g., 'notwithstanding', 'inasmuch as').");
   } else {
     orgScore -= 0.8;
-    feedbackOrg.push("Discourse cohesion is underdeveloped. Integrate formal Cambridge cohesive markers to link paragraphs smoothly.");
+    feedbackOrg.push("Discourse cohesion is underdeveloped. Integrate formal academic cohesive markers to link paragraphs smoothly.");
   }
   orgScore = Math.max(1, Math.min(5, orgScore));
 
@@ -295,12 +295,12 @@ export function evaluateEssay(text, currentTopic) {
   const vocabRatio = usedTargetCount / Math.max(1, targetVocabulary.length);
   if (vocabRatio >= 0.75) {
     langScore += 1.5;
-    feedbackLang.push(`Outstanding command of required Cambridge C1/C2 topic vocabulary (${usedTargetCount}/${targetVocabulary.length} words seamlessly integrated).`);
+    feedbackLang.push(`Outstanding command of required C1/C2 topic vocabulary (${usedTargetCount}/${targetVocabulary.length} words seamlessly integrated).`);
   } else if (vocabRatio >= 0.5) {
     langScore += 0.8;
     feedbackLang.push(`Good integration of target vocabulary (${usedTargetCount}/${targetVocabulary.length} words used), but aim for at least 6 to secure higher band.`);
   } else {
-    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. University examiners look for advanced lexical precision.`);
+    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. Academic examiners look for advanced lexical precision.`);
   }
 
   // Syntactic complexity
@@ -312,7 +312,7 @@ export function evaluateEssay(text, currentTopic) {
     feedbackLang.push(`Used advanced syntax (${identifiedStructures[0].name}). Incorporating an inverted conditional or negative inversion would propel this to C2.`);
   } else {
     langScore -= 0.5;
-    feedbackLang.push("Syntax relies predominantly on simple/compound sentences. Cambridge C1 requires varied complex structures such as inversions, clefts, or participle clauses.");
+    feedbackLang.push("Syntax relies predominantly on simple/compound sentences. C1/C2 requires varied complex structures such as inversions, clefts, or participle clauses.");
   }
 
   // Lexical diversity
@@ -321,7 +321,7 @@ export function evaluateEssay(text, currentTopic) {
   }
   langScore = Math.max(1, Math.min(5, langScore));
 
-  // Total Cambridge Score out of 20 (standard Cambridge 4 scales * 5)
+  // Total CEFR Score out of 20 (standard 4 scales * 5)
   const rawTotal = contentScore + commScore + orgScore + langScore; // max 20
   const normalizedPercentage = Math.round((rawTotal / 20) * 100);
 
@@ -329,17 +329,17 @@ export function evaluateEssay(text, currentTopic) {
   let cefrResult;
   let meetsC1 = false;
 
-  if (normalizedPercentage >= CAMBRIDGE_CEFR_DESCRIPTORS.C2.minScore && usedTargetCount >= 5 && identifiedStructures.length >= 2) {
-    cefrResult = CAMBRIDGE_CEFR_DESCRIPTORS.C2;
+  if (normalizedPercentage >= CEFR_DESCRIPTORS.C2.minScore && usedTargetCount >= 5 && identifiedStructures.length >= 2) {
+    cefrResult = CEFR_DESCRIPTORS.C2;
     meetsC1 = true;
-  } else if (normalizedPercentage >= CAMBRIDGE_CEFR_DESCRIPTORS.C1.minScore && usedTargetCount >= 4) {
-    cefrResult = CAMBRIDGE_CEFR_DESCRIPTORS.C1;
+  } else if (normalizedPercentage >= CEFR_DESCRIPTORS.C1.minScore && usedTargetCount >= 4) {
+    cefrResult = CEFR_DESCRIPTORS.C1;
     meetsC1 = true;
-  } else if (normalizedPercentage >= CAMBRIDGE_CEFR_DESCRIPTORS.B2.minScore) {
-    cefrResult = CAMBRIDGE_CEFR_DESCRIPTORS.B2;
+  } else if (normalizedPercentage >= CEFR_DESCRIPTORS.B2.minScore) {
+    cefrResult = CEFR_DESCRIPTORS.B2;
     meetsC1 = false;
   } else {
-    cefrResult = CAMBRIDGE_CEFR_DESCRIPTORS.B1;
+    cefrResult = CEFR_DESCRIPTORS.B1;
     meetsC1 = false;
   }
 

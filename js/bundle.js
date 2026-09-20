@@ -1,5 +1,5 @@
 ﻿/**
- * Cambridge C1+ Academy - Standalone Unified Bundle
+ * FluentEdge: C1â€“C2 English Training - Standalone Unified Bundle
  * Works directly on file:// as well as localhost http://
  */
 
@@ -10,15 +10,15 @@
   // 1. TOPICS & CEFR DATA
   // ==========================================
 /**
- * Cambridge C1 (Advanced) & C2 (Proficiency) Topics and Target Vocabulary
- * Structured according to official Cambridge English assessment specifications.
+ * FluentEdge C1 (Advanced) & C2 (Proficiency) Topics and Target Vocabulary
+ * Structured for advanced academic English evaluation and CEFR assessment.
  */
-const CAMBRIDGE_TOPICS = [
+const TOPICS = [
   {
     id: "ai-ethics-autonomy",
     title: "Artificial Intelligence, Moral Agency & Societal Autonomy",
     category: "Technology & Ethics",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -140,7 +140,7 @@ const CAMBRIDGE_TOPICS = [
     id: "sustainable-urbanism",
     title: "Sustainable Megacities & High-Density Urban Architecture",
     category: "Environment & Architecture",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -262,7 +262,7 @@ const CAMBRIDGE_TOPICS = [
     id: "language-cultural-heritage",
     title: "Global Lingua Franca vs The Preservation of Indigenous Languages",
     category: "Culture, Linguistics & Society",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -384,7 +384,7 @@ const CAMBRIDGE_TOPICS = [
     id: "higher-education-commodification",
     title: "The Commodification of Academia & The Future of Tertiary Education",
     category: "Education & Sociology",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -506,7 +506,7 @@ const CAMBRIDGE_TOPICS = [
     id: "media-literacy-echo-chambers",
     title: "Algorithmic Echo Chambers, Disinformation & Modern Democracy",
     category: "Media, Politics & Psychology",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -628,7 +628,7 @@ const CAMBRIDGE_TOPICS = [
     id: "circular-economy-consumerism",
     title: "The Circular Economy vs Planned Obsolescence & Consumer Culture",
     category: "Economics & Sustainability",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -750,7 +750,7 @@ const CAMBRIDGE_TOPICS = [
     id: "genetic-enhancement-human-future",
     title: "Genetic Enhancement, Human Evolution & Social Equality",
     category: "Science, Ethics & Society",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -872,7 +872,7 @@ const CAMBRIDGE_TOPICS = [
     id: "four-day-workweek-productivity",
     title: "The Four-Day Workweek, Productivity & the Future of Employment",
     category: "Work & Society",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -994,7 +994,7 @@ const CAMBRIDGE_TOPICS = [
     id: "digital-privacy-surveillance",
     title: "Digital Privacy, Mass Surveillance & Personal Autonomy",
     category: "Technology & Society",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -1116,7 +1116,7 @@ const CAMBRIDGE_TOPICS = [
     id: "failure-resilience-success",
     title: "Failure, Resilience & the Pursuit of Success",
     category: "Society & Personal Development",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -1235,17 +1235,17 @@ const CAMBRIDGE_TOPICS = [
     sampleExcerpt: "The more heavily society equates achievement with personal worth, the more intimidating the prospect of failure becomes. Yet it is often through confronting adversity that individuals acquire the resilience required to navigate future challenges. While repeated setbacks may initially undermine confidence, they can also expose weaknesses that would otherwise remain unnoticed. Had failure invariably been regarded as evidence of inadequacy, many individuals might never have developed the perseverance necessary to overcome formidable obstacles."
   },
 ];
-const CAMBRIDGE_CEFR_DESCRIPTORS = {
+const CEFR_DESCRIPTORS = {
   C2: {
-    band: "Band 5 (C2 - Mastery / CPE)",
+    band: "Band 5 (C2 - Mastery)",
     minScore: 85,
     summary: "Exceeds C1 requirements. Demonstrates effortless command of complex syntax, nuanced academic register, sophisticated idiomatic collocations, and masterful cohesion.",
     badgeClass: "badge-c2"
   },
   C1: {
-    band: "Band 4 (C1 - Certified / CAE)",
+    band: "Band 4 (C1 - Certified)",
     minScore: 70,
-    summary: "Meets full Cambridge C1 standard. Sustained formal academic register, flexible use of complex structures (inversions, clefts), precise lexical choice, clear paragraph architecture.",
+    summary: "Meets full C1 standard. Sustained formal academic register, flexible use of complex structures (inversions, clefts), precise lexical choice, clear paragraph architecture.",
     badgeClass: "badge-c1"
   },
   B2: {
@@ -1257,19 +1257,20 @@ const CAMBRIDGE_CEFR_DESCRIPTORS = {
   B1: {
     band: "Band 1 (B1 - Threshold)",
     minScore: 0,
-    summary: "Significantly below Cambridge C1. Repetitive vocabulary, basic sentence structures, and lack of advanced cohesive linkers. Comprehensive rewrite required.",
+    summary: "Significantly below C1 standard. Repetitive vocabulary, basic sentence structures, and lack of advanced cohesive linkers. Comprehensive rewrite required.",
     badgeClass: "badge-b1"
   }
 };
+
 
 
   // ==========================================
   // 2. C1/C2 EVALUATOR ENGINE
   // ==========================================
 /**
- * Cambridge C1/C2 Text Assessment Engine
- * Evaluates written submissions according to official Cambridge English C1 Advanced (CAE)
- * and C2 Proficiency (CPE) assessment scales:
+ * FluentEdge C1/C2 Text Assessment Engine
+ * Evaluates written submissions according to CEFR C1 Advanced
+ * and C2 Proficiency assessment scales:
  * 1. Content (0-5)
  * 2. Communicative Achievement (0-5)
  * 3. Organisation (0-5)
@@ -1285,12 +1286,12 @@ const ACADEMIC_C1_MARKERS = [
   "unprecedented", "inexorable", "disconcerting", "ameliorate", "tenable"
 ];
 
-// Informal expressions penalized in Cambridge C1/C2 formal essays
+// Informal expressions penalized in formal C1/C2 essays
 const INFORMAL_PATTERNS = [
   /\b(gonna|wanna|kinda|sorta|dunno)\b/i,
   /\b(a lot of|lots of|tons of|heaps of)\b/i,
   /\b(kids|guys|cops|stuff|things)\b/i,
-  /\b(can't|don't|won't|isn't|aren't|didn't|doesn't|haven't|hasn't|hadn't)\b/i // Contractions discouraged in formal Cambridge essays
+  /\b(can't|don't|won't|isn't|aren't|didn't|doesn't|haven't|hasn't|hadn't)\b/i // Contractions discouraged in formal essays
 ];
 
 // Complex C1/C2 Syntactic Patterns
@@ -1420,7 +1421,7 @@ function analyzeQuickMetrics(text, targetVocabulary = []) {
 }
 
 /**
- * Full Cambridge C1/C2 Assessment Algorithm
+ * Full FluentEdge C1/C2 Assessment Algorithm
  */
 function evaluateEssay(text, currentTopic) {
   const words = text.trim() ? text.trim().split(/\s+/) : [];
@@ -1491,7 +1492,7 @@ function evaluateEssay(text, currentTopic) {
   });
 
   // ==========================================
-  // SCORING ACCORDING TO CAMBRIDGE SCALES (0-5)
+  // SCORING ACCORDING TO CEFR SCALES (0-5)
   // ==========================================
 
   // Scale 1: CONTENT (Target: 220-260 words, covers prompt points)
@@ -1499,15 +1500,15 @@ function evaluateEssay(text, currentTopic) {
   const feedbackContent = [];
   if (wordCount < 180) {
     contentScore -= 2.0;
-    feedbackContent.push(`Essay length (${wordCount} words) is critically below Cambridge C1 recommendation (220-260 words). Insufficient development of arguments.`);
+    feedbackContent.push(`Essay length (${wordCount} words) is critically below C1 recommendation (220-260 words). Insufficient development of arguments.`);
   } else if (wordCount < 220) {
     contentScore -= 0.8;
     feedbackContent.push(`Slightly under the 220-word threshold (${wordCount} words). Expand on your analytical justifications.`);
   } else if (wordCount > 340) {
     contentScore -= 0.5;
-    feedbackContent.push(`Essay is verbose (${wordCount} words). Cambridge examiners penalize lack of conciseness and redundancy.`);
+    feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic examiners penalize lack of conciseness and redundancy.`);
   } else {
-    feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to Cambridge C1 Part 1 guidelines.`);
+    feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C1 guidelines.`);
   }
 
   if (paragraphs.length < 3) {
@@ -1524,7 +1525,7 @@ function evaluateEssay(text, currentTopic) {
   if (informalMatches.length > 0) {
     const penalty = Math.min(2.0, informalMatches.length * 0.5);
     commScore -= penalty;
-    feedbackComm.push(`Detected informal colloquialisms or contractions: "${informalMatches.slice(0, 4).join(', ')}". In Cambridge C1/C2, avoid contractions ("don't", "can't") and maintain an objective scholarly register.`);
+    feedbackComm.push(`Detected informal colloquialisms or contractions: "${informalMatches.slice(0, 4).join(', ')}". In formal C1/C2 essays, avoid contractions ("don't", "can't") and maintain an objective scholarly register.`);
   } else {
     commScore += 0.5;
     feedbackComm.push("Flawless formal academic register maintained with no informal contractions or conversational vernacular.");
@@ -1532,7 +1533,7 @@ function evaluateEssay(text, currentTopic) {
 
   if (identifiedStructures.some(s => s.id === 'passiveReporting' || s.id === 'cleftSentence')) {
     commScore += 0.5;
-    feedbackComm.push("Masterful use of objective hedging and cleft framing typical of Cambridge band 5 essays.");
+    feedbackComm.push("Masterful use of objective hedging and cleft framing typical of Band 5 essays.");
   }
   commScore = Math.max(1, Math.min(5, commScore));
 
@@ -1548,7 +1549,7 @@ function evaluateEssay(text, currentTopic) {
     feedbackOrg.push("Adequate transitional markers, but could incorporate more nuanced logical connectors (e.g., 'notwithstanding', 'inasmuch as').");
   } else {
     orgScore -= 0.8;
-    feedbackOrg.push("Discourse cohesion is underdeveloped. Integrate formal Cambridge cohesive markers to link paragraphs smoothly.");
+    feedbackOrg.push("Discourse cohesion is underdeveloped. Integrate formal academic cohesive markers to link paragraphs smoothly.");
   }
   orgScore = Math.max(1, Math.min(5, orgScore));
 
@@ -1560,12 +1561,12 @@ function evaluateEssay(text, currentTopic) {
   const vocabRatio = usedTargetCount / Math.max(1, targetVocabulary.length);
   if (vocabRatio >= 0.75) {
     langScore += 1.5;
-    feedbackLang.push(`Outstanding command of required Cambridge C1/C2 topic vocabulary (${usedTargetCount}/${targetVocabulary.length} words seamlessly integrated).`);
+    feedbackLang.push(`Outstanding command of required C1/C2 topic vocabulary (${usedTargetCount}/${targetVocabulary.length} words seamlessly integrated).`);
   } else if (vocabRatio >= 0.5) {
     langScore += 0.8;
     feedbackLang.push(`Good integration of target vocabulary (${usedTargetCount}/${targetVocabulary.length} words used), but aim for at least 6 to secure higher band.`);
   } else {
-    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. University examiners look for advanced lexical precision.`);
+    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. Academic examiners look for advanced lexical precision.`);
   }
 
   // Syntactic complexity
@@ -1577,7 +1578,7 @@ function evaluateEssay(text, currentTopic) {
     feedbackLang.push(`Used advanced syntax (${identifiedStructures[0].name}). Incorporating an inverted conditional or negative inversion would propel this to C2.`);
   } else {
     langScore -= 0.5;
-    feedbackLang.push("Syntax relies predominantly on simple/compound sentences. Cambridge C1 requires varied complex structures such as inversions, clefts, or participle clauses.");
+    feedbackLang.push("Syntax relies predominantly on simple/compound sentences. C1/C2 requires varied complex structures such as inversions, clefts, or participle clauses.");
   }
 
   // Lexical diversity
@@ -1586,7 +1587,7 @@ function evaluateEssay(text, currentTopic) {
   }
   langScore = Math.max(1, Math.min(5, langScore));
 
-  // Total Cambridge Score out of 20 (standard Cambridge 4 scales * 5)
+  // Total CEFR Score out of 20 (standard 4 scales * 5)
   const rawTotal = contentScore + commScore + orgScore + langScore; // max 20
   const normalizedPercentage = Math.round((rawTotal / 20) * 100);
 
@@ -1594,17 +1595,17 @@ function evaluateEssay(text, currentTopic) {
   let cefrResult;
   let meetsC1 = false;
 
-  if (normalizedPercentage >= CAMBRIDGE_CEFR_DESCRIPTORS.C2.minScore && usedTargetCount >= 5 && identifiedStructures.length >= 2) {
-    cefrResult = CAMBRIDGE_CEFR_DESCRIPTORS.C2;
+  if (normalizedPercentage >= CEFR_DESCRIPTORS.C2.minScore && usedTargetCount >= 5 && identifiedStructures.length >= 2) {
+    cefrResult = CEFR_DESCRIPTORS.C2;
     meetsC1 = true;
-  } else if (normalizedPercentage >= CAMBRIDGE_CEFR_DESCRIPTORS.C1.minScore && usedTargetCount >= 4) {
-    cefrResult = CAMBRIDGE_CEFR_DESCRIPTORS.C1;
+  } else if (normalizedPercentage >= CEFR_DESCRIPTORS.C1.minScore && usedTargetCount >= 4) {
+    cefrResult = CEFR_DESCRIPTORS.C1;
     meetsC1 = true;
-  } else if (normalizedPercentage >= CAMBRIDGE_CEFR_DESCRIPTORS.B2.minScore) {
-    cefrResult = CAMBRIDGE_CEFR_DESCRIPTORS.B2;
+  } else if (normalizedPercentage >= CEFR_DESCRIPTORS.B2.minScore) {
+    cefrResult = CEFR_DESCRIPTORS.B2;
     meetsC1 = false;
   } else {
-    cefrResult = CAMBRIDGE_CEFR_DESCRIPTORS.B1;
+    cefrResult = CEFR_DESCRIPTORS.B1;
     meetsC1 = false;
   }
 
@@ -1639,12 +1640,12 @@ function evaluateEssay(text, currentTopic) {
   // 3. SPEECH & PRONUNCIATION ENGINE
   // ==========================================
 /**
- * Cambridge Speaking & Pronunciation Evaluation Engine
+ * FluentEdge Speaking & Pronunciation Evaluation Engine
  * Uses Web Speech Recognition for live spoken analysis,
  * Web Speech Synthesis for native British English model pronunciation,
  * and Web Audio API for real-time waveform visualization.
  */
-class CambridgeSpeechEngine {
+class SpeechEngine {
   constructor() {
     this.recognition = null;
     this.synth = window.speechSynthesis || null;
@@ -1686,7 +1687,7 @@ class CambridgeSpeechEngine {
     this.recognition = new SpeechRecognition();
     this.recognition.continuous = true;
     this.recognition.interimResults = true;
-    this.recognition.lang = 'en-GB'; // British English for Cambridge standard
+    this.recognition.lang = 'en-GB'; // British English standard
 
     this.recognition.onstart = () => {
       this.isListening = true;
@@ -1869,7 +1870,7 @@ class CambridgeSpeechEngine {
   }
 
   /**
-   * Final Cambridge Speaking Assessment based on recorded performance
+   * Final C1/C2 Speaking Assessment based on recorded performance
    */
   getFinalSpeakingAssessment() {
     const totalWords = this.targetTokens.length;
@@ -1886,7 +1887,7 @@ class CambridgeSpeechEngine {
       ? Math.min(100, Math.round(((matchedCount + (deviationCount * 0.65)) / totalWords) * 100))
       : 0;
 
-    // Cambridge Speaking Scales (0-5)
+    // CEFR Speaking Scales (0-5)
     // 1. Pronunciation (Individual sounds, stress, intelligibility)
     let pronunciationScore = 5.0;
     const pronunciationFeedback = [];
@@ -1904,12 +1905,12 @@ class CambridgeSpeechEngine {
       pronunciationFeedback.push("Frequent mispronunciations or omitted clauses requiring deliberate articulation practice.");
     }
 
-    // 2. Fluency & Discourse Speed (Cambridge C1 Target: 130 - 160 WPM)
+    // 2. Fluency & Discourse Speed (C1/C2 Target: 130 - 160 WPM)
     let fluencyScore = 5.0;
     const fluencyFeedback = [];
     if (wpm >= 130 && wpm <= 165) {
       fluencyScore = 5.0;
-      fluencyFeedback.push(`Optimal Cambridge native-speed pacing at ${wpm} WPM with confident, uninterrupted delivery.`);
+      fluencyFeedback.push(`Optimal native-speed pacing at ${wpm} WPM with confident, uninterrupted delivery.`);
     } else if ((wpm >= 110 && wpm < 130) || (wpm > 165 && wpm <= 185)) {
       fluencyScore = 4.0;
       fluencyFeedback.push(`Acceptable speaking rate (${wpm} WPM). Aim for consistent 135-150 WPM cadence with natural thought-group pauses.`);
@@ -1945,7 +1946,7 @@ class CambridgeSpeechEngine {
       speakingBand = "Band 5 (C2 - Exceptional Fluency & Native Cadence)";
       meetsC1Speaking = true;
     } else if (overallPercentage >= 70 && pronunciationAccuracy >= 75) {
-      speakingBand = "Band 4 (C1 - Passed / Cambridge Advanced Level)";
+      speakingBand = "Band 4 (C1 - Passed / Advanced Level)";
       meetsC1Speaking = true;
     } else if (overallPercentage >= 50) {
       speakingBand = "Band 2-3 (B2 - Competent but Needs Fluidity Practice)";
@@ -1987,7 +1988,7 @@ class CambridgeSpeechEngine {
     this.stopSpeakingModel();
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = rate; // Cambridge standard pacing
+    utterance.rate = rate; // Fluent standard pacing
     utterance.pitch = 1.0;
 
     // Search for high quality British English voices
@@ -2062,7 +2063,7 @@ class CambridgeSpeechEngine {
         for (let i = 0; i < bufferLength; i++) {
           barHeight = (dataArray[i] / 255) * (canvas.height * 0.85);
 
-          // Elegant Cambridge Gold-to-Cyan gradient
+          // Elegant Gold-to-Cyan gradient
           const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
           gradient.addColorStop(0, 'rgba(223, 177, 91, 0.2)');
           gradient.addColorStop(0.6, 'rgba(223, 177, 91, 0.8)');
@@ -2150,15 +2151,15 @@ function levenshteinDistance(a, b) {
   // 4. MAIN APP LOGIC
   // ==========================================
 /**
- * Cambridge C1+ Academy - Main Application Controller
+ * FluentEdge: C1–C2 English Training - Main Application Controller
  */
-class CambridgeApp {
+class FluentEdgeApp {
   constructor() {
-    this.topics = CAMBRIDGE_TOPICS;
+    this.topics = TOPICS;
     this.currentTopicIndex = 0;
     this.currentTopic = this.topics[0];
 
-    this.speechEngine = new CambridgeSpeechEngine();
+    this.speechEngine = new SpeechEngine();
     this.lastEvaluationResult = null;
     this.meetsC1Threshold = false;
 
@@ -2472,7 +2473,7 @@ class CambridgeApp {
     this.dom.liveWordCount.textContent = metrics.wordCount;
     this.dom.liveParaCount.textContent = metrics.paragraphCount;
 
-    // Word count color indicator (Cambridge CAE Part 1 target is 220-260 words)
+    // Word count color indicator (C1 target is 220-260 words)
     this.dom.liveWordCount.className = "metric-live-val";
     if (metrics.wordCount >= 220 && metrics.wordCount <= 280) {
       this.dom.liveWordCount.classList.add("optimal");
@@ -2523,7 +2524,7 @@ class CambridgeApp {
   loadSampleDraft() {
     this.dom.essayInput.value = this.currentTopic.sampleExcerpt;
     this.handleEditorInput();
-    this.showToast("Loaded sample Cambridge draft for evaluation.", "info");
+    this.showToast("Loaded sample C1/C2 draft for evaluation.", "info");
   }
 
   clearEssay() {
@@ -2534,7 +2535,7 @@ class CambridgeApp {
   }
 
   // ==========================================
-  // CAMBRIDGE C1 WRITING ASSESSMENT & GATEKEEPER
+  // FLUENTEDGE C1/C2 WRITING ASSESSMENT & GATEKEEPER
   // ==========================================
 
   triggerEvaluation() {
@@ -2545,7 +2546,7 @@ class CambridgeApp {
     }
 
     if (text.split(/\s+/).length < 50) {
-      this.showToast("Essay is too short for a full Cambridge C1 evaluation. Write at least 150 words.", "error");
+      this.showToast("Essay is too short for a full C1/C2 evaluation. Write at least 150 words.", "error");
       return;
     }
 
@@ -2574,8 +2575,8 @@ class CambridgeApp {
     // Gatekeeper Banner
     if (evalResult.meetsC1) {
       this.dom.gatekeeperBanner.className = "gatekeeper-banner unlocked";
-      this.dom.gatekeeperHeading.textContent = "✓ Cambridge C1 Standard Confirmed";
-      this.dom.gatekeeperSubtext.textContent = "Your text demonstrates the syntactic complexity and vocabulary breadth required by Cambridge University. Proceed to read your text aloud for pronunciation evaluation.";
+      this.dom.gatekeeperHeading.textContent = "✓ C1 Standard Confirmed";
+      this.dom.gatekeeperSubtext.textContent = "Your text demonstrates the syntactic complexity and vocabulary breadth required for C1–C2 mastery. Proceed to read your text aloud for pronunciation evaluation.";
       this.dom.gatekeeperActionBtn.className = "btn btn-emerald";
       this.dom.gatekeeperActionBtn.textContent = "Proceed to Phase 3: Speaking →";
       
@@ -2586,7 +2587,7 @@ class CambridgeApp {
     } else {
       this.dom.gatekeeperBanner.className = "gatekeeper-banner locked";
       this.dom.gatekeeperHeading.textContent = "Threshold Not Reached (Revision Recommended)";
-      this.dom.gatekeeperSubtext.textContent = `Your draft scored below Cambridge C1 requirements (${evalResult.percentage}%). We recommend revising your text using the examiner notes above, or you may choose to practice speaking in Practice Mode.`;
+      this.dom.gatekeeperSubtext.textContent = `Your draft scored below C1 requirements (${evalResult.percentage}%). We recommend revising your text using the examiner notes above, or you may choose to practice speaking in Practice Mode.`;
       this.dom.gatekeeperActionBtn.className = "btn btn-secondary";
       this.dom.gatekeeperActionBtn.textContent = "Practice Speaking Anyway (Override)";
     }
@@ -2706,7 +2707,7 @@ class CambridgeApp {
     this.dom.speakingReportPanel.style.display = 'block';
     this.dom.speakingReportPanel.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h3>Official Cambridge Speaking Assessment</h3>
+        <h3>Official C1–C2 Speaking Assessment</h3>
         <span class="cefr-pill ${report.meetsC1Speaking ? 'badge-c1' : 'badge-b2'}">${report.speakingBand}</span>
       </div>
 
@@ -2795,9 +2796,9 @@ class CambridgeApp {
 
   saveSessionToHistory(entry) {
     try {
-      const history = JSON.parse(localStorage.getItem('cambridge_history') || '[]');
+      const history = JSON.parse(localStorage.getItem('fluentedge_history') || '[]');
       history.unshift(entry);
-      localStorage.setItem('cambridge_history', JSON.stringify(history.slice(0, 30)));
+      localStorage.setItem('fluentedge_history', JSON.stringify(history.slice(0, 30)));
       this.renderHistory();
     } catch (e) {
       console.warn("Could not save to localStorage:", e);
@@ -2806,7 +2807,7 @@ class CambridgeApp {
 
   renderHistory() {
     try {
-      const history = JSON.parse(localStorage.getItem('cambridge_history') || '[]');
+      const history = JSON.parse(localStorage.getItem('fluentedge_history') || '[]');
       if (history.length === 0) {
         this.dom.historyList.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 24px; font-size: 13px;">No past sessions yet. Complete an essay or speaking test to track your C1 progression.</div>`;
         return;
@@ -2841,8 +2842,8 @@ class CambridgeApp {
   }
 
   clearHistory() {
-    if (confirm("Clear your Cambridge training logs?")) {
-      localStorage.removeItem('cambridge_history');
+    if (confirm("Clear your FluentEdge training logs?")) {
+      localStorage.removeItem('fluentedge_history');
       this.renderHistory();
       this.showToast("History cleared.", "info");
     }
@@ -2871,6 +2872,6 @@ class CambridgeApp {
 
   // Bootstrap Application on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
-    window.app = new CambridgeApp();
+    window.app = new FluentEdgeApp();
   });
 })();

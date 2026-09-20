@@ -1,7 +1,7 @@
 @echo off
-title Cambridge C1+ Academy Launcher
+title FluentEdge: C1–C2 English Training Launcher
 echo =======================================================
-echo    Starting Cambridge C1+ Writing & Speaking Academy
+echo    Starting FluentEdge: C1–C2 English Training
 echo =======================================================
 echo.
 start http://localhost:8080

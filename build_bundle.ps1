@@ -21,7 +21,7 @@ $appClean = $appClean -replace '(?s)// Bootstrap Application on DOM ready.*$', '
 
 $bundle = @"
 /**
- * Cambridge C1+ Academy - Standalone Unified Bundle
+ * FluentEdge: C1–C2 English Training - Standalone Unified Bundle
  * Works directly on file:// as well as localhost http://
  */
 
@@ -50,7 +50,7 @@ $appClean
 
   // Bootstrap Application on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
-    window.app = new CambridgeApp();
+    window.app = new FluentEdgeApp();
   });
 })();
 "@

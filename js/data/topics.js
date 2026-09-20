@@ -1,14 +1,14 @@
 /**
- * Cambridge C1 (Advanced) & C2 (Proficiency) Topics and Target Vocabulary
- * Structured according to official Cambridge English assessment specifications.
+ * FluentEdge C1 (Advanced) & C2 (Proficiency) Topics and Target Vocabulary
+ * Structured for advanced academic English evaluation and CEFR assessment.
  */
 
-export const CAMBRIDGE_TOPICS = [
+export const TOPICS = [
   {
     id: "ai-ethics-autonomy",
     title: "Artificial Intelligence, Moral Agency & Societal Autonomy",
     category: "Technology & Ethics",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -130,7 +130,7 @@ export const CAMBRIDGE_TOPICS = [
     id: "sustainable-urbanism",
     title: "Sustainable Megacities & High-Density Urban Architecture",
     category: "Environment & Architecture",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -252,7 +252,7 @@ export const CAMBRIDGE_TOPICS = [
     id: "language-cultural-heritage",
     title: "Global Lingua Franca vs The Preservation of Indigenous Languages",
     category: "Culture, Linguistics & Society",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -374,7 +374,7 @@ export const CAMBRIDGE_TOPICS = [
     id: "higher-education-commodification",
     title: "The Commodification of Academia & The Future of Tertiary Education",
     category: "Education & Sociology",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -496,7 +496,7 @@ export const CAMBRIDGE_TOPICS = [
     id: "media-literacy-echo-chambers",
     title: "Algorithmic Echo Chambers, Disinformation & Modern Democracy",
     category: "Media, Politics & Psychology",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -618,7 +618,7 @@ export const CAMBRIDGE_TOPICS = [
     id: "circular-economy-consumerism",
     title: "The Circular Economy vs Planned Obsolescence & Consumer Culture",
     category: "Economics & Sustainability",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -740,7 +740,7 @@ export const CAMBRIDGE_TOPICS = [
     id: "genetic-enhancement-human-future",
     title: "Genetic Enhancement, Human Evolution & Social Equality",
     category: "Science, Ethics & Society",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -862,7 +862,7 @@ export const CAMBRIDGE_TOPICS = [
     id: "four-day-workweek-productivity",
     title: "The Four-Day Workweek, Productivity & the Future of Employment",
     category: "Work & Society",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -984,7 +984,7 @@ export const CAMBRIDGE_TOPICS = [
     id: "digital-privacy-surveillance",
     title: "Digital Privacy, Mass Surveillance & Personal Autonomy",
     category: "Technology & Society",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -1106,7 +1106,7 @@ export const CAMBRIDGE_TOPICS = [
     id: "failure-resilience-success",
     title: "Failure, Resilience & the Pursuit of Success",
     category: "Society & Personal Development",
-    type: "Cambridge Part 1 Essay",
+    type: "C1/C2 Academic Essay",
     cefrTarget: "C1 / C2",
     recommendedTime: "45 minutes",
     prompt: {
@@ -1226,17 +1226,17 @@ export const CAMBRIDGE_TOPICS = [
   },
 ];
 
-export const CAMBRIDGE_CEFR_DESCRIPTORS = {
+export const CEFR_DESCRIPTORS = {
   C2: {
-    band: "Band 5 (C2 - Mastery / CPE)",
+    band: "Band 5 (C2 - Mastery)",
     minScore: 85,
     summary: "Exceeds C1 requirements. Demonstrates effortless command of complex syntax, nuanced academic register, sophisticated idiomatic collocations, and masterful cohesion.",
     badgeClass: "badge-c2"
   },
   C1: {
-    band: "Band 4 (C1 - Certified / CAE)",
+    band: "Band 4 (C1 - Certified)",
     minScore: 70,
-    summary: "Meets full Cambridge C1 standard. Sustained formal academic register, flexible use of complex structures (inversions, clefts), precise lexical choice, clear paragraph architecture.",
+    summary: "Meets full C1 standard. Sustained formal academic register, flexible use of complex structures (inversions, clefts), precise lexical choice, clear paragraph architecture.",
     badgeClass: "badge-c1"
   },
   B2: {
@@ -1248,7 +1248,8 @@ export const CAMBRIDGE_CEFR_DESCRIPTORS = {
   B1: {
     band: "Band 1 (B1 - Threshold)",
     minScore: 0,
-    summary: "Significantly below Cambridge C1. Repetitive vocabulary, basic sentence structures, and lack of advanced cohesive linkers. Comprehensive rewrite required.",
+    summary: "Significantly below C1 standard. Repetitive vocabulary, basic sentence structures, and lack of advanced cohesive linkers. Comprehensive rewrite required.",
     badgeClass: "badge-b1"
   }
 };
+

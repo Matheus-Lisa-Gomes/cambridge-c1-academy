@@ -1,4 +1,4 @@
-# Cambridge C1+ Academy - Lightweight Local Server
+# FluentEdge: C1–C2 English Training - Lightweight Local Server
 $port = 8080
 $url = "http://localhost:$port/"
 $listener = New-Object System.Net.HttpListener
@@ -6,7 +6,7 @@ $listener.Prefixes.Add($url)
 
 try {
     $listener.Start()
-    Write-Host "Cambridge C1+ Academy running at $url" -ForegroundColor Cyan
+    Write-Host "FluentEdge: C1–C2 English Training running at $url" -ForegroundColor Cyan
     Write-Host "Press Ctrl+C to stop the server." -ForegroundColor Gray
 
     while ($listener.IsListening) {

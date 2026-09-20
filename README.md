@@ -92,7 +92,7 @@ The Common European Framework of Reference for Languages (CEFR) proficiency leve
 
 Launch the platform directly in any web browser without installation:
 
-👉 **[FluentEdge Web App](https://matheus-lisa.github.io/fluentedge-c1-c2-english-training/)**
+👉 **[FluentEdge Web App](https://matheus-lisa-gomes.github.io/fluentedge-c1-c2-english-training/)**
 
 ### Option 2: Double-Click Launcher (Windows Local)
 

@@ -433,7 +433,7 @@ body {
 
 /* Topic Card Details */
 .topic-meta-row {
-  display: flex;
+  display: none;
   gap: 12px;
   margin-bottom: 12px;
   flex-wrap: wrap;
@@ -454,6 +454,7 @@ body {
   color: var(--text-primary);
   margin-bottom: 12px;
   line-height: 1.4;
+  text-align: center;
 }
 
 .topic-context-box {

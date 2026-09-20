@@ -43,5 +43,3 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
 - [ ] **Keyboard Shortcuts**: Add some future hotkeys when the toggle change between c1 and c2 is implemented. 
 - [ ] **Improve UI/UX testing new Color Combinations, Themes, and Layouts**: After implementation of the C1/C2 toggle switch, try some new UI/UX testing new Color Combinations, Themes, and Layouts for both C1 and C2 and compare them.
 ---
-
-

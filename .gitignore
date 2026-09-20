@@ -12,3 +12,7 @@ Thumbs.db
 
 # Local cache & scratch
 scratch/
+
+# Private strategy & monetization documents
+[Mm]oneta[rz]ation.*
+[Mm]onetization.*

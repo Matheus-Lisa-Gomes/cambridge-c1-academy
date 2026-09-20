@@ -2,9 +2,9 @@
 
 > A browser-based English training application designed to help learners develop advanced C1–C2 English writing, reading, listening, and speaking skills.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Web%20App-2ea44f?style=for-the-badge\&logo=github)](https://matheus-lisa.github.io/fluentedge-c1-c2-english-training/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Web%20App-2ea44f?style=for-the-badge\&logo=github)](https://matheus-lisa-gomes.github.io/fluentedge-c1-c2-english-training/)
 
-🌐 **Live Web Application:** https://matheus-lisa.github.io/fluentedge-c1-c2-english-training/
+🌐 **Live Web Application:** https://matheus-lisa-gomes.github.io/fluentedge-c1-c2-english-training/
 
 ---
 

@@ -240,7 +240,7 @@ export function evaluateEssay(text, currentTopic) {
     feedbackContent.push(`Slightly under the 220-word threshold (${wordCount} words). Expand on your analytical justifications.`);
   } else if (wordCount > 340) {
     contentScore -= 0.5;
-    feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic examiners penalize lack of conciseness and redundancy.`);
+    feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic writing standards penalize lack of conciseness and redundancy.`);
   } else {
     feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C1 guidelines.`);
   }
@@ -300,7 +300,7 @@ export function evaluateEssay(text, currentTopic) {
     langScore += 0.8;
     feedbackLang.push(`Good integration of target vocabulary (${usedTargetCount}/${targetVocabulary.length} words used), but aim for at least 6 to secure higher band.`);
   } else {
-    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. Academic examiners look for advanced lexical precision.`);
+    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. Advanced academic writing requires high lexical precision.`);
   }
 
   // Syntactic complexity

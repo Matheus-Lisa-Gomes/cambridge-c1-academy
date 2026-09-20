@@ -1243,7 +1243,7 @@ const CEFR_DESCRIPTORS = {
     badgeClass: "badge-c2"
   },
   C1: {
-    band: "Band 4 (C1 - Certified)",
+    band: "Band 4 (Estimated C1 Level)",
     minScore: 70,
     summary: "Meets full C1 standard. Sustained formal academic register, flexible use of complex structures (inversions, clefts), precise lexical choice, clear paragraph architecture.",
     badgeClass: "badge-c1"
@@ -1251,7 +1251,7 @@ const CEFR_DESCRIPTORS = {
   B2: {
     band: "Band 2-3 (B2 - Vantage / Upper-Intermediate)",
     minScore: 50,
-    summary: "Competent communication, but lacks sufficient C1 syntactic complexity, range of academic collocations, or sustained formal register. Needs revision before speaking certification.",
+    summary: "Competent communication, but lacks sufficient C1 syntactic complexity, range of academic collocations, or sustained formal register. Needs revision before progressing to speaking practice.",
     badgeClass: "badge-b2"
   },
   B1: {
@@ -1506,7 +1506,7 @@ function evaluateEssay(text, currentTopic) {
     feedbackContent.push(`Slightly under the 220-word threshold (${wordCount} words). Expand on your analytical justifications.`);
   } else if (wordCount > 340) {
     contentScore -= 0.5;
-    feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic examiners penalize lack of conciseness and redundancy.`);
+    feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic writing standards penalize lack of conciseness and redundancy.`);
   } else {
     feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C1 guidelines.`);
   }
@@ -1566,7 +1566,7 @@ function evaluateEssay(text, currentTopic) {
     langScore += 0.8;
     feedbackLang.push(`Good integration of target vocabulary (${usedTargetCount}/${targetVocabulary.length} words used), but aim for at least 6 to secure higher band.`);
   } else {
-    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. Academic examiners look for advanced lexical precision.`);
+    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. Advanced academic writing requires high lexical precision.`);
   }
 
   // Syntactic complexity
@@ -1946,7 +1946,7 @@ class SpeechEngine {
       speakingBand = "Band 5 (C2 - Exceptional Fluency & Native Cadence)";
       meetsC1Speaking = true;
     } else if (overallPercentage >= 70 && pronunciationAccuracy >= 75) {
-      speakingBand = "Band 4 (C1 - Passed / Advanced Level)";
+      speakingBand = "Band 4 (Estimated C1 - Advanced Level)";
       meetsC1Speaking = true;
     } else if (overallPercentage >= 50) {
       speakingBand = "Band 2-3 (B2 - Competent but Needs Fluidity Practice)";
@@ -2587,7 +2587,7 @@ class FluentEdgeApp {
     } else {
       this.dom.gatekeeperBanner.className = "gatekeeper-banner locked";
       this.dom.gatekeeperHeading.textContent = "Threshold Not Reached (Revision Recommended)";
-      this.dom.gatekeeperSubtext.textContent = `Your draft scored below C1 requirements (${evalResult.percentage}%). We recommend revising your text using the examiner notes above, or you may choose to practice speaking in Practice Mode.`;
+      this.dom.gatekeeperSubtext.textContent = `Your draft scored below C1 requirements (${evalResult.percentage}%). We recommend revising your text using the feedback notes above, or you may choose to practice speaking in Practice Mode.`;
       this.dom.gatekeeperActionBtn.className = "btn btn-secondary";
       this.dom.gatekeeperActionBtn.textContent = "Practice Speaking Anyway (Override)";
     }
@@ -2707,7 +2707,7 @@ class FluentEdgeApp {
     this.dom.speakingReportPanel.style.display = 'block';
     this.dom.speakingReportPanel.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h3>Official C1–C2 Speaking Assessment</h3>
+        <h3>C1–C2 Speaking Practice Assessment</h3>
         <span class="cefr-pill ${report.meetsC1Speaking ? 'badge-c1' : 'badge-b2'}">${report.speakingBand}</span>
       </div>
 

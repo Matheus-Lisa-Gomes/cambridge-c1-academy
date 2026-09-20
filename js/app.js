@@ -440,7 +440,7 @@ class FluentEdgeApp {
     } else {
       this.dom.gatekeeperBanner.className = "gatekeeper-banner locked";
       this.dom.gatekeeperHeading.textContent = "Threshold Not Reached (Revision Recommended)";
-      this.dom.gatekeeperSubtext.textContent = `Your draft scored below C1 requirements (${evalResult.percentage}%). We recommend revising your text using the examiner notes above, or you may choose to practice speaking in Practice Mode.`;
+      this.dom.gatekeeperSubtext.textContent = `Your draft scored below C1 requirements (${evalResult.percentage}%). We recommend revising your text using the feedback notes above, or you may choose to practice speaking in Practice Mode.`;
       this.dom.gatekeeperActionBtn.className = "btn btn-secondary";
       this.dom.gatekeeperActionBtn.textContent = "Practice Speaking Anyway (Override)";
     }
@@ -560,7 +560,7 @@ class FluentEdgeApp {
     this.dom.speakingReportPanel.style.display = 'block';
     this.dom.speakingReportPanel.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h3>Official C1–C2 Speaking Assessment</h3>
+        <h3>C1–C2 Speaking Practice Assessment</h3>
         <span class="cefr-pill ${report.meetsC1Speaking ? 'badge-c1' : 'badge-b2'}">${report.speakingBand}</span>
       </div>
 

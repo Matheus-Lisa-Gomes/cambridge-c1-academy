@@ -306,7 +306,7 @@ export class SpeechEngine {
       speakingBand = "Band 5 (C2 - Exceptional Fluency & Native Cadence)";
       meetsC1Speaking = true;
     } else if (overallPercentage >= 70 && pronunciationAccuracy >= 75) {
-      speakingBand = "Band 4 (C1 - Passed / Advanced Level)";
+      speakingBand = "Band 4 (Estimated C1 - Advanced Level)";
       meetsC1Speaking = true;
     } else if (overallPercentage >= 50) {
       speakingBand = "Band 2-3 (B2 - Competent but Needs Fluidity Practice)";

@@ -1234,7 +1234,7 @@ export const CEFR_DESCRIPTORS = {
     badgeClass: "badge-c2"
   },
   C1: {
-    band: "Band 4 (C1 - Certified)",
+    band: "Band 4 (Estimated C1 Level)",
     minScore: 70,
     summary: "Meets full C1 standard. Sustained formal academic register, flexible use of complex structures (inversions, clefts), precise lexical choice, clear paragraph architecture.",
     badgeClass: "badge-c1"
@@ -1242,7 +1242,7 @@ export const CEFR_DESCRIPTORS = {
   B2: {
     band: "Band 2-3 (B2 - Vantage / Upper-Intermediate)",
     minScore: 50,
-    summary: "Competent communication, but lacks sufficient C1 syntactic complexity, range of academic collocations, or sustained formal register. Needs revision before speaking certification.",
+    summary: "Competent communication, but lacks sufficient C1 syntactic complexity, range of academic collocations, or sustained formal register. Needs revision before progressing to speaking practice.",
     badgeClass: "badge-b2"
   },
   B1: {

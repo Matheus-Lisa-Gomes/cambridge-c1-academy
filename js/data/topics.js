@@ -91,6 +91,15 @@ export const CAMBRIDGE_TOPICS = [
         collocation: "inexorable march of progress",
         example: "Society must adapt to the inexorable proliferation of smart automation.",
         stems: ["inexorable", "inexorably"]
+      },
+      {
+        word: "tenable",
+        ipa: "/ˈten.ə.bəl/",
+        pos: "adjective",
+        definition: "Able to be maintained or defended against attack or objection.",
+        collocation: "tenable ethical position",
+        example: "Without transparent regulatory oversight, no tenable ethical framework for autonomous systems can be sustained.",
+        stems: ["tenable", "untenable", "tenably"]
       }
     ],
     recommendedStructures: [
@@ -204,6 +213,15 @@ export const CAMBRIDGE_TOPICS = [
         collocation: "judicious resource allocation",
         example: "A judicious blend of retrofitting older structures and green building yields optimal results.",
         stems: ["judicious", "judiciously"]
+      },
+      {
+        word: "proliferate",
+        ipa: "/prəˈlɪf.ər.eɪt/",
+        pos: "verb",
+        definition: "Increase rapidly in number; spread widely.",
+        collocation: "proliferate across urban centres",
+        example: "Sustainable building practices must proliferate across urban centres to yield a measurable environmental impact.",
+        stems: ["proliferate", "proliferated", "proliferating", "proliferation"]
       }
     ],
     recommendedStructures: [
@@ -317,6 +335,15 @@ export const CAMBRIDGE_TOPICS = [
         collocation: "symbiotic relationship",
         example: "Global literacy and regional dialect conservation can establish a symbiotic equilibrium.",
         stems: ["symbiotic", "symbiotically", "symbiosis"]
+      },
+      {
+        word: "vernacular",
+        ipa: "/vəˈnæk.jʊ.lər/",
+        pos: "noun/adjective",
+        definition: "The language or dialect spoken by the ordinary people of a particular region or country.",
+        collocation: "preserve the vernacular",
+        example: "Preserving the vernacular of marginalised communities safeguards irreplaceable cultural memory and epistemological heritage.",
+        stems: ["vernacular", "vernaculars"]
       }
     ],
     recommendedStructures: [
@@ -430,6 +457,15 @@ export const CAMBRIDGE_TOPICS = [
         collocation: "strike a delicate equilibrium",
         example: "Institutions must strike an equilibrium between corporate sponsorship and academic autonomy.",
         stems: ["equilibrium", "equilibria"]
+      },
+      {
+        word: "meritocratic",
+        ipa: "/ˌmer.ɪ.təˈkræt.ɪk/",
+        pos: "adjective",
+        definition: "Relating to a system in which advancement depends on individual ability and talent rather than privilege.",
+        collocation: "meritocratic ideal",
+        example: "The meritocratic ideal of higher education is fundamentally undermined when access hinges solely on financial privilege.",
+        stems: ["meritocratic", "meritocracy", "meritocracies"]
       }
     ],
     recommendedStructures: [
@@ -543,6 +579,15 @@ export const CAMBRIDGE_TOPICS = [
         collocation: "fortify democratic institutions",
         example: "Empowering citizens with analytical skills helps fortify democratic structures.",
         stems: ["fortify", "fortified", "fortifying", "fortification"]
+      },
+      {
+        word: "corroborate",
+        ipa: "/kəˈrɒb.ər.eɪt/",
+        pos: "verb",
+        definition: "Confirm or give support to a statement, theory, or finding.",
+        collocation: "corroborate findings",
+        example: "Independent fact-checkers are essential to corroborate claims circulating within digital ecosystems and social media platforms.",
+        stems: ["corroborate", "corroborated", "corroborating", "corroboration", "corroborative"]
       }
     ],
     recommendedStructures: [
@@ -656,6 +701,15 @@ export const CAMBRIDGE_TOPICS = [
         collocation: "fundamental paradigm shift",
         example: "Embracing closed-loop manufacturing necessitates a fundamental paradigm shift.",
         stems: ["paradigm", "paradigms", "paradigmatic"]
+      },
+      {
+        word: "commensurate",
+        ipa: "/kəˈmen.sjʊ.rət/",
+        pos: "adjective",
+        definition: "Corresponding in size or degree; proportionate.",
+        collocation: "commensurate with the scale of damage",
+        example: "Investment in circular infrastructure must be commensurate with the scale of environmental degradation facing modern economies.",
+        stems: ["commensurate", "commensurately", "incommensurate"]
       }
     ],
     recommendedStructures: [
@@ -769,6 +823,15 @@ export const CAMBRIDGE_TOPICS = [
         collocation: "profound implications",
         example: "The ability to modify human traits could have profound implications for future generations.",
         stems: ["profound", "profoundly", "profundity"]
+      },
+      {
+        word: "contentious",
+        ipa: "/kənˈten.ʃəs/",
+        pos: "adjective",
+        definition: "Causing or likely to cause an argument or controversy.",
+        collocation: "contentious bioethical debate",
+        example: "The contentious nature of genetic enhancement demands inclusive, transparent public deliberation before regulatory frameworks are enacted.",
+        stems: ["contentious", "contentiously", "contentiousness"]
       }
     ],
     recommendedStructures: [
@@ -882,6 +945,15 @@ export const CAMBRIDGE_TOPICS = [
         collocation: "far-reaching repercussions",
         example: "A widespread reduction in working hours could have far-reaching repercussions for businesses, households and the wider economy.",
         stems: ["repercussion", "repercussions"]
+      },
+      {
+        word: "autonomy",
+        ipa: "/ɔːˈtɒn.ə.mi/",
+        pos: "noun",
+        definition: "The right or condition of self-government; freedom from external control.",
+        collocation: "professional autonomy",
+        example: "A compressed four-day workweek enhances professional autonomy and individual wellbeing without compromising organisational productivity.",
+        stems: ["autonomy", "autonomous", "autonomously", "autonomies"]
       }
     ],
     recommendedStructures: [
@@ -995,6 +1067,15 @@ export const CAMBRIDGE_TOPICS = [
         collocation: "act with impunity",
         example: "Without meaningful regulatory oversight, organisations may be able to exploit personal data with relative impunity.",
         stems: ["impunity"]
+      },
+      {
+        word: "acquiesce",
+        ipa: "/ˌæk.wiˈes/",
+        pos: "verb",
+        definition: "Accept something reluctantly but without protest.",
+        collocation: "acquiesce to surveillance",
+        example: "Citizens who passively acquiesce to pervasive digital monitoring effectively forfeit their fundamental right to privacy.",
+        stems: ["acquiesce", "acquiesced", "acquiescing", "acquiescence", "acquiescent"]
       }
     ],
     recommendedStructures: [
@@ -1108,6 +1189,15 @@ export const CAMBRIDGE_TOPICS = [
         collocation: "self-perpetuating cycle",
         example: "Fear of failure can create a self-perpetuating cycle in which people avoid challenging situations and consequently lose confidence.",
         stems: ["self-perpetuating", "self-perpetuate", "self-perpetuation"]
+      },
+      {
+        word: "assimilate",
+        ipa: "/əˈsɪm.ɪ.leɪt/",
+        pos: "verb",
+        definition: "Absorb and integrate information, ideas, or experience fully.",
+        collocation: "assimilate lessons from failure",
+        example: "Those who swiftly assimilate lessons from failure cultivate a decisive and enduring competitive advantage.",
+        stems: ["assimilate", "assimilated", "assimilating", "assimilation", "assimilates"]
       }
     ],
     recommendedStructures: [

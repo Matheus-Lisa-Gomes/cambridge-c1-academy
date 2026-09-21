@@ -29,7 +29,7 @@ class FluentEdgeApp {
     this.bindEvents();
     this.bindHotkeys();
     this.setupSpeechEngineCallbacks();
-    this.setTargetLevel(this.targetLevel, false);
+    this.setTargetLevel(this.targetLevel);
     this.loadTopic(0);
     this.renderHistory();
   }
@@ -42,6 +42,7 @@ class FluentEdgeApp {
       closeHistoryBtn: document.getElementById('closeHistoryBtn'),
       clearHistoryBtn: document.getElementById('clearHistoryBtn'),
       historyList: document.getElementById('historyList'),
+      brandCrest: document.getElementById('brandCrest'),
       modeC1Btn: document.getElementById('modeC1Btn'),
       modeC2Btn: document.getElementById('modeC2Btn'),
 
@@ -128,12 +129,16 @@ class FluentEdgeApp {
   }
 
   bindEvents() {
-    // Mode toggle events
+    // Mode toggle events (overlapping card stack toggle)
     if (this.dom.modeC1Btn) {
-      this.dom.modeC1Btn.addEventListener('click', () => this.setTargetLevel('C1'));
+      this.dom.modeC1Btn.addEventListener('click', () => {
+        this.setTargetLevel(this.targetLevel === 'C1' ? 'C2' : 'C1');
+      });
     }
     if (this.dom.modeC2Btn) {
-      this.dom.modeC2Btn.addEventListener('click', () => this.setTargetLevel('C2'));
+      this.dom.modeC2Btn.addEventListener('click', () => {
+        this.setTargetLevel(this.targetLevel === 'C2' ? 'C1' : 'C2');
+      });
     }
 
     // Topic events
@@ -236,7 +241,7 @@ class FluentEdgeApp {
     };
   }
 
-  setTargetLevel(level, showToastMessage = true) {
+  setTargetLevel(level) {
     this.targetLevel = level;
     try {
       localStorage.setItem('fluentedge_target_level', level);
@@ -257,6 +262,13 @@ class FluentEdgeApp {
       document.body.classList.remove('theme-c2');
     }
 
+    if (this.dom.brandCrest) {
+      this.dom.brandCrest.textContent = level;
+      this.dom.brandCrest.title = isC2
+        ? "FluentEdge — Current Standard: C2 Proficiency"
+        : "FluentEdge — Current Standard: C1 Advanced";
+    }
+
     if (this.dom.step1LexisHint) {
       this.dom.step1LexisHint.textContent = isC2
         ? "Prompt & Compulsory C2 Vocabulary"
@@ -271,15 +283,6 @@ class FluentEdgeApp {
       this.dom.targetWordCountHint.textContent = isC2
         ? "(280-320 target)"
         : "(220-260 target)";
-    }
-
-    if (showToastMessage) {
-      this.showToast(
-        isC2
-          ? "Switched to C2 Proficiency Dedicated Mode (280–320 words, higher syntax thresholds)."
-          : "Switched to C1 Advanced Mode (220–260 words standard).",
-        "info"
-      );
     }
 
     if (this.dom.essayInput) {

@@ -133,8 +133,22 @@ body.theme-c2 {
   box-shadow: var(--shadow-gold);
   color: #0d1527;
   font-weight: 800;
-  font-size: 22px;
+  font-size: 21px;
   font-family: var(--font-serif);
+  letter-spacing: 0.5px;
+  user-select: none;
+  transition: background 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.3s ease,
+              transform 0.3s ease;
+}
+
+.brand-crest:hover {
+  transform: scale(1.05);
+}
+
+body.theme-c2 .brand-crest {
+  color: #ffffff;
 }
 
 .brand-titles h1 {
@@ -159,16 +173,21 @@ body.theme-c2 {
   gap: 16px;
 }
 
-/* Target Standard Interactive Toggle (C1 vs C2) */
+/* ==========================================================================
+   TARGET STANDARD 3D CAROUSEL TOGGLE (C1 vs C2)
+   Single overlapping button footprint with true 3D carousel perspective
+   ========================================================================== */
 .cefr-mode-toggle {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 4px 6px 4px 14px;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 6px 8px 6px 14px;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-subtle);
-  transition: var(--transition);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .cefr-mode-toggle:hover {
@@ -185,74 +204,149 @@ body.theme-c2 {
   user-select: none;
 }
 
+/* 3D Perspective Stage */
 .cefr-toggle-switch {
+  position: relative;
+  width: 178px;
+  height: 38px;
+  perspective: 1000px;
+  perspective-origin: 50% 50%;
   display: flex;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: var(--radius-full);
-  padding: 3px;
-  gap: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
 
+/* Overlapping 3D Carousel Cards */
 .cefr-toggle-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 14px;
   border-radius: var(--radius-full);
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   cursor: pointer;
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
-  transition: var(--transition);
   user-select: none;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, box-shadow;
+  transition: transform 0.6s cubic-bezier(0.34, 1.45, 0.64, 1),
+              opacity 0.45s ease,
+              box-shadow 0.45s ease,
+              border-color 0.45s ease,
+              filter 0.45s ease;
 }
 
 .cefr-toggle-btn .mode-tag {
   font-weight: 800;
   font-size: 11px;
-  padding: 1px 6px;
+  padding: 2px 7px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  letter-spacing: 0.5px;
-  transition: var(--transition);
+  letter-spacing: 0.6px;
+  transition: all 0.3s ease;
 }
 
 .cefr-toggle-btn .mode-desc {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
-.cefr-toggle-btn:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
+.cefr-toggle-btn .carousel-icon {
+  font-size: 13px;
+  opacity: 0.55;
+  margin-left: 2px;
+  display: inline-block;
+  transition: transform 0.5s ease, opacity 0.3s ease;
 }
 
+.cefr-toggle-btn:hover .carousel-icon {
+  opacity: 1;
+  transform: rotate(180deg);
+}
+
+/* --- STATE: C1 Active (C1 in Front Foreground, C2 in 3D Carousel Background) --- */
 .cefr-toggle-btn.active#modeC1Btn {
-  background: rgba(223, 177, 91, 0.18);
+  z-index: 3;
+  opacity: 1;
+  pointer-events: auto;
+  filter: brightness(1);
+  transform: translateY(0) translateZ(18px) rotateX(0deg) scale(1);
+  background: linear-gradient(135deg, rgba(247, 215, 142, 0.22) 0%, rgba(223, 177, 91, 0.32) 100%), #0d172a;
   color: var(--gold-light);
-  border-color: rgba(223, 177, 91, 0.5);
-  box-shadow: 0 0 14px rgba(223, 177, 91, 0.25);
+  border-color: rgba(223, 177, 91, 0.75);
+  box-shadow: 0 6px 20px rgba(223, 177, 91, 0.38), 0 0 10px rgba(223, 177, 91, 0.2);
 }
 
 .cefr-toggle-btn.active#modeC1Btn .mode-tag {
   background: linear-gradient(135deg, #f7d78e 0%, #dfb15b 50%, #b88628 100%);
   color: #070c18;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
+/* C2 when in Background (Inactive while C1 is active) */
+#modeC2Btn:not(.active) {
+  z-index: 1;
+  opacity: 0.48;
+  filter: brightness(0.68) blur(0.3px);
+  transform: translateY(-11px) translateZ(-25px) rotateX(-28deg) scale(0.89);
+  background: rgba(168, 85, 247, 0.12);
+  color: #c084fc;
+  border-color: rgba(168, 85, 247, 0.25);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.4);
+}
+
+#modeC2Btn:not(.active):hover {
+  opacity: 0.85;
+  filter: brightness(0.9) blur(0px);
+  transform: translateY(-13px) translateZ(-16px) rotateX(-18deg) scale(0.93);
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+/* --- STATE: C2 Active (C2 in Front Foreground, C1 in 3D Carousel Background) --- */
 .cefr-toggle-btn.active#modeC2Btn {
-  background: rgba(168, 85, 247, 0.22);
-  color: #f3e8ff;
-  border-color: rgba(168, 85, 247, 0.6);
-  box-shadow: 0 0 16px rgba(168, 85, 247, 0.35);
+  z-index: 3;
+  opacity: 1;
+  pointer-events: auto;
+  filter: brightness(1);
+  transform: translateY(0) translateZ(18px) rotateX(0deg) scale(1);
+  background: linear-gradient(135deg, rgba(192, 132, 252, 0.26) 0%, rgba(168, 85, 247, 0.38) 100%), #140d25;
+  color: #f5f3ff;
+  border-color: rgba(192, 132, 252, 0.85);
+  box-shadow: 0 6px 24px rgba(168, 85, 247, 0.48), 0 0 12px rgba(168, 85, 247, 0.3);
 }
 
 .cefr-toggle-btn.active#modeC2Btn .mode-tag {
   background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #7e22ce 100%);
   color: #ffffff;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.45);
+}
+
+/* C1 when in Background (Inactive while C2 is active) */
+#modeC1Btn:not(.active) {
+  z-index: 1;
+  opacity: 0.48;
+  filter: brightness(0.68) blur(0.3px);
+  transform: translateY(-11px) translateZ(-25px) rotateX(-28deg) scale(0.89);
+  background: rgba(223, 177, 91, 0.1);
+  color: var(--gold-light);
+  border-color: rgba(223, 177, 91, 0.25);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.4);
+}
+
+#modeC1Btn:not(.active):hover {
+  opacity: 0.85;
+  filter: brightness(0.9) blur(0px);
+  transform: translateY(-13px) translateZ(-16px) rotateX(-18deg) scale(0.94);
+  border-color: rgba(223, 177, 91, 0.5);
 }
 
 .cefr-badge-group {

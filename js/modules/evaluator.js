@@ -97,7 +97,7 @@ function escapeRegExp(string) {
 /**
  * Real-time quick metrics for the editor
  */
-export function analyzeQuickMetrics(text, targetVocabulary = []) {
+export function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = 'C1') {
   const words = text.trim() ? text.trim().split(/\s+/) : [];
   const wordCount = words.length;
   
@@ -143,6 +143,11 @@ export function analyzeQuickMetrics(text, targetVocabulary = []) {
     }
   });
 
+  const isC2 = targetLevel === 'C2';
+  const targetMin = isC2 ? 280 : 220;
+  const targetMax = isC2 ? 320 : 260;
+  const optimalMax = isC2 ? 340 : 280;
+
   return {
     wordCount,
     paragraphCount: paragraphs.length,
@@ -150,16 +155,21 @@ export function analyzeQuickMetrics(text, targetVocabulary = []) {
     targetWordsTotal,
     vocabStatus,
     detectedGrammar,
-    informalFindings
+    informalFindings,
+    targetLevel,
+    targetMin,
+    targetMax,
+    optimalMax
   };
 }
 
 /**
  * Full FluentEdge C1/C2 Assessment Algorithm
  */
-export function evaluateEssay(text, currentTopic) {
+export function evaluateEssay(text, currentTopic, targetLevel = 'C1') {
   const words = text.trim() ? text.trim().split(/\s+/) : [];
   const wordCount = words.length;
+  const isC2 = targetLevel === 'C2';
 
   const paragraphs = text
     .split(/\n\s*\n/)
@@ -197,7 +207,7 @@ export function evaluateEssay(text, currentTopic) {
   const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-z]/g, ''))).size;
   const typeTokenRatio = wordCount > 0 ? (uniqueWords / wordCount) : 0;
 
-  // Average Sentence Length (C1 target: 18 - 28 words per sentence)
+  // Average Sentence Length (C1/C2 target: 18 - 28 words per sentence)
   const avgSentenceLength = sentences.length > 0 ? (wordCount / sentences.length) : 0;
 
   // 3. Syntactic Structure Detection
@@ -229,27 +239,52 @@ export function evaluateEssay(text, currentTopic) {
   // SCORING ACCORDING TO CEFR SCALES (0-5)
   // ==========================================
 
-  // Scale 1: CONTENT (Target: 220-260 words, covers prompt points)
+  // Scale 1: CONTENT
   let contentScore = 5.0;
   const feedbackContent = [];
-  if (wordCount < 180) {
-    contentScore -= 2.0;
-    feedbackContent.push(`Essay length (${wordCount} words) is critically below C1 recommendation (220-260 words). Insufficient development of arguments.`);
-  } else if (wordCount < 220) {
-    contentScore -= 0.8;
-    feedbackContent.push(`Slightly under the 220-word threshold (${wordCount} words). Expand on your analytical justifications.`);
-  } else if (wordCount > 340) {
-    contentScore -= 0.5;
-    feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic writing standards penalize lack of conciseness and redundancy.`);
-  } else {
-    feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C1 guidelines.`);
-  }
 
-  if (paragraphs.length < 3) {
-    contentScore -= 1.0;
-    feedbackContent.push("Needs clear separation into Introduction, Body Arguments (covering both prompt points), and Conclusion.");
+  if (isC2) {
+    // C2 Target: 280-320 words
+    if (wordCount < 240) {
+      contentScore -= 2.0;
+      feedbackContent.push(`Essay length (${wordCount} words) is critically below C2 Proficiency requirement (280-320 words). Complex discourse demands thorough multi-angle elaboration.`);
+    } else if (wordCount < 280) {
+      contentScore -= 0.8;
+      feedbackContent.push(`Below the 280-word C2 threshold (${wordCount} words). Synthesize both prompt dimensions with deeper analytical nuance.`);
+    } else if (wordCount > 380) {
+      contentScore -= 0.5;
+      feedbackContent.push(`Essay is overly verbose (${wordCount} words). C2 examiners penalize circumlocution and lack of concision.`);
+    } else {
+      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C2 Proficiency standards.`);
+    }
+
+    if (paragraphs.length < 4) {
+      contentScore -= 0.8;
+      feedbackContent.push("C2 discursive essays require a sophisticated 4-stage architecture (Introduction, Opposing Arguments, Synthesis/Evaluation, and Conclusion).");
+    } else {
+      feedbackContent.push(`Flawless essay architecture with ${paragraphs.length} balanced paragraphs.`);
+    }
   } else {
-    feedbackContent.push(`Strong essay architecture with ${paragraphs.length} structured paragraphs.`);
+    // C1 Target: 220-260 words
+    if (wordCount < 180) {
+      contentScore -= 2.0;
+      feedbackContent.push(`Essay length (${wordCount} words) is critically below C1 recommendation (220-260 words). Insufficient development of arguments.`);
+    } else if (wordCount < 220) {
+      contentScore -= 0.8;
+      feedbackContent.push(`Slightly under the 220-word threshold (${wordCount} words). Expand on your analytical justifications.`);
+    } else if (wordCount > 340) {
+      contentScore -= 0.5;
+      feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic writing standards penalize lack of conciseness and redundancy.`);
+    } else {
+      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C1 guidelines.`);
+    }
+
+    if (paragraphs.length < 3) {
+      contentScore -= 1.0;
+      feedbackContent.push("Needs clear separation into Introduction, Body Arguments (covering both prompt points), and Conclusion.");
+    } else {
+      feedbackContent.push(`Strong essay architecture with ${paragraphs.length} structured paragraphs.`);
+    }
   }
   contentScore = Math.max(1, Math.min(5, contentScore));
 
@@ -257,12 +292,12 @@ export function evaluateEssay(text, currentTopic) {
   let commScore = 4.0;
   const feedbackComm = [];
   if (informalMatches.length > 0) {
-    const penalty = Math.min(2.0, informalMatches.length * 0.5);
+    const penalty = Math.min(2.5, informalMatches.length * (isC2 ? 0.7 : 0.5));
     commScore -= penalty;
-    feedbackComm.push(`Detected informal colloquialisms or contractions: "${informalMatches.slice(0, 4).join(', ')}". In formal C1/C2 essays, avoid contractions ("don't", "can't") and maintain an objective scholarly register.`);
+    feedbackComm.push(`Detected informal colloquialisms or contractions: "${informalMatches.slice(0, 4).join(', ')}". In formal ${isC2 ? 'C2 Proficiency' : 'C1 Advanced'} essays, eliminate contractions ("don't", "can't") and sustain an objective scholarly register.`);
   } else {
     commScore += 0.5;
-    feedbackComm.push("Flawless formal academic register maintained with no informal contractions or conversational vernacular.");
+    feedbackComm.push("Flawless formal academic register maintained with no conversational contractions or colloquialisms.");
   }
 
   if (identifiedStructures.some(s => s.id === 'passiveReporting' || s.id === 'cleftSentence')) {
@@ -275,12 +310,14 @@ export function evaluateEssay(text, currentTopic) {
   let orgScore = 3.5;
   const feedbackOrg = [];
   if (paragraphs.length >= 4) orgScore += 0.5;
-  if (academicMarkerCount >= 4) {
+  
+  const minMarkers = isC2 ? 5 : 4;
+  if (academicMarkerCount >= minMarkers) {
     orgScore += 0.8;
     feedbackOrg.push(`Exceptional deployment of cohesive devices (${academicMarkerCount} advanced discourse markers detected).`);
   } else if (academicMarkerCount >= 2) {
     orgScore += 0.3;
-    feedbackOrg.push("Adequate transitional markers, but could incorporate more nuanced logical connectors (e.g., 'notwithstanding', 'inasmuch as').");
+    feedbackOrg.push(`Adequate transitional markers (${academicMarkerCount} detected), but ${isC2 ? 'C2 Proficiency' : 'C1'} requires more nuanced logical connectors (e.g., 'notwithstanding', 'inasmuch as', 'concomitantly').`);
   } else {
     orgScore -= 0.8;
     feedbackOrg.push("Discourse cohesion is underdeveloped. Integrate formal academic cohesive markers to link paragraphs smoothly.");
@@ -293,26 +330,30 @@ export function evaluateEssay(text, currentTopic) {
 
   // Target vocabulary weight
   const vocabRatio = usedTargetCount / Math.max(1, targetVocabulary.length);
-  if (vocabRatio >= 0.75) {
+  const targetRequired = isC2 ? 6 : 4;
+
+  if (usedTargetCount >= targetRequired && vocabRatio >= 0.7) {
     langScore += 1.5;
-    feedbackLang.push(`Outstanding command of required C1/C2 topic vocabulary (${usedTargetCount}/${targetVocabulary.length} words seamlessly integrated).`);
-  } else if (vocabRatio >= 0.5) {
+    feedbackLang.push(`Outstanding command of required ${targetLevel} topic vocabulary (${usedTargetCount}/${targetVocabulary.length} words seamlessly integrated).`);
+  } else if (usedTargetCount >= 4) {
     langScore += 0.8;
-    feedbackLang.push(`Good integration of target vocabulary (${usedTargetCount}/${targetVocabulary.length} words used), but aim for at least 6 to secure higher band.`);
+    feedbackLang.push(`Good integration of target vocabulary (${usedTargetCount}/${targetVocabulary.length} words used), but ${isC2 ? 'C2 mode demands at least 6 items' : 'aim for at least 5 to secure top band'}.`);
   } else {
-    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. Advanced academic writing requires high lexical precision.`);
+    langScore -= 0.5;
+    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. ${targetLevel} demands high lexical precision.`);
   }
 
   // Syntactic complexity
-  if (identifiedStructures.length >= 3) {
+  const requiredStructs = isC2 ? 3 : 2;
+  if (identifiedStructures.length >= requiredStructs) {
     langScore += 1.0;
     feedbackLang.push(`High grammatical ambition demonstrated: successfully incorporated ${identifiedStructures.length} advanced syntactic structures (${identifiedStructures.map(s => s.name).join(', ')}).`);
   } else if (identifiedStructures.length >= 1) {
     langScore += 0.4;
-    feedbackLang.push(`Used advanced syntax (${identifiedStructures[0].name}). Incorporating an inverted conditional or negative inversion would propel this to C2.`);
+    feedbackLang.push(`Used advanced syntax (${identifiedStructures[0].name}). Incorporating ${isC2 ? 'additional inverted conditionals or participle clauses' : 'an inverted conditional or cleft'} is required for C2 mastery.`);
   } else {
-    langScore -= 0.5;
-    feedbackLang.push("Syntax relies predominantly on simple/compound sentences. C1/C2 requires varied complex structures such as inversions, clefts, or participle clauses.");
+    langScore -= 0.6;
+    feedbackLang.push(`Syntax relies on basic structures. ${targetLevel} requires varied complex patterns (inversions, clefts, or participle clauses).`);
   }
 
   // Lexical diversity
@@ -328,26 +369,39 @@ export function evaluateEssay(text, currentTopic) {
   // CEFR Determination
   let cefrResult;
   let meetsC1 = false;
+  let meetsC2 = false;
 
   if (normalizedPercentage >= CEFR_DESCRIPTORS.C2.minScore && usedTargetCount >= 5 && identifiedStructures.length >= 2) {
     cefrResult = CEFR_DESCRIPTORS.C2;
     meetsC1 = true;
+    meetsC2 = true;
   } else if (normalizedPercentage >= CEFR_DESCRIPTORS.C1.minScore && usedTargetCount >= 4) {
     cefrResult = CEFR_DESCRIPTORS.C1;
     meetsC1 = true;
+    meetsC2 = false;
   } else if (normalizedPercentage >= CEFR_DESCRIPTORS.B2.minScore) {
     cefrResult = CEFR_DESCRIPTORS.B2;
     meetsC1 = false;
+    meetsC2 = false;
   } else {
     cefrResult = CEFR_DESCRIPTORS.B1;
     meetsC1 = false;
+    meetsC2 = false;
   }
+
+  // Determine gatekeeper success based on active targetLevel
+  const meetsThreshold = isC2
+    ? (meetsC2 && normalizedPercentage >= 85 && usedTargetCount >= 6 && identifiedStructures.length >= 2 && wordCount >= 260)
+    : meetsC1;
 
   return {
     rawTotal: Number(rawTotal.toFixed(1)),
     percentage: normalizedPercentage,
     cefr: cefrResult,
+    targetLevel,
+    meetsThreshold,
     meetsC1,
+    meetsC2,
     scales: {
       content: { score: Number(contentScore.toFixed(1)), max: 5, feedback: feedbackContent },
       communicative: { score: Number(commScore.toFixed(1)), max: 5, feedback: feedbackComm },

@@ -11,6 +11,10 @@ class FluentEdgeApp {
     this.topics = TOPICS;
     this.currentTopicIndex = 0;
     this.currentTopic = this.topics[0];
+    this.targetLevel = 'C1';
+    try {
+      this.targetLevel = localStorage.getItem('fluentedge_target_level') || 'C1';
+    } catch (e) {}
 
     this.speechEngine = new SpeechEngine();
     this.lastEvaluationResult = null;
@@ -25,6 +29,7 @@ class FluentEdgeApp {
     this.bindEvents();
     this.bindHotkeys();
     this.setupSpeechEngineCallbacks();
+    this.setTargetLevel(this.targetLevel, false);
     this.loadTopic(0);
     this.renderHistory();
   }
@@ -37,12 +42,17 @@ class FluentEdgeApp {
       closeHistoryBtn: document.getElementById('closeHistoryBtn'),
       clearHistoryBtn: document.getElementById('clearHistoryBtn'),
       historyList: document.getElementById('historyList'),
+      modeC1Btn: document.getElementById('modeC1Btn'),
+      modeC2Btn: document.getElementById('modeC2Btn'),
 
       // Stepper
       stepIndicator1: document.getElementById('stepIndicator1'),
       stepIndicator2: document.getElementById('stepIndicator2'),
       stepIndicator3: document.getElementById('stepIndicator3'),
       step3LockIcon: document.getElementById('step3LockIcon'),
+      step1LexisHint: document.getElementById('step1LexisHint'),
+      step2WordCountHint: document.getElementById('step2WordCountHint'),
+      targetWordCountHint: document.getElementById('targetWordCountHint'),
 
       // Workspaces
       mainWritingWorkspace: document.getElementById('mainWritingWorkspace'),
@@ -118,6 +128,14 @@ class FluentEdgeApp {
   }
 
   bindEvents() {
+    // Mode toggle events
+    if (this.dom.modeC1Btn) {
+      this.dom.modeC1Btn.addEventListener('click', () => this.setTargetLevel('C1'));
+    }
+    if (this.dom.modeC2Btn) {
+      this.dom.modeC2Btn.addEventListener('click', () => this.setTargetLevel('C2'));
+    }
+
     // Topic events
     this.dom.prevTopicBtn.addEventListener('click', () => this.cyclePrevTopic());
     this.dom.nextTopicBtn.addEventListener('click', () => this.cycleNextTopic());
@@ -155,6 +173,14 @@ class FluentEdgeApp {
       const modalOpen = this.dom.evalModalBackdrop.classList.contains('visible') ||
                         this.dom.evalModalBackdrop.style.display === 'flex';
       const inTextField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+
+      // Alt+M  →  Toggle C1 / C2 Standard Mode
+      if (e.altKey && (e.key === 'm' || e.key === 'M') && !modalOpen) {
+        e.preventDefault();
+        const nextMode = this.targetLevel === 'C1' ? 'C2' : 'C1';
+        this.setTargetLevel(nextMode);
+        return;
+      }
 
       // Alt+ArrowLeft  →  Previous Topic
       if (e.altKey && e.key === 'ArrowLeft' && !inTextField && !modalOpen) {
@@ -208,6 +234,57 @@ class FluentEdgeApp {
     this.speechEngine.onError = (message) => {
       this.showToast(message, "error");
     };
+  }
+
+  setTargetLevel(level, showToastMessage = true) {
+    this.targetLevel = level;
+    try {
+      localStorage.setItem('fluentedge_target_level', level);
+    } catch (e) {}
+
+    const isC2 = level === 'C2';
+
+    if (this.dom.modeC1Btn && this.dom.modeC2Btn) {
+      this.dom.modeC1Btn.classList.toggle('active', !isC2);
+      this.dom.modeC1Btn.setAttribute('aria-checked', !isC2 ? 'true' : 'false');
+      this.dom.modeC2Btn.classList.toggle('active', isC2);
+      this.dom.modeC2Btn.setAttribute('aria-checked', isC2 ? 'true' : 'false');
+    }
+
+    if (isC2) {
+      document.body.classList.add('theme-c2');
+    } else {
+      document.body.classList.remove('theme-c2');
+    }
+
+    if (this.dom.step1LexisHint) {
+      this.dom.step1LexisHint.textContent = isC2
+        ? "Prompt & Compulsory C2 Vocabulary"
+        : "Prompt & Compulsory C1 Vocabulary";
+    }
+    if (this.dom.step2WordCountHint) {
+      this.dom.step2WordCountHint.textContent = isC2
+        ? "280-320 Words & Syntactic Complexity"
+        : "220-260 Words & Syntactic Complexity";
+    }
+    if (this.dom.targetWordCountHint) {
+      this.dom.targetWordCountHint.textContent = isC2
+        ? "(280-320 target)"
+        : "(220-260 target)";
+    }
+
+    if (showToastMessage) {
+      this.showToast(
+        isC2
+          ? "Switched to C2 Proficiency Dedicated Mode (280–320 words, higher syntax thresholds)."
+          : "Switched to C1 Advanced Mode (220–260 words standard).",
+        "info"
+      );
+    }
+
+    if (this.dom.essayInput) {
+      this.handleEditorInput();
+    }
   }
 
   // ==========================================
@@ -320,25 +397,32 @@ class FluentEdgeApp {
 
   handleEditorInput() {
     const text = this.dom.essayInput.value;
-    const metrics = analyzeQuickMetrics(text, this.currentTopic.targetVocabulary);
+    const metrics = analyzeQuickMetrics(text, this.currentTopic.targetVocabulary, this.targetLevel);
 
     // Live word count
     this.dom.liveWordCount.textContent = metrics.wordCount;
     this.dom.liveParaCount.textContent = metrics.paragraphCount;
 
-    // Word count color indicator (C1 target is 220-260 words)
+    // Word count color indicator
     this.dom.liveWordCount.className = "metric-live-val";
-    if (metrics.wordCount >= 220 && metrics.wordCount <= 280) {
+    const isC2 = this.targetLevel === 'C2';
+    const minTarget = isC2 ? 280 : 220;
+    const maxTarget = isC2 ? 320 : 260;
+    const maxOptimal = isC2 ? 340 : 280;
+
+    if (metrics.wordCount >= minTarget && metrics.wordCount <= maxOptimal) {
       this.dom.liveWordCount.classList.add("optimal");
-      this.dom.lengthGuidanceBadge.textContent = "Optimal C1 Length (220-260)";
+      this.dom.lengthGuidanceBadge.textContent = isC2
+        ? `Optimal C2 Length (${minTarget}-${maxTarget})`
+        : `Optimal C1 Length (${minTarget}-${maxTarget})`;
       this.dom.lengthGuidanceBadge.className = "radar-badge active";
-    } else if (metrics.wordCount > 0 && metrics.wordCount < 220) {
+    } else if (metrics.wordCount > 0 && metrics.wordCount < minTarget) {
       this.dom.liveWordCount.classList.add("warning");
-      this.dom.lengthGuidanceBadge.textContent = `Need ${220 - metrics.wordCount} more words`;
+      this.dom.lengthGuidanceBadge.textContent = `Need ${minTarget - metrics.wordCount} more words (${this.targetLevel} target: ${minTarget}-${maxTarget})`;
       this.dom.lengthGuidanceBadge.className = "radar-badge";
-    } else if (metrics.wordCount > 280) {
+    } else if (metrics.wordCount > maxOptimal) {
       this.dom.liveWordCount.classList.add("warning");
-      this.dom.lengthGuidanceBadge.textContent = "Exceeding target (be concise)";
+      this.dom.lengthGuidanceBadge.textContent = `Exceeding ${this.targetLevel} target (be concise)`;
       this.dom.lengthGuidanceBadge.className = "radar-badge";
     } else {
       this.dom.lengthGuidanceBadge.textContent = "Awaiting input";
@@ -377,7 +461,7 @@ class FluentEdgeApp {
   loadSampleDraft() {
     this.dom.essayInput.value = this.currentTopic.sampleExcerpt;
     this.handleEditorInput();
-    this.showToast("Loaded sample C1/C2 draft for evaluation.", "info");
+    this.showToast(`Loaded sample ${this.currentTopic.cefrTarget || 'C1/C2'} model draft for evaluation.`, "info");
   }
 
   clearEssay() {
@@ -403,15 +487,17 @@ class FluentEdgeApp {
       return;
     }
 
-    const evalResult = evaluateEssay(text, this.currentTopic);
+    const evalResult = evaluateEssay(text, this.currentTopic, this.targetLevel);
     this.lastEvaluationResult = evalResult;
-    this.meetsC1Threshold = evalResult.meetsC1;
+    this.meetsC1Threshold = evalResult.meetsThreshold;
+
+    const isC2 = this.targetLevel === 'C2';
 
     // Render results into modal
     this.dom.evalScoreTotal.textContent = evalResult.rawTotal;
     this.dom.evalPercentage.textContent = `${evalResult.percentage}%`;
     this.dom.evalVerdictTitle.textContent = evalResult.cefr.band;
-    this.dom.evalVerdictTitle.className = `cefr-verdict-title ${evalResult.meetsC1 ? 'pass' : 'revise'}`;
+    this.dom.evalVerdictTitle.className = `cefr-verdict-title ${evalResult.meetsThreshold ? 'pass' : 'revise'}`;
     this.dom.evalVerdictDesc.textContent = evalResult.cefr.summary;
 
     // Scales breakdown
@@ -426,10 +512,14 @@ class FluentEdgeApp {
     renderScale(this.dom.scaleLangScore, this.dom.scaleLangFeedback, evalResult.scales.language);
 
     // Gatekeeper Banner
-    if (evalResult.meetsC1) {
+    if (evalResult.meetsThreshold) {
       this.dom.gatekeeperBanner.className = "gatekeeper-banner unlocked";
-      this.dom.gatekeeperHeading.textContent = "✓ C1 Standard Confirmed";
-      this.dom.gatekeeperSubtext.textContent = "Your text demonstrates the syntactic complexity and vocabulary breadth required for C1–C2 mastery. Proceed to read your text aloud for pronunciation evaluation.";
+      this.dom.gatekeeperHeading.textContent = isC2
+        ? "✓ C2 Proficiency Confirmed (Mastery)"
+        : "✓ C1 Standard Confirmed";
+      this.dom.gatekeeperSubtext.textContent = isC2
+        ? "Your text demonstrates the 280+ word discursive architecture, lexical sophistication, and complex syntax required for C2 Proficiency. Proceed to read your text aloud for pronunciation evaluation."
+        : "Your text demonstrates the syntactic complexity and vocabulary breadth required for C1–C2 mastery. Proceed to read your text aloud for pronunciation evaluation.";
       this.dom.gatekeeperActionBtn.className = "btn btn-emerald";
       this.dom.gatekeeperActionBtn.textContent = "Proceed to Phase 3: Speaking →";
       
@@ -439,8 +529,10 @@ class FluentEdgeApp {
       this.dom.step3LockIcon.innerHTML = "3";
     } else {
       this.dom.gatekeeperBanner.className = "gatekeeper-banner locked";
-      this.dom.gatekeeperHeading.textContent = "Threshold Not Reached (Revision Recommended)";
-      this.dom.gatekeeperSubtext.textContent = `Your draft scored below C1 requirements (${evalResult.percentage}%). We recommend revising your text using the feedback notes above, or you may choose to practice speaking in Practice Mode.`;
+      this.dom.gatekeeperHeading.textContent = `${this.targetLevel} Threshold Not Reached (Revision Recommended)`;
+      this.dom.gatekeeperSubtext.textContent = isC2
+        ? `Your draft scored ${evalResult.percentage}%. C2 Proficiency requires a score ≥ 85%, at least 6 target vocabulary words, and multiple advanced syntactic structures. We recommend revising your text using the feedback notes above, or you may choose to practice speaking in Practice Mode.`
+        : `Your draft scored below C1 requirements (${evalResult.percentage}%). We recommend revising your text using the feedback notes above, or you may choose to practice speaking in Practice Mode.`;
       this.dom.gatekeeperActionBtn.className = "btn btn-secondary";
       this.dom.gatekeeperActionBtn.textContent = "Practice Speaking Anyway (Override)";
     }
@@ -451,12 +543,13 @@ class FluentEdgeApp {
     // Save to history
     this.saveSessionToHistory({
       type: 'writing',
+      targetLevel: this.targetLevel,
       topicTitle: this.currentTopic.title,
       text: text,
       score: evalResult.rawTotal,
       percentage: evalResult.percentage,
       band: evalResult.cefr.band,
-      meetsC1: evalResult.meetsC1,
+      meetsThreshold: evalResult.meetsThreshold,
       date: new Date().toISOString()
     });
   }
@@ -669,7 +762,7 @@ class FluentEdgeApp {
       this.dom.historyList.innerHTML = history.map(item => `
         <div class="history-item">
           <div class="history-item-top">
-            <span>${item.type === 'writing' ? 'Writing Task' : 'Speaking Test'}</span>
+            <span>${item.type === 'writing' ? (item.targetLevel ? `${item.targetLevel} Writing` : 'Writing Task') : 'Speaking Test'}</span>
             <span>${new Date(item.date).toLocaleDateString()}</span>
           </div>
           <div class="history-item-title">${item.topicTitle}</div>

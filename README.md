@@ -34,6 +34,8 @@ The Common European Framework of Reference for Languages (CEFR) proficiency leve
   * *The Four-Day Workweek, Productivity & The Future of Employment*
   * *Digital Privacy, Mass Surveillance & Personal Autonomy*
   * *Failure, Resilience & The Pursuit of Success*
+  * *Epistemic Authority, Algorithmic Truth & Post-Empirical Discourse* (Dedicated C2 Proficiency)
+  * *Biotechnological Enhancement, Transhumanism & Existential Ethics* (Dedicated C2 Proficiency)
 
 * Each topic generates compulsory C1/C2 domain-specific vocabulary items complete with:
 
@@ -43,9 +45,13 @@ The Common European Framework of Reference for Languages (CEFR) proficiency leve
   * Interactive audio button to hear native British English pronunciation (RP)
   * Automatic stem & inflection detection (*mitigate*, *mitigating*, *mitigation*)
 
-### 2. Writing Studio & Real-Time C1/C2 Syntax Radar
+### 2. Writing Studio & Dedicated C1/C2 Target Modes
 
-* **220–260 Word Meter**: Real-time feedback adhering to formal academic essay word counts.
+* **Target Standard Switcher (C1 vs C2)**: Interactive segmented switch in the header (with `Alt+M` hotkey) allowing candidates to alternate between:
+  * **C1 Advanced Standard**: 220–260 word meter with Royal Gold prestige styling.
+  * **C2 Proficiency Dedicated Mode**: 280–320 word meter with Imperial Amethyst & Platinum styling, and heightened syntactic thresholds.
+
+* **Dynamic Word Meter & Live Guidance**: Real-time feedback adapting to the active standard (220–260 target for C1 vs 280–320 target for C2).
 
 * **Dynamic Vocabulary Tracker**: Automatically detects required vocabulary as you write, turning chips into green "✓ USED" badges.
 
@@ -56,17 +62,18 @@ The Common European Framework of Reference for Languages (CEFR) proficiency leve
   * Passive Reporting Clauses (*It is widely contended that...*)
   * Inverted Conditionals (*Were authorities to...*, *Had we recognized...*)
   * Complex Concession Markers (*Notwithstanding*, *Albeit*, *Inasmuch as*)
+  * Fronted Participle Clauses (*Having considered...*, *Confronted with...*)
 
-### 3. Practice Assessment Engine (The C1 Gatekeeper)
+### 3. Practice Assessment Engine (The CEFR Gatekeeper)
 
 * Evaluates submissions across four comprehensive **CEFR-referenced assessment scales** (each scored 0–5, total /20):
 
-  * **Content**: Word count compliance, thorough development of both prompt points.
+  * **Content**: Word count compliance (220–260 for C1, 280–320 for C2), thorough development of prompt points, paragraph structure.
   * **Communicative Achievement**: Academic formal register, objective stance, absence of colloquialisms or contractions.
-  * **Organisation**: Cohesive markers, logical flow, paragraph architecture.
-  * **Language**: Lexical sophistication, coverage of compulsory vocabulary, advanced syntactic complexity.
+  * **Organisation**: Cohesive markers, logical flow, paragraph architecture (stricter 4-stage architecture for C2).
+  * **Language**: Lexical sophistication, coverage of compulsory vocabulary (≥6 items for C2), advanced syntactic complexity.
 
-* **The Gatekeeper**: Achieving **Estimated C1 (Band 4)** or **Estimated C2 (Band 5)** unlocks the Speaking & Pronunciation phase. Below-threshold submissions receive detailed diagnostic recommendations.
+* **The Gatekeeper**: Achieving **Estimated C1 (Band 4)** or **Estimated C2 (Band 5)** unlocks the Speaking & Pronunciation phase according to the selected mode. Below-threshold submissions receive detailed diagnostic recommendations.
 
 ### 4. Speaking & Pronunciation Studio
 
@@ -83,31 +90,6 @@ The Common European Framework of Reference for Languages (CEFR) proficiency leve
 * **Audio Waveform Visualizer**: Live HTML5 Canvas visualizer rendering mic frequency dynamics.
 
 * **Speaking Report**: Detailed metrics for Pronunciation Accuracy (%), Cadence (WPM against 130–160 target), and estimated CEFR Speaking Band.
-
----
-
-## 🌐 Browser Compatibility & Speech Recognition Requirements
-
-The Writing Studio, C1/C2 Syntax Radar, Model Audio Playback, and Gatekeeper Evaluation operate across all modern browsers. However, **live microphone speech recognition** in the Speaking Studio relies on the browser's native Web Speech API implementation:
-
-| Browser | Writing Studio & Syntax Radar | Native Model Audio (RP) | Live Speech Recognition & Evaluation | Notes |
-| :--- | :---: | :---: | :---: | :--- |
-| **Google Chrome** | ✅ | ✅ | ✅ **Full Support** | **Recommended**: Native real-time word tracking and pronunciation evaluation. |
-| **Microsoft Edge** | ✅ | ✅ | ✅ **Full Support** | **Recommended**: Native real-time word tracking via Microsoft Speech services. |
-| **Apple Safari** | ✅ | ✅ | ⚠️ **Partial Support** | Supported on macOS/iOS; requires granting microphone permission per session. |
-| **Brave Browser** | ✅ | ✅ | ❌ **Not Supported** | Brave blocks Google cloud speech endpoints for privacy; recognition fails immediately with a network error. |
-| **Mozilla Firefox** | ✅ | ✅ | ❌ **Not Supported** | The Web Speech Recognition API is not enabled by default in Firefox. |
-
-### Why doesn't Live Speech Recognition work in Brave?
-Brave Browser is built on Chromium, so the `webkitSpeechRecognition` programming interface is present. However, Brave intentionally blocks outbound connections to Google's proprietary Cloud Speech-to-Text servers for privacy reasons. 
-
-When you click **Start Reading Aloud** in Brave:
-1. Brave prompts for microphone duration (*Until I close this site / 24 hours / 1 week / Forever*).
-2. The browser immediately rejects the speech recognition network request.
-3. The microphone disconnects right away and the button resets, causing Brave to re-prompt on the next attempt.
-
-> [!TIP]
-> **For speaking practice with live word-by-word phonemic tracking, open FluentEdge in Google Chrome or Microsoft Edge.**
 
 ---
 

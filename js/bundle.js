@@ -1234,6 +1234,244 @@ const TOPICS = [
     ],
     sampleExcerpt: "The more heavily society equates achievement with personal worth, the more intimidating the prospect of failure becomes. Yet it is often through confronting adversity that individuals acquire the resilience required to navigate future challenges. While repeated setbacks may initially undermine confidence, they can also expose weaknesses that would otherwise remain unnoticed. Had failure invariably been regarded as evidence of inadequacy, many individuals might never have developed the perseverance necessary to overcome formidable obstacles."
   },
+  {
+    id: "epistemic-authority-truth",
+    title: "Epistemic Authority, Algorithmic Truth & Post-Empirical Discourse",
+    category: "Epistemology & Digital Sociology",
+    type: "C2 Proficiency Discursive Essay",
+    cefrTarget: "C2",
+    recommendedTime: "50 minutes",
+    prompt: {
+      context: "Your postgraduate seminar has reviewed two academic papers examining the erosion of consensus reality and the decentralization of epistemic authority in the digital age.",
+      points: [
+        "The delegitimization of institutional expertise and peer-reviewed consensus",
+        "The proliferation of synthetic information and epistemic bubble reinforcement"
+      ],
+      task: "Write an essay evaluating both perspectives. You should critically analyze which development poses a graver threat to democratic deliberative processes, providing cogent justifications and sophisticated reasoning. Target length: 280–320 words."
+    },
+    targetVocabulary: [
+      {
+        word: "epistemic",
+        ipa: "/ˌep.əˈstiː.mɪk/",
+        pos: "adjective",
+        definition: "Relating to knowledge or to the degree of its validation.",
+        collocation: "epistemic vigilance",
+        example: "Fostering epistemic vigilance is indispensable against algorithmic disinformation.",
+        stems: ["epistemic", "epistemological", "epistemology"]
+      },
+      {
+        word: "promulgate",
+        ipa: "/ˈprɒm.əl.ɡeɪt/",
+        pos: "verb",
+        definition: "Promote or make widely known an idea or cause.",
+        collocation: "promulgate unverified hypotheses",
+        example: "Social platforms allow fringe actors to promulgate unverified hypotheses with impunity.",
+        stems: ["promulgate", "promulgated", "promulgating", "promulgation", "promulgates"]
+      },
+      {
+        word: "veracity",
+        ipa: "/vəˈræs.ə.ti/",
+        pos: "noun",
+        definition: "Conformity to facts; accuracy and truthfulness.",
+        collocation: "scrutinize the veracity",
+        example: "Scholars must rigorously scrutinize the veracity of synthetic narratives.",
+        stems: ["veracity"]
+      },
+      {
+        word: "obfuscate",
+        ipa: "/ˈɒb.fʌs.keɪt/",
+        pos: "verb",
+        definition: "Make obscure, unclear, or unintelligible.",
+        collocation: "obfuscate objective reality",
+        example: "Partisan algorithms deliberately obfuscate objective reality to maximize user engagement.",
+        stems: ["obfuscate", "obfuscated", "obfuscating", "obfuscation", "obfuscates"]
+      },
+      {
+        word: "pernicious",
+        ipa: "/pəˈnɪʃ.əs/",
+        pos: "adjective",
+        definition: "Having a harmful effect, especially in a gradual or subtle way.",
+        collocation: "pernicious consequence",
+        example: "The most pernicious consequence is the quiet dissolution of public trust.",
+        stems: ["pernicious", "perniciously"]
+      },
+      {
+        word: "concomitant",
+        ipa: "/kənˈkɒm.ɪ.tənt/",
+        pos: "adjective",
+        definition: "Naturally accompanying or associated.",
+        collocation: "concomitant erosion of trust",
+        example: "A hyper-fragmented media landscape brings a concomitant erosion of institutional legitimacy.",
+        stems: ["concomitant", "concomitantly"]
+      },
+      {
+        word: "insidious",
+        ipa: "/ɪnˈsɪd.i.əs/",
+        pos: "adjective",
+        definition: "Proceeding in a gradual, subtle way, but with very harmful effects.",
+        collocation: "insidious polarization",
+        example: "Echo chambers induce an insidious polarization that resists rational dialogue.",
+        stems: ["insidious", "insidiously"]
+      },
+      {
+        word: "dichotomy",
+        ipa: "/daɪˈkɒt.ə.mi/",
+        pos: "noun",
+        definition: "A division or contrast between two things that are represented as being entirely different.",
+        collocation: "false dichotomy",
+        example: "It is misleading to posit a simple dichotomy between traditional journalism and decentralized media.",
+        stems: ["dichotomy", "dichotomies", "dichotomous"]
+      }
+    ],
+    recommendedStructures: [
+      {
+        name: "Participle / Gerund Clause",
+        pattern: "Fronted participle clause: Having + past participle..., main clause",
+        example: "The traditional gatekeepers having been superseded, public discourse operates without centralized arbitration."
+      },
+      {
+        name: "Negative / Limiting Inversion",
+        pattern: "Under no circumstances + auxiliary + subject + verb",
+        example: "Under no circumstances can a deliberative democracy endure when the criteria for factual truth are dismantled."
+      },
+      {
+        name: "Emphatic Pseudo-Cleft",
+        pattern: "What + clause + is + that/noun phrase",
+        example: "What remains of paramount concern is the subtle manner in which algorithmic reinforcement normalizes extremism."
+      },
+      {
+        name: "Inverted Conditional",
+        pattern: "Were + subject + to + infinitive, subject + would + infinitive",
+        example: "Were societies to accept this chaotic trajectory as irreversible, participatory self-governance would collapse."
+      }
+    ],
+    sampleExcerpt: `The traditional gatekeepers having been superseded, contemporary public discourse operates without centralized arbitration. The rapid delegitimization of institutional expertise, accompanied by the concomitant proliferation of synthetic information, has fundamentally compromised modern deliberative spheres. While the decentralization of knowledge initially promised genuine democratic emancipation, its unchecked progression has engendered an insidious epistemic fragmentation that threatens the stability of civic institutions.
+
+What is of paramount importance is the alarming mechanism through which algorithmic echo chambers actively obfuscate objective reality. By prioritizing sensationalism to maximize user engagement, commercial platforms incentivize fringe actors to promulgate unverified hypotheses with impunity. As a consequence, citizens become sequestered within ideologically fortified enclaves wherein empirical veracity is routinely subordinated to confirmation bias. This dynamic induces a pernicious cynicism that steadily dissolves collective trust in scientific methodologies, rendering constructive policy debates virtually impossible.
+
+Furthermore, it is widely contended that the weaponization of artificial intelligence exacerbates this predicament by facilitating the automated fabrication of compelling yet deceitful narratives. It is not merely that false claims circulate rapidly; rather, the sheer volume of synthetic discourse renders discernment arduous for even the most discerning citizens. When the boundaries between authentic documentation and algorithmic fabrication are blurred, democratic deliberation is reduced to a battle of affective tribalism rather than rational persuasion.
+
+Notwithstanding legitimate critiques regarding historical elitism within academic spheres, peer-reviewed consensus established a vital epistemic anchor for public policy. Under no circumstances can a deliberative democracy endure when the fundamental criteria for factual truth are dismantled into subjective opinion. Were societies to accept this chaotic trajectory as irreversible, participatory self-governance would collapse. Rigorous algorithmic accountability and institutional revival must therefore be pursued with uncompromising determination.`
+  },
+  {
+    id: "biotech-transhumanism-ethics",
+    title: "Biotechnological Enhancement, Transhumanism & Existential Ethics",
+    category: "Bioethics & Human Evolution",
+    type: "C2 Proficiency Discursive Essay",
+    cefrTarget: "C2",
+    recommendedTime: "50 minutes",
+    prompt: {
+      context: "You have attended an international symposium debating germline genome modification, neuro-enhancement technologies, and the post-human transition.",
+      points: [
+        "The potential to eradicate congenital disease and expand cognitive capacities",
+        "The peril of biological caste stratification and commodified human enhancement"
+      ],
+      task: "Write an essay synthesizing both arguments. Evaluate which dimension represents the more consequential challenge for future global governance, substantiating your stance with robust academic arguments. Target length: 280–320 words."
+    },
+    targetVocabulary: [
+      {
+        word: "germline",
+        ipa: "/ˈdʒɜːm.laɪn/",
+        pos: "noun/adjective",
+        definition: "The genetic material transmitted to offspring.",
+        collocation: "germline genetic editing",
+        example: "Heritable germline genetic editing raises unprecedented philosophical quandaries.",
+        stems: ["germline", "germ-line"]
+      },
+      {
+        word: "stratification",
+        ipa: "/ˌstræt.ɪ.fɪˈkeɪ.ʃən/",
+        pos: "noun",
+        definition: "The arrangement or classification of something into different groups or socioeconomic layers.",
+        collocation: "socio-biological stratification",
+        example: "Unequal access could crystallize an immutable socio-biological stratification.",
+        stems: ["stratification", "stratify", "stratified", "stratifying"]
+      },
+      {
+        word: "hegemony",
+        ipa: "/hɪˈɡem.ə.ni/",
+        pos: "noun",
+        definition: "Leadership or dominance, especially by one social group over others.",
+        collocation: "socio-economic hegemony",
+        example: "Entrenched elites could wield genetic enhancements to preserve their socio-economic hegemony.",
+        stems: ["hegemony", "hegemonic"]
+      },
+      {
+        word: "unfettered",
+        ipa: "/ʌnˈfet.əd/",
+        pos: "adjective",
+        definition: "Not confined or restricted; free from constraints.",
+        collocation: "unfettered commercial exploitation",
+        example: "Unfettered commercial exploitation of biotechnology threatens fundamental human dignity.",
+        stems: ["unfettered"]
+      },
+      {
+        word: "ineluctable",
+        ipa: "/ˌɪn.ɪˈlʌk.tə.bəl/",
+        pos: "adjective",
+        definition: "Unable to be resisted or avoided; inescapable.",
+        collocation: "ineluctable biological hegemony",
+        example: "Technological progress in genomics is not an ineluctable force devoid of human agency.",
+        stems: ["ineluctable", "ineluctably"]
+      },
+      {
+        word: "quandary",
+        ipa: "/ˈkwɒn.dri/",
+        pos: "noun",
+        definition: "A state of perplexity or uncertainty over what to do in a difficult situation.",
+        collocation: "formidable quandary",
+        example: "Regulators confront a profound ethical quandary regarding therapeutic versus elective interventions.",
+        stems: ["quandary", "quandaries"]
+      },
+      {
+        word: "equitable",
+        ipa: "/ˈek.wɪ.tə.bəl/",
+        pos: "adjective",
+        definition: "Fair and impartial.",
+        collocation: "equitable distribution",
+        example: "Establishing an equitable distribution of restorative treatments remains morally urgent.",
+        stems: ["equitable", "equitably", "equity"]
+      },
+      {
+        word: "transcend",
+        ipa: "/trænˈsend/ ",
+        pos: "verb",
+        definition: "Be or go beyond the range or limits of.",
+        collocation: "transcend biological limitations",
+        example: "The ambition to transcend biological limitations must not eclipse basic humanitarian obligations.",
+        stems: ["transcend", "transcends", "transcended", "transcending", "transcendence"]
+      }
+    ],
+    recommendedStructures: [
+      {
+        name: "Fronted Participle Clause",
+        pattern: "Confronted with + noun phrase, subject + verb",
+        example: "Confronted with this dilemma, bioethicists face a formidable quandary regarding enhancement."
+      },
+      {
+        name: "Inverted Conditional",
+        pattern: "Were + subject + past participle/infinitive, subject + would + infinitive",
+        example: "Were privileged strata permitted to monopolize augmentations, inequality would crystallize into hegemony."
+      },
+      {
+        name: "Passive Reporting Clause",
+        pattern: "It is widely contended that + clause",
+        example: "It is widely contended that establishing a rigid boundary between therapy and enhancement is impossible."
+      },
+      {
+        name: "Negative / Limiting Inversion",
+        pattern: "Under no circumstances should + subject + verb",
+        example: "Under no circumstances should societies permit the commodification of the human germline."
+      }
+    ],
+    sampleExcerpt: `The rapid progression of biotechnology has propelled humanity into an era wherein deliberate genetic intervention is no longer speculative science fiction. While the eradication of hereditary afflictions represents an inspiring humanitarian milestone, the prospect of elective germline genetic editing exposes unprecedented ethical fault lines. Unfettered commercial exploitation of such technologies threatens to dissolve the egalitarian tenets that sustain contemporary democratic civilization.
+
+What is of paramount importance is the acute danger of biological caste stratification. Were privileged socioeconomic strata permitted to monopolize cognitive and physiological augmentations, existing economic inequality would crystallize into an ineluctable biological hegemony. In such a dystopian configuration, socio-economic status would cease to be mutable; instead, it would become codified in the genome. The less affluent would confront not merely economic disparity, but a profound genetic disadvantage that no degree of diligence could overcome.
+
+Confronted with this dilemma, bioethicists face a formidable quandary regarding the delineation between restorative therapy and elective enhancement. It is widely contended that establishing a rigid conceptual boundary between curing debilitating pathology and engineering superior faculties is practically impossible. Furthermore, international regulatory divergence presents an acute risk: should one jurisdiction prohibit germline modifications, medical tourism will inevitably migrate to less scrupulous regimes.
+
+Notwithstanding the immense therapeutic promises inherent in genomic tools, the ambition to transcend biological limitations must not eclipse the moral imperative for equitable distribution. Under no circumstances should societies permit the commodification of the human germline without comprehensive global governance frameworks. The preservation of human equality requires proactive international treaties, robust bioethical oversight, and universal standards that ensure biotechnology remains an instrument of universal well-being rather than a catalyst for irreversible social divergence.`
+  }
 ];
 const CEFR_DESCRIPTORS = {
   C2: {
@@ -1363,7 +1601,7 @@ function escapeRegExp(string) {
 /**
  * Real-time quick metrics for the editor
  */
-function analyzeQuickMetrics(text, targetVocabulary = []) {
+function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = 'C1') {
   const words = text.trim() ? text.trim().split(/\s+/) : [];
   const wordCount = words.length;
   
@@ -1409,6 +1647,11 @@ function analyzeQuickMetrics(text, targetVocabulary = []) {
     }
   });
 
+  const isC2 = targetLevel === 'C2';
+  const targetMin = isC2 ? 280 : 220;
+  const targetMax = isC2 ? 320 : 260;
+  const optimalMax = isC2 ? 340 : 280;
+
   return {
     wordCount,
     paragraphCount: paragraphs.length,
@@ -1416,16 +1659,21 @@ function analyzeQuickMetrics(text, targetVocabulary = []) {
     targetWordsTotal,
     vocabStatus,
     detectedGrammar,
-    informalFindings
+    informalFindings,
+    targetLevel,
+    targetMin,
+    targetMax,
+    optimalMax
   };
 }
 
 /**
  * Full FluentEdge C1/C2 Assessment Algorithm
  */
-function evaluateEssay(text, currentTopic) {
+function evaluateEssay(text, currentTopic, targetLevel = 'C1') {
   const words = text.trim() ? text.trim().split(/\s+/) : [];
   const wordCount = words.length;
+  const isC2 = targetLevel === 'C2';
 
   const paragraphs = text
     .split(/\n\s*\n/)
@@ -1463,7 +1711,7 @@ function evaluateEssay(text, currentTopic) {
   const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-z]/g, ''))).size;
   const typeTokenRatio = wordCount > 0 ? (uniqueWords / wordCount) : 0;
 
-  // Average Sentence Length (C1 target: 18 - 28 words per sentence)
+  // Average Sentence Length (C1/C2 target: 18 - 28 words per sentence)
   const avgSentenceLength = sentences.length > 0 ? (wordCount / sentences.length) : 0;
 
   // 3. Syntactic Structure Detection
@@ -1495,27 +1743,52 @@ function evaluateEssay(text, currentTopic) {
   // SCORING ACCORDING TO CEFR SCALES (0-5)
   // ==========================================
 
-  // Scale 1: CONTENT (Target: 220-260 words, covers prompt points)
+  // Scale 1: CONTENT
   let contentScore = 5.0;
   const feedbackContent = [];
-  if (wordCount < 180) {
-    contentScore -= 2.0;
-    feedbackContent.push(`Essay length (${wordCount} words) is critically below C1 recommendation (220-260 words). Insufficient development of arguments.`);
-  } else if (wordCount < 220) {
-    contentScore -= 0.8;
-    feedbackContent.push(`Slightly under the 220-word threshold (${wordCount} words). Expand on your analytical justifications.`);
-  } else if (wordCount > 340) {
-    contentScore -= 0.5;
-    feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic writing standards penalize lack of conciseness and redundancy.`);
-  } else {
-    feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C1 guidelines.`);
-  }
 
-  if (paragraphs.length < 3) {
-    contentScore -= 1.0;
-    feedbackContent.push("Needs clear separation into Introduction, Body Arguments (covering both prompt points), and Conclusion.");
+  if (isC2) {
+    // C2 Target: 280-320 words
+    if (wordCount < 240) {
+      contentScore -= 2.0;
+      feedbackContent.push(`Essay length (${wordCount} words) is critically below C2 Proficiency requirement (280-320 words). Complex discourse demands thorough multi-angle elaboration.`);
+    } else if (wordCount < 280) {
+      contentScore -= 0.8;
+      feedbackContent.push(`Below the 280-word C2 threshold (${wordCount} words). Synthesize both prompt dimensions with deeper analytical nuance.`);
+    } else if (wordCount > 380) {
+      contentScore -= 0.5;
+      feedbackContent.push(`Essay is overly verbose (${wordCount} words). C2 examiners penalize circumlocution and lack of concision.`);
+    } else {
+      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C2 Proficiency standards.`);
+    }
+
+    if (paragraphs.length < 4) {
+      contentScore -= 0.8;
+      feedbackContent.push("C2 discursive essays require a sophisticated 4-stage architecture (Introduction, Opposing Arguments, Synthesis/Evaluation, and Conclusion).");
+    } else {
+      feedbackContent.push(`Flawless essay architecture with ${paragraphs.length} balanced paragraphs.`);
+    }
   } else {
-    feedbackContent.push(`Strong essay architecture with ${paragraphs.length} structured paragraphs.`);
+    // C1 Target: 220-260 words
+    if (wordCount < 180) {
+      contentScore -= 2.0;
+      feedbackContent.push(`Essay length (${wordCount} words) is critically below C1 recommendation (220-260 words). Insufficient development of arguments.`);
+    } else if (wordCount < 220) {
+      contentScore -= 0.8;
+      feedbackContent.push(`Slightly under the 220-word threshold (${wordCount} words). Expand on your analytical justifications.`);
+    } else if (wordCount > 340) {
+      contentScore -= 0.5;
+      feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic writing standards penalize lack of conciseness and redundancy.`);
+    } else {
+      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C1 guidelines.`);
+    }
+
+    if (paragraphs.length < 3) {
+      contentScore -= 1.0;
+      feedbackContent.push("Needs clear separation into Introduction, Body Arguments (covering both prompt points), and Conclusion.");
+    } else {
+      feedbackContent.push(`Strong essay architecture with ${paragraphs.length} structured paragraphs.`);
+    }
   }
   contentScore = Math.max(1, Math.min(5, contentScore));
 
@@ -1523,12 +1796,12 @@ function evaluateEssay(text, currentTopic) {
   let commScore = 4.0;
   const feedbackComm = [];
   if (informalMatches.length > 0) {
-    const penalty = Math.min(2.0, informalMatches.length * 0.5);
+    const penalty = Math.min(2.5, informalMatches.length * (isC2 ? 0.7 : 0.5));
     commScore -= penalty;
-    feedbackComm.push(`Detected informal colloquialisms or contractions: "${informalMatches.slice(0, 4).join(', ')}". In formal C1/C2 essays, avoid contractions ("don't", "can't") and maintain an objective scholarly register.`);
+    feedbackComm.push(`Detected informal colloquialisms or contractions: "${informalMatches.slice(0, 4).join(', ')}". In formal ${isC2 ? 'C2 Proficiency' : 'C1 Advanced'} essays, eliminate contractions ("don't", "can't") and sustain an objective scholarly register.`);
   } else {
     commScore += 0.5;
-    feedbackComm.push("Flawless formal academic register maintained with no informal contractions or conversational vernacular.");
+    feedbackComm.push("Flawless formal academic register maintained with no conversational contractions or colloquialisms.");
   }
 
   if (identifiedStructures.some(s => s.id === 'passiveReporting' || s.id === 'cleftSentence')) {
@@ -1541,12 +1814,14 @@ function evaluateEssay(text, currentTopic) {
   let orgScore = 3.5;
   const feedbackOrg = [];
   if (paragraphs.length >= 4) orgScore += 0.5;
-  if (academicMarkerCount >= 4) {
+  
+  const minMarkers = isC2 ? 5 : 4;
+  if (academicMarkerCount >= minMarkers) {
     orgScore += 0.8;
     feedbackOrg.push(`Exceptional deployment of cohesive devices (${academicMarkerCount} advanced discourse markers detected).`);
   } else if (academicMarkerCount >= 2) {
     orgScore += 0.3;
-    feedbackOrg.push("Adequate transitional markers, but could incorporate more nuanced logical connectors (e.g., 'notwithstanding', 'inasmuch as').");
+    feedbackOrg.push(`Adequate transitional markers (${academicMarkerCount} detected), but ${isC2 ? 'C2 Proficiency' : 'C1'} requires more nuanced logical connectors (e.g., 'notwithstanding', 'inasmuch as', 'concomitantly').`);
   } else {
     orgScore -= 0.8;
     feedbackOrg.push("Discourse cohesion is underdeveloped. Integrate formal academic cohesive markers to link paragraphs smoothly.");
@@ -1559,26 +1834,30 @@ function evaluateEssay(text, currentTopic) {
 
   // Target vocabulary weight
   const vocabRatio = usedTargetCount / Math.max(1, targetVocabulary.length);
-  if (vocabRatio >= 0.75) {
+  const targetRequired = isC2 ? 6 : 4;
+
+  if (usedTargetCount >= targetRequired && vocabRatio >= 0.7) {
     langScore += 1.5;
-    feedbackLang.push(`Outstanding command of required C1/C2 topic vocabulary (${usedTargetCount}/${targetVocabulary.length} words seamlessly integrated).`);
-  } else if (vocabRatio >= 0.5) {
+    feedbackLang.push(`Outstanding command of required ${targetLevel} topic vocabulary (${usedTargetCount}/${targetVocabulary.length} words seamlessly integrated).`);
+  } else if (usedTargetCount >= 4) {
     langScore += 0.8;
-    feedbackLang.push(`Good integration of target vocabulary (${usedTargetCount}/${targetVocabulary.length} words used), but aim for at least 6 to secure higher band.`);
+    feedbackLang.push(`Good integration of target vocabulary (${usedTargetCount}/${targetVocabulary.length} words used), but ${isC2 ? 'C2 mode demands at least 6 items' : 'aim for at least 5 to secure top band'}.`);
   } else {
-    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. Advanced academic writing requires high lexical precision.`);
+    langScore -= 0.5;
+    feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. ${targetLevel} demands high lexical precision.`);
   }
 
   // Syntactic complexity
-  if (identifiedStructures.length >= 3) {
+  const requiredStructs = isC2 ? 3 : 2;
+  if (identifiedStructures.length >= requiredStructs) {
     langScore += 1.0;
     feedbackLang.push(`High grammatical ambition demonstrated: successfully incorporated ${identifiedStructures.length} advanced syntactic structures (${identifiedStructures.map(s => s.name).join(', ')}).`);
   } else if (identifiedStructures.length >= 1) {
     langScore += 0.4;
-    feedbackLang.push(`Used advanced syntax (${identifiedStructures[0].name}). Incorporating an inverted conditional or negative inversion would propel this to C2.`);
+    feedbackLang.push(`Used advanced syntax (${identifiedStructures[0].name}). Incorporating ${isC2 ? 'additional inverted conditionals or participle clauses' : 'an inverted conditional or cleft'} is required for C2 mastery.`);
   } else {
-    langScore -= 0.5;
-    feedbackLang.push("Syntax relies predominantly on simple/compound sentences. C1/C2 requires varied complex structures such as inversions, clefts, or participle clauses.");
+    langScore -= 0.6;
+    feedbackLang.push(`Syntax relies on basic structures. ${targetLevel} requires varied complex patterns (inversions, clefts, or participle clauses).`);
   }
 
   // Lexical diversity
@@ -1594,26 +1873,39 @@ function evaluateEssay(text, currentTopic) {
   // CEFR Determination
   let cefrResult;
   let meetsC1 = false;
+  let meetsC2 = false;
 
   if (normalizedPercentage >= CEFR_DESCRIPTORS.C2.minScore && usedTargetCount >= 5 && identifiedStructures.length >= 2) {
     cefrResult = CEFR_DESCRIPTORS.C2;
     meetsC1 = true;
+    meetsC2 = true;
   } else if (normalizedPercentage >= CEFR_DESCRIPTORS.C1.minScore && usedTargetCount >= 4) {
     cefrResult = CEFR_DESCRIPTORS.C1;
     meetsC1 = true;
+    meetsC2 = false;
   } else if (normalizedPercentage >= CEFR_DESCRIPTORS.B2.minScore) {
     cefrResult = CEFR_DESCRIPTORS.B2;
     meetsC1 = false;
+    meetsC2 = false;
   } else {
     cefrResult = CEFR_DESCRIPTORS.B1;
     meetsC1 = false;
+    meetsC2 = false;
   }
+
+  // Determine gatekeeper success based on active targetLevel
+  const meetsThreshold = isC2
+    ? (meetsC2 && normalizedPercentage >= 85 && usedTargetCount >= 6 && identifiedStructures.length >= 2 && wordCount >= 260)
+    : meetsC1;
 
   return {
     rawTotal: Number(rawTotal.toFixed(1)),
     percentage: normalizedPercentage,
     cefr: cefrResult,
+    targetLevel,
+    meetsThreshold,
     meetsC1,
+    meetsC2,
     scales: {
       content: { score: Number(contentScore.toFixed(1)), max: 5, feedback: feedbackContent },
       communicative: { score: Number(commScore.toFixed(1)), max: 5, feedback: feedbackComm },
@@ -2197,6 +2489,10 @@ class FluentEdgeApp {
     this.topics = TOPICS;
     this.currentTopicIndex = 0;
     this.currentTopic = this.topics[0];
+    this.targetLevel = 'C1';
+    try {
+      this.targetLevel = localStorage.getItem('fluentedge_target_level') || 'C1';
+    } catch (e) {}
 
     this.speechEngine = new SpeechEngine();
     this.lastEvaluationResult = null;
@@ -2211,6 +2507,7 @@ class FluentEdgeApp {
     this.bindEvents();
     this.bindHotkeys();
     this.setupSpeechEngineCallbacks();
+    this.setTargetLevel(this.targetLevel, false);
     this.loadTopic(0);
     this.renderHistory();
   }
@@ -2223,12 +2520,17 @@ class FluentEdgeApp {
       closeHistoryBtn: document.getElementById('closeHistoryBtn'),
       clearHistoryBtn: document.getElementById('clearHistoryBtn'),
       historyList: document.getElementById('historyList'),
+      modeC1Btn: document.getElementById('modeC1Btn'),
+      modeC2Btn: document.getElementById('modeC2Btn'),
 
       // Stepper
       stepIndicator1: document.getElementById('stepIndicator1'),
       stepIndicator2: document.getElementById('stepIndicator2'),
       stepIndicator3: document.getElementById('stepIndicator3'),
       step3LockIcon: document.getElementById('step3LockIcon'),
+      step1LexisHint: document.getElementById('step1LexisHint'),
+      step2WordCountHint: document.getElementById('step2WordCountHint'),
+      targetWordCountHint: document.getElementById('targetWordCountHint'),
 
       // Workspaces
       mainWritingWorkspace: document.getElementById('mainWritingWorkspace'),
@@ -2304,6 +2606,14 @@ class FluentEdgeApp {
   }
 
   bindEvents() {
+    // Mode toggle events
+    if (this.dom.modeC1Btn) {
+      this.dom.modeC1Btn.addEventListener('click', () => this.setTargetLevel('C1'));
+    }
+    if (this.dom.modeC2Btn) {
+      this.dom.modeC2Btn.addEventListener('click', () => this.setTargetLevel('C2'));
+    }
+
     // Topic events
     this.dom.prevTopicBtn.addEventListener('click', () => this.cyclePrevTopic());
     this.dom.nextTopicBtn.addEventListener('click', () => this.cycleNextTopic());
@@ -2341,6 +2651,14 @@ class FluentEdgeApp {
       const modalOpen = this.dom.evalModalBackdrop.classList.contains('visible') ||
                         this.dom.evalModalBackdrop.style.display === 'flex';
       const inTextField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+
+      // Alt+M  →  Toggle C1 / C2 Standard Mode
+      if (e.altKey && (e.key === 'm' || e.key === 'M') && !modalOpen) {
+        e.preventDefault();
+        const nextMode = this.targetLevel === 'C1' ? 'C2' : 'C1';
+        this.setTargetLevel(nextMode);
+        return;
+      }
 
       // Alt+ArrowLeft  →  Previous Topic
       if (e.altKey && e.key === 'ArrowLeft' && !inTextField && !modalOpen) {
@@ -2394,6 +2712,57 @@ class FluentEdgeApp {
     this.speechEngine.onError = (message) => {
       this.showToast(message, "error");
     };
+  }
+
+  setTargetLevel(level, showToastMessage = true) {
+    this.targetLevel = level;
+    try {
+      localStorage.setItem('fluentedge_target_level', level);
+    } catch (e) {}
+
+    const isC2 = level === 'C2';
+
+    if (this.dom.modeC1Btn && this.dom.modeC2Btn) {
+      this.dom.modeC1Btn.classList.toggle('active', !isC2);
+      this.dom.modeC1Btn.setAttribute('aria-checked', !isC2 ? 'true' : 'false');
+      this.dom.modeC2Btn.classList.toggle('active', isC2);
+      this.dom.modeC2Btn.setAttribute('aria-checked', isC2 ? 'true' : 'false');
+    }
+
+    if (isC2) {
+      document.body.classList.add('theme-c2');
+    } else {
+      document.body.classList.remove('theme-c2');
+    }
+
+    if (this.dom.step1LexisHint) {
+      this.dom.step1LexisHint.textContent = isC2
+        ? "Prompt & Compulsory C2 Vocabulary"
+        : "Prompt & Compulsory C1 Vocabulary";
+    }
+    if (this.dom.step2WordCountHint) {
+      this.dom.step2WordCountHint.textContent = isC2
+        ? "280-320 Words & Syntactic Complexity"
+        : "220-260 Words & Syntactic Complexity";
+    }
+    if (this.dom.targetWordCountHint) {
+      this.dom.targetWordCountHint.textContent = isC2
+        ? "(280-320 target)"
+        : "(220-260 target)";
+    }
+
+    if (showToastMessage) {
+      this.showToast(
+        isC2
+          ? "Switched to C2 Proficiency Dedicated Mode (280–320 words, higher syntax thresholds)."
+          : "Switched to C1 Advanced Mode (220–260 words standard).",
+        "info"
+      );
+    }
+
+    if (this.dom.essayInput) {
+      this.handleEditorInput();
+    }
   }
 
   // ==========================================
@@ -2506,25 +2875,32 @@ class FluentEdgeApp {
 
   handleEditorInput() {
     const text = this.dom.essayInput.value;
-    const metrics = analyzeQuickMetrics(text, this.currentTopic.targetVocabulary);
+    const metrics = analyzeQuickMetrics(text, this.currentTopic.targetVocabulary, this.targetLevel);
 
     // Live word count
     this.dom.liveWordCount.textContent = metrics.wordCount;
     this.dom.liveParaCount.textContent = metrics.paragraphCount;
 
-    // Word count color indicator (C1 target is 220-260 words)
+    // Word count color indicator
     this.dom.liveWordCount.className = "metric-live-val";
-    if (metrics.wordCount >= 220 && metrics.wordCount <= 280) {
+    const isC2 = this.targetLevel === 'C2';
+    const minTarget = isC2 ? 280 : 220;
+    const maxTarget = isC2 ? 320 : 260;
+    const maxOptimal = isC2 ? 340 : 280;
+
+    if (metrics.wordCount >= minTarget && metrics.wordCount <= maxOptimal) {
       this.dom.liveWordCount.classList.add("optimal");
-      this.dom.lengthGuidanceBadge.textContent = "Optimal C1 Length (220-260)";
+      this.dom.lengthGuidanceBadge.textContent = isC2
+        ? `Optimal C2 Length (${minTarget}-${maxTarget})`
+        : `Optimal C1 Length (${minTarget}-${maxTarget})`;
       this.dom.lengthGuidanceBadge.className = "radar-badge active";
-    } else if (metrics.wordCount > 0 && metrics.wordCount < 220) {
+    } else if (metrics.wordCount > 0 && metrics.wordCount < minTarget) {
       this.dom.liveWordCount.classList.add("warning");
-      this.dom.lengthGuidanceBadge.textContent = `Need ${220 - metrics.wordCount} more words`;
+      this.dom.lengthGuidanceBadge.textContent = `Need ${minTarget - metrics.wordCount} more words (${this.targetLevel} target: ${minTarget}-${maxTarget})`;
       this.dom.lengthGuidanceBadge.className = "radar-badge";
-    } else if (metrics.wordCount > 280) {
+    } else if (metrics.wordCount > maxOptimal) {
       this.dom.liveWordCount.classList.add("warning");
-      this.dom.lengthGuidanceBadge.textContent = "Exceeding target (be concise)";
+      this.dom.lengthGuidanceBadge.textContent = `Exceeding ${this.targetLevel} target (be concise)`;
       this.dom.lengthGuidanceBadge.className = "radar-badge";
     } else {
       this.dom.lengthGuidanceBadge.textContent = "Awaiting input";
@@ -2563,7 +2939,7 @@ class FluentEdgeApp {
   loadSampleDraft() {
     this.dom.essayInput.value = this.currentTopic.sampleExcerpt;
     this.handleEditorInput();
-    this.showToast("Loaded sample C1/C2 draft for evaluation.", "info");
+    this.showToast(`Loaded sample ${this.currentTopic.cefrTarget || 'C1/C2'} model draft for evaluation.`, "info");
   }
 
   clearEssay() {
@@ -2589,15 +2965,17 @@ class FluentEdgeApp {
       return;
     }
 
-    const evalResult = evaluateEssay(text, this.currentTopic);
+    const evalResult = evaluateEssay(text, this.currentTopic, this.targetLevel);
     this.lastEvaluationResult = evalResult;
-    this.meetsC1Threshold = evalResult.meetsC1;
+    this.meetsC1Threshold = evalResult.meetsThreshold;
+
+    const isC2 = this.targetLevel === 'C2';
 
     // Render results into modal
     this.dom.evalScoreTotal.textContent = evalResult.rawTotal;
     this.dom.evalPercentage.textContent = `${evalResult.percentage}%`;
     this.dom.evalVerdictTitle.textContent = evalResult.cefr.band;
-    this.dom.evalVerdictTitle.className = `cefr-verdict-title ${evalResult.meetsC1 ? 'pass' : 'revise'}`;
+    this.dom.evalVerdictTitle.className = `cefr-verdict-title ${evalResult.meetsThreshold ? 'pass' : 'revise'}`;
     this.dom.evalVerdictDesc.textContent = evalResult.cefr.summary;
 
     // Scales breakdown
@@ -2612,10 +2990,14 @@ class FluentEdgeApp {
     renderScale(this.dom.scaleLangScore, this.dom.scaleLangFeedback, evalResult.scales.language);
 
     // Gatekeeper Banner
-    if (evalResult.meetsC1) {
+    if (evalResult.meetsThreshold) {
       this.dom.gatekeeperBanner.className = "gatekeeper-banner unlocked";
-      this.dom.gatekeeperHeading.textContent = "✓ C1 Standard Confirmed";
-      this.dom.gatekeeperSubtext.textContent = "Your text demonstrates the syntactic complexity and vocabulary breadth required for C1–C2 mastery. Proceed to read your text aloud for pronunciation evaluation.";
+      this.dom.gatekeeperHeading.textContent = isC2
+        ? "✓ C2 Proficiency Confirmed (Mastery)"
+        : "✓ C1 Standard Confirmed";
+      this.dom.gatekeeperSubtext.textContent = isC2
+        ? "Your text demonstrates the 280+ word discursive architecture, lexical sophistication, and complex syntax required for C2 Proficiency. Proceed to read your text aloud for pronunciation evaluation."
+        : "Your text demonstrates the syntactic complexity and vocabulary breadth required for C1–C2 mastery. Proceed to read your text aloud for pronunciation evaluation.";
       this.dom.gatekeeperActionBtn.className = "btn btn-emerald";
       this.dom.gatekeeperActionBtn.textContent = "Proceed to Phase 3: Speaking →";
       
@@ -2625,8 +3007,10 @@ class FluentEdgeApp {
       this.dom.step3LockIcon.innerHTML = "3";
     } else {
       this.dom.gatekeeperBanner.className = "gatekeeper-banner locked";
-      this.dom.gatekeeperHeading.textContent = "Threshold Not Reached (Revision Recommended)";
-      this.dom.gatekeeperSubtext.textContent = `Your draft scored below C1 requirements (${evalResult.percentage}%). We recommend revising your text using the feedback notes above, or you may choose to practice speaking in Practice Mode.`;
+      this.dom.gatekeeperHeading.textContent = `${this.targetLevel} Threshold Not Reached (Revision Recommended)`;
+      this.dom.gatekeeperSubtext.textContent = isC2
+        ? `Your draft scored ${evalResult.percentage}%. C2 Proficiency requires a score ≥ 85%, at least 6 target vocabulary words, and multiple advanced syntactic structures. We recommend revising your text using the feedback notes above, or you may choose to practice speaking in Practice Mode.`
+        : `Your draft scored below C1 requirements (${evalResult.percentage}%). We recommend revising your text using the feedback notes above, or you may choose to practice speaking in Practice Mode.`;
       this.dom.gatekeeperActionBtn.className = "btn btn-secondary";
       this.dom.gatekeeperActionBtn.textContent = "Practice Speaking Anyway (Override)";
     }
@@ -2637,12 +3021,13 @@ class FluentEdgeApp {
     // Save to history
     this.saveSessionToHistory({
       type: 'writing',
+      targetLevel: this.targetLevel,
       topicTitle: this.currentTopic.title,
       text: text,
       score: evalResult.rawTotal,
       percentage: evalResult.percentage,
       band: evalResult.cefr.band,
-      meetsC1: evalResult.meetsC1,
+      meetsThreshold: evalResult.meetsThreshold,
       date: new Date().toISOString()
     });
   }
@@ -2855,7 +3240,7 @@ class FluentEdgeApp {
       this.dom.historyList.innerHTML = history.map(item => `
         <div class="history-item">
           <div class="history-item-top">
-            <span>${item.type === 'writing' ? 'Writing Task' : 'Speaking Test'}</span>
+            <span>${item.type === 'writing' ? (item.targetLevel ? `${item.targetLevel} Writing` : 'Writing Task') : 'Speaking Test'}</span>
             <span>${new Date(item.date).toLocaleDateString()}</span>
           </div>
           <div class="history-item-title">${item.topicTitle}</div>

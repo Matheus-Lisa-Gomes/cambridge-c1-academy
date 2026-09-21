@@ -36,9 +36,18 @@
       </div>
 
       <div class="header-controls">
-        <div class="cefr-badge-group">
-          <span class="cefr-badge-label">Target Standard</span>
-          <span class="cefr-pill" id="currentCefrBadge">C1/C2 Practice Score</span>
+        <div class="cefr-mode-toggle" id="cefrModeToggle" role="radiogroup" aria-label="Target Standard">
+          <span class="cefr-toggle-label">Target Standard:</span>
+          <div class="cefr-toggle-switch">
+            <button type="button" class="cefr-toggle-btn active" id="modeC1Btn" role="radio" aria-checked="true" data-mode="C1" title="C1 Advanced Mode (220–260 words) [Hotkey: Alt+M]">
+              <span class="mode-tag">C1</span>
+              <span class="mode-desc">Advanced</span>
+            </button>
+            <button type="button" class="cefr-toggle-btn" id="modeC2Btn" role="radio" aria-checked="false" data-mode="C2" title="C2 Proficiency Dedicated Mode (280–320 words) [Hotkey: Alt+M]">
+              <span class="mode-tag">C2</span>
+              <span class="mode-desc">Proficiency</span>
+            </button>
+          </div>
         </div>
 
         <button id="historyDrawerBtn" class="btn btn-secondary" title="View Training Log">
@@ -56,14 +65,14 @@
         <div class="step-number">1</div>
         <div class="step-info">
           <h4>Topic & Advanced Lexis</h4>
-          <p>Prompt & Compulsory C1 Vocabulary</p>
+          <p id="step1LexisHint">Prompt & Compulsory C1 Vocabulary</p>
         </div>
       </div>
       <div class="step-card" id="stepIndicator2">
         <div class="step-number">2</div>
         <div class="step-info">
-          <h4>Writing & C1–C2 Evaluation</h4>
-          <p>220-260 Words & Syntactic Complexity</p>
+          <h4>Writing & Evaluation</h4>
+          <p id="step2WordCountHint">220-260 Words & Syntactic Complexity</p>
         </div>
       </div>
       <div class="step-card" id="stepIndicator3">
@@ -215,7 +224,7 @@
             <div class="metric-live-item">
               <span>Words:</span>
               <span class="metric-live-val" id="liveWordCount">0</span>
-              <span style="font-size: 11px; color: var(--text-muted);">(220-260 target)</span>
+              <span id="targetWordCountHint" style="font-size: 11px; color: var(--text-muted);">(220-260 target)</span>
             </div>
             <div class="metric-live-item">
               <span>Paragraphs:</span>

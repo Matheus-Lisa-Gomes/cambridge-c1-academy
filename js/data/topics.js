@@ -1224,6 +1224,244 @@ export const TOPICS = [
     ],
     sampleExcerpt: "The more heavily society equates achievement with personal worth, the more intimidating the prospect of failure becomes. Yet it is often through confronting adversity that individuals acquire the resilience required to navigate future challenges. While repeated setbacks may initially undermine confidence, they can also expose weaknesses that would otherwise remain unnoticed. Had failure invariably been regarded as evidence of inadequacy, many individuals might never have developed the perseverance necessary to overcome formidable obstacles."
   },
+  {
+    id: "epistemic-authority-truth",
+    title: "Epistemic Authority, Algorithmic Truth & Post-Empirical Discourse",
+    category: "Epistemology & Digital Sociology",
+    type: "C2 Proficiency Discursive Essay",
+    cefrTarget: "C2",
+    recommendedTime: "50 minutes",
+    prompt: {
+      context: "Your postgraduate seminar has reviewed two academic papers examining the erosion of consensus reality and the decentralization of epistemic authority in the digital age.",
+      points: [
+        "The delegitimization of institutional expertise and peer-reviewed consensus",
+        "The proliferation of synthetic information and epistemic bubble reinforcement"
+      ],
+      task: "Write an essay evaluating both perspectives. You should critically analyze which development poses a graver threat to democratic deliberative processes, providing cogent justifications and sophisticated reasoning. Target length: 280–320 words."
+    },
+    targetVocabulary: [
+      {
+        word: "epistemic",
+        ipa: "/ˌep.əˈstiː.mɪk/",
+        pos: "adjective",
+        definition: "Relating to knowledge or to the degree of its validation.",
+        collocation: "epistemic vigilance",
+        example: "Fostering epistemic vigilance is indispensable against algorithmic disinformation.",
+        stems: ["epistemic", "epistemological", "epistemology"]
+      },
+      {
+        word: "promulgate",
+        ipa: "/ˈprɒm.əl.ɡeɪt/",
+        pos: "verb",
+        definition: "Promote or make widely known an idea or cause.",
+        collocation: "promulgate unverified hypotheses",
+        example: "Social platforms allow fringe actors to promulgate unverified hypotheses with impunity.",
+        stems: ["promulgate", "promulgated", "promulgating", "promulgation", "promulgates"]
+      },
+      {
+        word: "veracity",
+        ipa: "/vəˈræs.ə.ti/",
+        pos: "noun",
+        definition: "Conformity to facts; accuracy and truthfulness.",
+        collocation: "scrutinize the veracity",
+        example: "Scholars must rigorously scrutinize the veracity of synthetic narratives.",
+        stems: ["veracity"]
+      },
+      {
+        word: "obfuscate",
+        ipa: "/ˈɒb.fʌs.keɪt/",
+        pos: "verb",
+        definition: "Make obscure, unclear, or unintelligible.",
+        collocation: "obfuscate objective reality",
+        example: "Partisan algorithms deliberately obfuscate objective reality to maximize user engagement.",
+        stems: ["obfuscate", "obfuscated", "obfuscating", "obfuscation", "obfuscates"]
+      },
+      {
+        word: "pernicious",
+        ipa: "/pəˈnɪʃ.əs/",
+        pos: "adjective",
+        definition: "Having a harmful effect, especially in a gradual or subtle way.",
+        collocation: "pernicious consequence",
+        example: "The most pernicious consequence is the quiet dissolution of public trust.",
+        stems: ["pernicious", "perniciously"]
+      },
+      {
+        word: "concomitant",
+        ipa: "/kənˈkɒm.ɪ.tənt/",
+        pos: "adjective",
+        definition: "Naturally accompanying or associated.",
+        collocation: "concomitant erosion of trust",
+        example: "A hyper-fragmented media landscape brings a concomitant erosion of institutional legitimacy.",
+        stems: ["concomitant", "concomitantly"]
+      },
+      {
+        word: "insidious",
+        ipa: "/ɪnˈsɪd.i.əs/",
+        pos: "adjective",
+        definition: "Proceeding in a gradual, subtle way, but with very harmful effects.",
+        collocation: "insidious polarization",
+        example: "Echo chambers induce an insidious polarization that resists rational dialogue.",
+        stems: ["insidious", "insidiously"]
+      },
+      {
+        word: "dichotomy",
+        ipa: "/daɪˈkɒt.ə.mi/",
+        pos: "noun",
+        definition: "A division or contrast between two things that are represented as being entirely different.",
+        collocation: "false dichotomy",
+        example: "It is misleading to posit a simple dichotomy between traditional journalism and decentralized media.",
+        stems: ["dichotomy", "dichotomies", "dichotomous"]
+      }
+    ],
+    recommendedStructures: [
+      {
+        name: "Participle / Gerund Clause",
+        pattern: "Fronted participle clause: Having + past participle..., main clause",
+        example: "The traditional gatekeepers having been superseded, public discourse operates without centralized arbitration."
+      },
+      {
+        name: "Negative / Limiting Inversion",
+        pattern: "Under no circumstances + auxiliary + subject + verb",
+        example: "Under no circumstances can a deliberative democracy endure when the criteria for factual truth are dismantled."
+      },
+      {
+        name: "Emphatic Pseudo-Cleft",
+        pattern: "What + clause + is + that/noun phrase",
+        example: "What remains of paramount concern is the subtle manner in which algorithmic reinforcement normalizes extremism."
+      },
+      {
+        name: "Inverted Conditional",
+        pattern: "Were + subject + to + infinitive, subject + would + infinitive",
+        example: "Were societies to accept this chaotic trajectory as irreversible, participatory self-governance would collapse."
+      }
+    ],
+    sampleExcerpt: `The traditional gatekeepers having been superseded, contemporary public discourse operates without centralized arbitration. The rapid delegitimization of institutional expertise, accompanied by the concomitant proliferation of synthetic information, has fundamentally compromised modern deliberative spheres. While the decentralization of knowledge initially promised genuine democratic emancipation, its unchecked progression has engendered an insidious epistemic fragmentation that threatens the stability of civic institutions.
+
+What is of paramount importance is the alarming mechanism through which algorithmic echo chambers actively obfuscate objective reality. By prioritizing sensationalism to maximize user engagement, commercial platforms incentivize fringe actors to promulgate unverified hypotheses with impunity. As a consequence, citizens become sequestered within ideologically fortified enclaves wherein empirical veracity is routinely subordinated to confirmation bias. This dynamic induces a pernicious cynicism that steadily dissolves collective trust in scientific methodologies, rendering constructive policy debates virtually impossible.
+
+Furthermore, it is widely contended that the weaponization of artificial intelligence exacerbates this predicament by facilitating the automated fabrication of compelling yet deceitful narratives. It is not merely that false claims circulate rapidly; rather, the sheer volume of synthetic discourse renders discernment arduous for even the most discerning citizens. When the boundaries between authentic documentation and algorithmic fabrication are blurred, democratic deliberation is reduced to a battle of affective tribalism rather than rational persuasion.
+
+Notwithstanding legitimate critiques regarding historical elitism within academic spheres, peer-reviewed consensus established a vital epistemic anchor for public policy. Under no circumstances can a deliberative democracy endure when the fundamental criteria for factual truth are dismantled into subjective opinion. Were societies to accept this chaotic trajectory as irreversible, participatory self-governance would collapse. Rigorous algorithmic accountability and institutional revival must therefore be pursued with uncompromising determination.`
+  },
+  {
+    id: "biotech-transhumanism-ethics",
+    title: "Biotechnological Enhancement, Transhumanism & Existential Ethics",
+    category: "Bioethics & Human Evolution",
+    type: "C2 Proficiency Discursive Essay",
+    cefrTarget: "C2",
+    recommendedTime: "50 minutes",
+    prompt: {
+      context: "You have attended an international symposium debating germline genome modification, neuro-enhancement technologies, and the post-human transition.",
+      points: [
+        "The potential to eradicate congenital disease and expand cognitive capacities",
+        "The peril of biological caste stratification and commodified human enhancement"
+      ],
+      task: "Write an essay synthesizing both arguments. Evaluate which dimension represents the more consequential challenge for future global governance, substantiating your stance with robust academic arguments. Target length: 280–320 words."
+    },
+    targetVocabulary: [
+      {
+        word: "germline",
+        ipa: "/ˈdʒɜːm.laɪn/",
+        pos: "noun/adjective",
+        definition: "The genetic material transmitted to offspring.",
+        collocation: "germline genetic editing",
+        example: "Heritable germline genetic editing raises unprecedented philosophical quandaries.",
+        stems: ["germline", "germ-line"]
+      },
+      {
+        word: "stratification",
+        ipa: "/ˌstræt.ɪ.fɪˈkeɪ.ʃən/",
+        pos: "noun",
+        definition: "The arrangement or classification of something into different groups or socioeconomic layers.",
+        collocation: "socio-biological stratification",
+        example: "Unequal access could crystallize an immutable socio-biological stratification.",
+        stems: ["stratification", "stratify", "stratified", "stratifying"]
+      },
+      {
+        word: "hegemony",
+        ipa: "/hɪˈɡem.ə.ni/",
+        pos: "noun",
+        definition: "Leadership or dominance, especially by one social group over others.",
+        collocation: "socio-economic hegemony",
+        example: "Entrenched elites could wield genetic enhancements to preserve their socio-economic hegemony.",
+        stems: ["hegemony", "hegemonic"]
+      },
+      {
+        word: "unfettered",
+        ipa: "/ʌnˈfet.əd/",
+        pos: "adjective",
+        definition: "Not confined or restricted; free from constraints.",
+        collocation: "unfettered commercial exploitation",
+        example: "Unfettered commercial exploitation of biotechnology threatens fundamental human dignity.",
+        stems: ["unfettered"]
+      },
+      {
+        word: "ineluctable",
+        ipa: "/ˌɪn.ɪˈlʌk.tə.bəl/",
+        pos: "adjective",
+        definition: "Unable to be resisted or avoided; inescapable.",
+        collocation: "ineluctable biological hegemony",
+        example: "Technological progress in genomics is not an ineluctable force devoid of human agency.",
+        stems: ["ineluctable", "ineluctably"]
+      },
+      {
+        word: "quandary",
+        ipa: "/ˈkwɒn.dri/",
+        pos: "noun",
+        definition: "A state of perplexity or uncertainty over what to do in a difficult situation.",
+        collocation: "formidable quandary",
+        example: "Regulators confront a profound ethical quandary regarding therapeutic versus elective interventions.",
+        stems: ["quandary", "quandaries"]
+      },
+      {
+        word: "equitable",
+        ipa: "/ˈek.wɪ.tə.bəl/",
+        pos: "adjective",
+        definition: "Fair and impartial.",
+        collocation: "equitable distribution",
+        example: "Establishing an equitable distribution of restorative treatments remains morally urgent.",
+        stems: ["equitable", "equitably", "equity"]
+      },
+      {
+        word: "transcend",
+        ipa: "/trænˈsend/ ",
+        pos: "verb",
+        definition: "Be or go beyond the range or limits of.",
+        collocation: "transcend biological limitations",
+        example: "The ambition to transcend biological limitations must not eclipse basic humanitarian obligations.",
+        stems: ["transcend", "transcends", "transcended", "transcending", "transcendence"]
+      }
+    ],
+    recommendedStructures: [
+      {
+        name: "Fronted Participle Clause",
+        pattern: "Confronted with + noun phrase, subject + verb",
+        example: "Confronted with this dilemma, bioethicists face a formidable quandary regarding enhancement."
+      },
+      {
+        name: "Inverted Conditional",
+        pattern: "Were + subject + past participle/infinitive, subject + would + infinitive",
+        example: "Were privileged strata permitted to monopolize augmentations, inequality would crystallize into hegemony."
+      },
+      {
+        name: "Passive Reporting Clause",
+        pattern: "It is widely contended that + clause",
+        example: "It is widely contended that establishing a rigid boundary between therapy and enhancement is impossible."
+      },
+      {
+        name: "Negative / Limiting Inversion",
+        pattern: "Under no circumstances should + subject + verb",
+        example: "Under no circumstances should societies permit the commodification of the human germline."
+      }
+    ],
+    sampleExcerpt: `The rapid progression of biotechnology has propelled humanity into an era wherein deliberate genetic intervention is no longer speculative science fiction. While the eradication of hereditary afflictions represents an inspiring humanitarian milestone, the prospect of elective germline genetic editing exposes unprecedented ethical fault lines. Unfettered commercial exploitation of such technologies threatens to dissolve the egalitarian tenets that sustain contemporary democratic civilization.
+
+What is of paramount importance is the acute danger of biological caste stratification. Were privileged socioeconomic strata permitted to monopolize cognitive and physiological augmentations, existing economic inequality would crystallize into an ineluctable biological hegemony. In such a dystopian configuration, socio-economic status would cease to be mutable; instead, it would become codified in the genome. The less affluent would confront not merely economic disparity, but a profound genetic disadvantage that no degree of diligence could overcome.
+
+Confronted with this dilemma, bioethicists face a formidable quandary regarding the delineation between restorative therapy and elective enhancement. It is widely contended that establishing a rigid conceptual boundary between curing debilitating pathology and engineering superior faculties is practically impossible. Furthermore, international regulatory divergence presents an acute risk: should one jurisdiction prohibit germline modifications, medical tourism will inevitably migrate to less scrupulous regimes.
+
+Notwithstanding the immense therapeutic promises inherent in genomic tools, the ambition to transcend biological limitations must not eclipse the moral imperative for equitable distribution. Under no circumstances should societies permit the commodification of the human germline without comprehensive global governance frameworks. The preservation of human equality requires proactive international treaties, robust bioethical oversight, and universal standards that ensure biotechnology remains an instrument of universal well-being rather than a catalyst for irreversible social divergence.`
+  }
 ];
 
 export const CEFR_DESCRIPTORS = {

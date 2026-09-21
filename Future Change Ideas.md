@@ -6,7 +6,7 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
 
 ## 1. Topic & Curriculum Enhancements
 - [ ] **Expand Topics**: Add more C1/C2 writing prompts to the `topics.js` file.
-- [ ] **C2 Proficiency Dedicated Mode**: Introduce C2 essay prompts with stricter word count limits (280–320 words) and higher syntactic thresholds.
+- [x] **C2 Proficiency Dedicated Mode**: Introduce C2 essay prompts with stricter word count limits (280–320 words) and higher syntactic thresholds. *(Completed: added dedicated C2 prompts in `topics.js`, 280–320 word count targets with live guidance, and stricter C2 evaluation thresholds)*
 - [ ] **Topic Progress Indicators**: Visual badge or checkmark on the topic card indicating whether an essay has already been written and evaluated for that specific prompt.
 - [ ] **Required Save States**: If any text is written inside the editor-wrapper, any other action that would change the page or close the application should be blocked until the user clicks chooses either "Save" button or "Cancel" button. If the user clicks the "Save" button the text should be saved in the local storage and remove the warning. If the user clicks the "Cancel" button the text should be deleted and the warning should be removed.
 - [ ] **Test Mode with Countdown**: Create a test mode for the user to practice writing essays under timed conditions. Timer must be placed close to the writing box. 
@@ -37,10 +37,10 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
 
 ## 4. UI / UX & Dashboard
 
-- **Change the "Target Standard"**: Change into a toggle button when the C2 dedicated mode is implemented. **It can automatically switch between C1 and C2 depending on the user's selection.** (It is currently a static text. It will be implemented in the future updates.)
+- [x] **Change the "Target Standard"**: Change into a toggle button when the C2 dedicated mode is implemented. **It can automatically switch between C1 and C2 depending on the user's selection.** *(Completed: interactive segmented switch in header with localStorage persistence)*
 
 - [ ] **Performance Analytics Dashboard**: Aggregate score history across the 4 assessment scales (Content, Communicative Achievement, Organisation, Language) over time with charts.
-- [ ] **Theme Preferences**: Define 2 set of colors palettes one for C1 and C2.
-- [ ] **Keyboard Shortcuts**: Add some future hotkeys when the toggle change between c1 and c2 is implemented. 
+- [x] **Theme Preferences**: Define 2 set of colors palettes one for C1 and C2. *(Completed: Royal Gold theme for C1, Imperial Amethyst & Platinum theme for C2)*
+- [x] **Keyboard Shortcuts**: Add some future hotkeys when the toggle change between c1 and c2 is implemented. *(Completed: Alt+M to switch between C1 and C2 modes)*
 - [ ] **Improve UI/UX testing new Color Combinations, Themes, and Layouts**: After implementation of the C1/C2 toggle switch, try some new UI/UX testing new Color Combinations, Themes, and Layouts for both C1 and C2 and compare them.
 ---

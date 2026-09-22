@@ -6,7 +6,8 @@ const topicAI = TOPICS[0]; // AI topic (C1/C2)
 const topicC2 = TOPICS.find(t => t.id === 'epistemic-authority-truth') || TOPICS[10];
 
 console.log("=== TEST 1: Authentic C1 Model Essay in C1 Mode ===");
-const c1ModelEssay = topicAI.sampleExcerpt + " Furthermore, robust regulatory frameworks are imperative to mitigate systemic risks and clearly delineate boundaries between algorithmic assistance and unmitigated autonomy. Without such safeguards, the ubiquitous integration of smart tools will serve as a catalyst for disconcerting socio-economic upheaval, accelerating an inexorable transformation of human labor.";
+const aiExcerpt = "Seldom has human ingenuity produced an instrument as transformative yet contentious as autonomous machine intelligence. While the ubiquitous integration of algorithmic computing promises unprecedented economic productivity, what remains of paramount concern is the inexorable dilution of human moral agency. It is widely contended that without stringent legislative benchmarks to delineate accountability, society risks delegating critical ethical adjudications to probabilistic models devoid of conscience.";
+const c1ModelEssay = aiExcerpt + " Furthermore, robust regulatory frameworks are imperative to mitigate systemic risks and clearly delineate boundaries between algorithmic assistance and unmitigated autonomy. Without such safeguards, the ubiquitous integration of smart tools will serve as a catalyst for disconcerting socio-economic upheaval, accelerating an inexorable transformation of human labor.";
 
 const evalPassC1 = evaluateEssay(c1ModelEssay, topicAI, 'C1');
 console.log("Score:", evalPassC1.rawTotal, "/ 20");
@@ -27,7 +28,13 @@ console.log("Meets Threshold:", evalFailB1.meetsThreshold);
 console.log("Informalities flagged:", evalFailB1.metrics.informalMatches);
 
 console.log("\n=== TEST 3: Dedicated C2 Model Essay in C2 Mode ===");
-const c2ModelEssay = topicC2.sampleExcerpt;
+const c2ModelEssay = `The traditional gatekeepers having been superseded, contemporary public discourse operates without centralized arbitration. The rapid delegitimization of institutional expertise, accompanied by the concomitant proliferation of synthetic information, has fundamentally compromised modern deliberative spheres. While the decentralization of knowledge initially promised genuine democratic emancipation, its unchecked progression has engendered an insidious epistemic fragmentation that threatens the stability of civic institutions.
+
+What is of paramount importance is the alarming mechanism through which algorithmic echo chambers actively obfuscate objective reality. By prioritizing sensationalism to maximize user engagement, commercial platforms incentivize fringe actors to promulgate unverified hypotheses with impunity. As a consequence, citizens become sequestered within ideologically fortified enclaves wherein empirical veracity is routinely subordinated to confirmation bias. This dynamic induces a pernicious cynicism that steadily dissolves collective trust in scientific methodologies, rendering constructive policy debates virtually impossible.
+
+Furthermore, it is widely contended that the weaponization of artificial intelligence exacerbates this predicament by facilitating the automated fabrication of compelling yet deceitful narratives. It is not merely that false claims circulate rapidly; rather, the sheer volume of synthetic discourse renders discernment arduous for even the most discerning citizens. When the boundaries between authentic documentation and algorithmic fabrication are blurred, democratic deliberation is reduced to a battle of affective tribalism rather than rational persuasion.
+
+Notwithstanding legitimate critiques regarding historical elitism within academic spheres, peer-reviewed consensus established a vital epistemic anchor for public policy. Under no circumstances can a deliberative democracy endure when the fundamental criteria for factual truth are dismantled into subjective opinion. Were societies to accept this chaotic trajectory as irreversible, participatory self-governance would collapse. Rigorous algorithmic accountability and institutional revival must therefore be pursued with uncompromising determination.`;
 const evalPassC2 = evaluateEssay(c2ModelEssay, topicC2, 'C2');
 console.log("Word count:", evalPassC2.metrics.wordCount);
 console.log("Score:", evalPassC2.rawTotal, "/ 20");

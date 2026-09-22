@@ -78,17 +78,9 @@ class FluentEdgeApp {
       topicType: document.getElementById('topicType'),
       topicTime: document.getElementById('topicTime'),
       topicTitle: document.getElementById('topicTitle'),
-      topicContext: document.getElementById('topicContext'),
-      topicPoints: document.getElementById('topicPoints'),
-      topicTask: document.getElementById('topicTask'),
       vocabGrid: document.getElementById('vocabGrid'),
       vocabUsedCounter: document.getElementById('vocabUsedCounter'),
       rerollVocabBtn: document.getElementById('rerollVocabBtn'),
-      toggleStructuresBtn: document.getElementById('toggleStructuresBtn'),
-      structuresBody: document.getElementById('structuresBody'),
-      structuresCaret: document.getElementById('structuresCaret'),
-      toggleSampleExcerptBtn: document.getElementById('toggleSampleExcerptBtn'),
-      sampleExcerptBox: document.getElementById('sampleExcerptBox'),
 
       // Writing Studio
       essayInput: document.getElementById('essayInput'),
@@ -98,7 +90,6 @@ class FluentEdgeApp {
       radarBadgesRow: document.getElementById('radarBadgesRow'),
       radarCountDisplay: document.getElementById('radarCountDisplay'),
       evaluateEssayBtn: document.getElementById('evaluateEssayBtn'),
-      loadSampleEssayBtn: document.getElementById('loadSampleEssayBtn'),
       clearEssayBtn: document.getElementById('clearEssayBtn'),
 
       // Evaluation Modal
@@ -169,19 +160,15 @@ class FluentEdgeApp {
         }
       });
     }
-    this.dom.toggleStructuresBtn.addEventListener('click', () => this.toggleStructuresAccordion());
-    this.dom.toggleSampleExcerptBtn.addEventListener('click', () => this.toggleSampleExcerpt());
     if (this.dom.rerollVocabBtn) {
       this.dom.rerollVocabBtn.addEventListener('click', () => {
         this.refreshRandomVocabulary(true);
-        this.showToast("Drawn 9 new random words (3 Verbs, 2 Nouns, 2 Adjectives, 2 Adverbs).", "info");
       });
     }
 
     // Editor events
     this.dom.essayInput.addEventListener('input', () => this.handleEditorInput());
     this.dom.clearEssayBtn.addEventListener('click', () => this.clearEssay());
-    this.dom.loadSampleEssayBtn.addEventListener('click', () => this.loadSampleDraft());
     this.dom.evaluateEssayBtn.addEventListener('click', () => this.triggerEvaluation());
 
     // Modal events
@@ -245,7 +232,6 @@ class FluentEdgeApp {
       if (status === 'recording') {
         this.dom.startSpeakingBtn.style.display = 'none';
         this.dom.stopSpeakingBtn.style.display = 'inline-flex';
-        this.showToast("Microphone active. Read aloud into your mic.", "info");
       } else if (status === 'idle') {
         this.dom.startSpeakingBtn.style.display = 'inline-flex';
         this.dom.stopSpeakingBtn.style.display = 'none';
@@ -268,7 +254,6 @@ class FluentEdgeApp {
     };
 
     this.speechEngine.onError = (message) => {
-      this.showToast(message, "error");
     };
   }
 
@@ -348,24 +333,9 @@ class FluentEdgeApp {
     this.dom.topicType.textContent = this.currentTopic.type;
     this.dom.topicTime.textContent = this.currentTopic.recommendedTime;
     this.dom.topicTitle.textContent = this.currentTopic.title;
-    this.dom.topicContext.textContent = this.currentTopic.prompt.context;
-
-    // Points
-    this.dom.topicPoints.innerHTML = this.currentTopic.prompt.points
-      .map(p => `<li>${p}</li>`)
-      .join('');
-
-    this.dom.topicTask.textContent = this.currentTopic.prompt.task;
 
     // Draw 9 random target vocabulary items (3 Verbs, 2 Nouns, 2 Adj, 2 Adv)
     this.refreshRandomVocabulary(true);
-
-    // Recommended Structures
-    this.renderRecommendedStructures();
-
-    // Sample Excerpt
-    this.dom.sampleExcerptBox.textContent = `"${this.currentTopic.sampleExcerpt}"`;
-    this.dom.sampleExcerptBox.style.display = 'none';
 
     // Update topic curriculum progress UI & card badge
     this.updateTopicProgressUI();
@@ -403,7 +373,7 @@ class FluentEdgeApp {
             </div>
             <div style="display: flex; align-items: center; gap: 4px;">
               <span class="vocab-used-check">✓ USED</span>
-              <button class="vocab-audio-btn" data-speak="${headword}" title="Hear native pronunciation">
+              <button class="vocab-audio-btn" data-speak="${headword}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
               </button>
             </div>
@@ -423,26 +393,7 @@ class FluentEdgeApp {
     });
   }
 
-  renderRecommendedStructures() {
-    this.dom.structuresBody.innerHTML = this.currentTopic.recommendedStructures.map(s => `
-      <div class="struct-item">
-        <div class="struct-title">${s.name}</div>
-        <div class="struct-pattern">${s.pattern}</div>
-        <div class="struct-example">"${s.example}"</div>
-      </div>
-    `).join('');
-  }
 
-  toggleStructuresAccordion() {
-    const isHidden = this.dom.structuresBody.style.display === 'none';
-    this.dom.structuresBody.style.display = isHidden ? 'flex' : 'none';
-    this.dom.structuresCaret.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
-  }
-
-  toggleSampleExcerpt() {
-    const isHidden = this.dom.sampleExcerptBox.style.display === 'none';
-    this.dom.sampleExcerptBox.style.display = isHidden ? 'block' : 'none';
-  }
 
   // ==========================================
   // WRITING STUDIO & REAL-TIME C1 RADAR
@@ -499,7 +450,7 @@ class FluentEdgeApp {
     if (metrics.detectedGrammar.length > 0) {
       this.dom.radarCountDisplay.textContent = `${metrics.detectedGrammar.length} advanced structures detected`;
       this.dom.radarBadgesRow.innerHTML = metrics.detectedGrammar.map(g => `
-        <span class="radar-badge active" title="${g.description}">
+        <span class="radar-badge active">
           ✓ ${g.name}
         </span>
       `).join('');
@@ -514,17 +465,11 @@ class FluentEdgeApp {
     this.updateCurrentTopicBadge();
   }
 
-  loadSampleDraft() {
-    this.dom.essayInput.value = this.currentTopic.sampleExcerpt;
-    this.handleEditorInput();
-    this.showToast(`Loaded sample ${this.currentTopic.cefrTarget || 'C1/C2'} model draft for evaluation.`, "info");
-  }
+
 
   clearEssay() {
-    if (confirm("Clear your current draft?")) {
-      this.dom.essayInput.value = "";
-      this.handleEditorInput();
-    }
+    this.dom.essayInput.value = "";
+    this.handleEditorInput();
   }
 
   // ==========================================
@@ -534,12 +479,10 @@ class FluentEdgeApp {
   triggerEvaluation() {
     const text = this.dom.essayInput.value.trim();
     if (!text) {
-      this.showToast("Please write or paste an essay first before evaluating.", "error");
       return;
     }
 
     if (text.split(/\s+/).length < 50) {
-      this.showToast("Essay is too short for a full C1/C2 evaluation. Write at least 150 words.", "error");
       return;
     }
 
@@ -657,13 +600,11 @@ class FluentEdgeApp {
     this.dom.liveSpeakingAcc.textContent = '0%';
     this.dom.liveSpeakingTime.textContent = '00:00';
     this.dom.speakingReportPanel.style.display = 'none';
-
-    this.showToast("Speaking Studio ready. Click words to hear model pronunciation, or press 'Start Reading Aloud'.", "info");
   }
 
   renderTeleprompterTokens(tokens) {
     this.dom.teleprompterText.innerHTML = tokens.map(token => `
-      <span class="teleprompter-word ${token.status}" data-index="${token.index}" title="Click to hear native pronunciation: ${token.text}">
+      <span class="teleprompter-word ${token.status}" data-index="${token.index}">
         ${token.text}
       </span>
     `).join(' ');
@@ -855,14 +796,11 @@ class FluentEdgeApp {
   }
 
   clearHistory() {
-    if (confirm("Clear your FluentEdge training logs and topic progress?")) {
-      localStorage.removeItem('fluentedge_history');
-      localStorage.removeItem('fluentedge_topic_progress');
-      this.topicProgress = {};
-      this.renderHistory();
-      this.updateTopicProgressUI();
-      this.showToast("History and topic progress cleared.", "info");
-    }
+    localStorage.removeItem('fluentedge_history');
+    localStorage.removeItem('fluentedge_topic_progress');
+    this.topicProgress = {};
+    this.renderHistory();
+    this.updateTopicProgressUI();
   }
 
   // ==========================================

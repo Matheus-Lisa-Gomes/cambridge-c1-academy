@@ -3,6 +3,7 @@
  */
 
 import { TOPICS } from './data/topics.js';
+import { getRandomVocabularySet } from './data/vocabulary.js';
 import { analyzeQuickMetrics, evaluateEssay, checkTargetWordUsage } from './modules/evaluator.js';
 import { SpeechEngine } from './modules/speech.js';
 
@@ -16,6 +17,7 @@ class FluentEdgeApp {
       this.targetLevel = localStorage.getItem('fluentedge_target_level') || 'C1';
     } catch (e) {}
 
+    this.activeVocabulary = [];
     this.speechEngine = new SpeechEngine();
     this.lastEvaluationResult = null;
     this.meetsC1Threshold = false;
@@ -81,6 +83,7 @@ class FluentEdgeApp {
       topicTask: document.getElementById('topicTask'),
       vocabGrid: document.getElementById('vocabGrid'),
       vocabUsedCounter: document.getElementById('vocabUsedCounter'),
+      rerollVocabBtn: document.getElementById('rerollVocabBtn'),
       toggleStructuresBtn: document.getElementById('toggleStructuresBtn'),
       structuresBody: document.getElementById('structuresBody'),
       structuresCaret: document.getElementById('structuresCaret'),
@@ -168,6 +171,12 @@ class FluentEdgeApp {
     }
     this.dom.toggleStructuresBtn.addEventListener('click', () => this.toggleStructuresAccordion());
     this.dom.toggleSampleExcerptBtn.addEventListener('click', () => this.toggleSampleExcerpt());
+    if (this.dom.rerollVocabBtn) {
+      this.dom.rerollVocabBtn.addEventListener('click', () => {
+        this.refreshRandomVocabulary(true);
+        this.showToast("Drawn 9 new random words (3 Verbs, 2 Nouns, 2 Adjectives, 2 Adverbs).", "info");
+      });
+    }
 
     // Editor events
     this.dom.essayInput.addEventListener('input', () => this.handleEditorInput());
@@ -308,6 +317,17 @@ class FluentEdgeApp {
     }
 
     if (this.dom.essayInput) {
+      this.refreshRandomVocabulary(true);
+      this.handleEditorInput();
+    }
+  }
+
+  refreshRandomVocabulary(force = false) {
+    if (force || !this.activeVocabulary || this.activeVocabulary.length === 0) {
+      this.activeVocabulary = getRandomVocabularySet(this.targetLevel);
+    }
+    this.renderVocabularyChips();
+    if (this.dom.essayInput) {
       this.handleEditorInput();
     }
   }
@@ -337,8 +357,8 @@ class FluentEdgeApp {
 
     this.dom.topicTask.textContent = this.currentTopic.prompt.task;
 
-    // Target Vocabulary Chips
-    this.renderVocabularyChips();
+    // Draw 9 random target vocabulary items (3 Verbs, 2 Nouns, 2 Adj, 2 Adv)
+    this.refreshRandomVocabulary(true);
 
     // Recommended Structures
     this.renderRecommendedStructures();
@@ -365,25 +385,30 @@ class FluentEdgeApp {
   }
 
   renderVocabularyChips() {
-    const text = this.dom.essayInput.value || "";
-    this.dom.vocabGrid.innerHTML = this.currentTopic.targetVocabulary.map((v, i) => {
+    if (!this.activeVocabulary || this.activeVocabulary.length === 0) {
+      this.activeVocabulary = getRandomVocabularySet(this.targetLevel);
+    }
+    const text = this.dom.essayInput ? (this.dom.essayInput.value || "") : "";
+    this.dom.vocabGrid.innerHTML = this.activeVocabulary.map((v) => {
       const usage = checkTargetWordUsage(v, text);
+      const headword = v.headword || v.word;
+      const posClass = `pos-${(v.pos || 'noun').toLowerCase()}`;
       return `
-        <div class="vocab-chip ${usage.used ? 'used' : ''}" data-word="${v.word}">
+        <div class="vocab-chip ${usage.used ? 'used' : ''}" data-word="${headword}">
           <div class="vocab-chip-top">
             <div class="vocab-word-title">
-              <span>${v.word}</span>
-              <span class="vocab-ipa">${v.ipa}</span>
+              <span class="vocab-word-text">${headword}</span>
+              <span class="vocab-pos-pill ${posClass}">${v.pos}</span>
+              <span class="vocab-cefr-pill">${v.cefr}</span>
             </div>
             <div style="display: flex; align-items: center; gap: 4px;">
               <span class="vocab-used-check">✓ USED</span>
-              <button class="vocab-audio-btn" data-speak="${v.word}" title="Hear native British pronunciation">
+              <button class="vocab-audio-btn" data-speak="${headword}" title="Hear native pronunciation">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
               </button>
             </div>
           </div>
-          <div class="vocab-collocation">${v.collocation}</div>
-          <div class="vocab-definition">${v.definition}</div>
+          <div class="vocab-type-meta">${(v.pos || '').toUpperCase()} • ${v.cefr} Target Lexis</div>
         </div>
       `;
     }).join('');
@@ -425,7 +450,7 @@ class FluentEdgeApp {
 
   handleEditorInput() {
     const text = this.dom.essayInput.value;
-    const metrics = analyzeQuickMetrics(text, this.currentTopic.targetVocabulary, this.targetLevel);
+    const metrics = analyzeQuickMetrics(text, this.activeVocabulary, this.targetLevel);
 
     // Live word count
     this.dom.liveWordCount.textContent = metrics.wordCount;
@@ -518,7 +543,7 @@ class FluentEdgeApp {
       return;
     }
 
-    const evalResult = evaluateEssay(text, this.currentTopic, this.targetLevel);
+    const evalResult = evaluateEssay(text, this.currentTopic, this.targetLevel, this.activeVocabulary);
     this.lastEvaluationResult = evalResult;
     this.meetsC1Threshold = evalResult.meetsThreshold;
 

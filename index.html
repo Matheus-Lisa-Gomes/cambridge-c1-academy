@@ -190,15 +190,27 @@
           reasons in support of your opinion.
         </p>
 
-        <!-- Compulsory Vocabulary Pack -->
+        <!-- Compulsory Vocabulary Pack (3 Verbs, 2 Nouns, 2 Adjectives, 2 Adverbs) -->
         <div class="vocabulary-section">
           <div class="section-subtitle">
-            <span>Compulsory C1/C2 Target Vocabulary (<span id="vocabUsedCounter">0/9</span> Used)</span>
-            <small style="color: var(--text-muted); font-size: 11px;">Stems & inflections accepted</small>
+            <div class="vocab-subtitle-left">
+              <span>Compulsory Target Lexis (<span id="vocabUsedCounter">0/9</span> Used)</span>
+              <span class="vocab-structure-tag" style="display: none;">3 Verbs • 2 Nouns • 2 Adj • 2 Adv</span>
+            </div>
+            <div class="vocab-subtitle-right">
+              <button id="rerollVocabBtn" class="btn btn-secondary btn-sm" title="Draw 9 new random words (3 Verbs, 2 Nouns, 2 Adjectives, 2 Adverbs)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                Reroll Lexis
+              </button>
+            </div>
           </div>
 
           <div class="vocab-grid" id="vocabGrid">
-            <!-- Dynamically populated vocabulary chips -->
+            <!-- Dynamically populated 9 vocabulary chips -->
           </div>
         </div>
 

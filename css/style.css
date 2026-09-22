@@ -1183,6 +1183,93 @@ body.theme-c2 .bento-active-pill {
   line-height: 1.4;
 }
 
+.vocab-subtitle-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.vocab-subtitle-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vocab-structure-tag {
+  display: none;
+  background: rgba(212, 160, 23, 0.12);
+  color: var(--gold-light);
+  border: 1px solid rgba(212, 160, 23, 0.3);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  font-family: var(--font-mono);
+}
+
+.theme-c2 .vocab-structure-tag {
+  background: rgba(168, 85, 247, 0.15);
+  color: #e9d5ff;
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.vocab-word-text {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.vocab-pos-pill {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.pos-verb {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.pos-noun {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.pos-adjective {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.pos-adverb {
+  background: rgba(20, 184, 166, 0.15);
+  color: #2dd4bf;
+  border: 1px solid rgba(20, 184, 166, 0.3);
+}
+
+.vocab-cefr-pill {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.vocab-type-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
 .vocab-used-check {
   font-size: 11px;
   font-weight: 700;

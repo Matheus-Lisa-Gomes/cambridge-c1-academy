@@ -46,19 +46,73 @@ console.log("Percentage:", evalC1inC2.percentage + "%");
 console.log("Meets C2 Threshold:", evalC1inC2.meetsThreshold);
 console.log("Content feedback:", evalC1inC2.scales.content.feedback);
 
+console.log("\n=== TEST 5: 9-Word Vocabulary Generator (3 Verbs, 2 Nouns, 2 Adjectives, 2 Adverbs) ===");
+import { getRandomVocabularySet } from './js/data/vocabulary.js';
+
+const vocabSetC1 = getRandomVocabularySet('C1');
+const vocabSetC2 = getRandomVocabularySet('C2');
+
+const c1Verbs = vocabSetC1.filter(w => w.pos.toLowerCase() === 'verb');
+const c1Nouns = vocabSetC1.filter(w => w.pos.toLowerCase() === 'noun');
+const c1Adjs = vocabSetC1.filter(w => w.pos.toLowerCase() === 'adjective');
+const c1Advs = vocabSetC1.filter(w => w.pos.toLowerCase() === 'adverb');
+
+console.log("C1 Vocab Count:", vocabSetC1.length, "(Expected: 9)");
+console.log("Verbs:", c1Verbs.length, "(Expected: 3)");
+console.log("Nouns:", c1Nouns.length, "(Expected: 2)");
+console.log("Adjectives:", c1Adjs.length, "(Expected: 2)");
+console.log("Adverbs:", c1Advs.length, "(Expected: 2)");
+
+const c2Verbs = vocabSetC2.filter(w => w.pos.toLowerCase() === 'verb');
+const c2Nouns = vocabSetC2.filter(w => w.pos.toLowerCase() === 'noun');
+const c2Adjs = vocabSetC2.filter(w => w.pos.toLowerCase() === 'adjective');
+const c2Advs = vocabSetC2.filter(w => w.pos.toLowerCase() === 'adverb');
+
+const structureValid = vocabSetC1.length === 9 &&
+                       c1Verbs.length === 3 &&
+                       c1Nouns.length === 2 &&
+                       c1Adjs.length === 2 &&
+                       c1Advs.length === 2 &&
+                       vocabSetC2.length === 9 &&
+                       c2Verbs.length === 3 &&
+                       c2Nouns.length === 2 &&
+                       c2Adjs.length === 2 &&
+                       c2Advs.length === 2;
+
+// Test evaluation with active vocabulary
+const sampleCustomText = `Seldom has society encountered such challenges. The authorities concurred and decided to alleviate the burden gracefully. This remarkable scenario proves that the outcome was extraordinarily effective.`;
+const customVocab = [
+  { headword: "concur", pos: "verb", cefr: "C1", stems: ["concur", "concurs", "concurred", "concurring"] },
+  { headword: "alleviate", pos: "verb", cefr: "C1", stems: ["alleviate", "alleviates", "alleviated", "alleviating"] },
+  { headword: "perpetuate", pos: "verb", cefr: "C1", stems: ["perpetuate", "perpetuates", "perpetuated"] },
+  { headword: "scenario", pos: "noun", cefr: "C1", stems: ["scenario", "scenarios"] },
+  { headword: "burden", pos: "noun", cefr: "C1", stems: ["burden", "burdens"] },
+  { headword: "remarkable", pos: "adjective", cefr: "C1", stems: ["remarkable"] },
+  { headword: "effective", pos: "adjective", cefr: "C1", stems: ["effective"] },
+  { headword: "gracefully", pos: "adverb", cefr: "C1", stems: ["gracefully"] },
+  { headword: "extraordinarily", pos: "adverb", cefr: "C1", stems: ["extraordinarily"] }
+];
+
+const quickMetrics = analyzeQuickMetrics(sampleCustomText, customVocab, 'C1');
+console.log("Quick Metrics words detected:", quickMetrics.targetWordsUsed, "/ 9");
+
 const allPassed = evalPassC1.meetsThreshold && 
                   !evalFailB1.meetsThreshold && 
                   evalPassC2.meetsThreshold && 
-                  !evalC1inC2.meetsThreshold;
+                  !evalC1inC2.meetsThreshold &&
+                  structureValid &&
+                  quickMetrics.targetWordsUsed >= 7;
 
 if (allPassed) {
-  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator accurately handles C1 and C2 standards! <<<");
+  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator & 9-Word Lexicon Engine accurately configured! <<<");
 } else {
   console.error("\n>>> TEST FAILED! <<<", {
     evalPassC1: evalPassC1.meetsThreshold,
     evalFailB1: evalFailB1.meetsThreshold,
     evalPassC2: evalPassC2.meetsThreshold,
-    evalC1inC2: evalC1inC2.meetsThreshold
+    evalC1inC2: evalC1inC2.meetsThreshold,
+    structureValid,
+    targetWordsUsed: quickMetrics.targetWordsUsed
   });
   process.exit(1);
 }

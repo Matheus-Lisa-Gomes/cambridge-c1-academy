@@ -73,9 +73,11 @@ const SYNTACTIC_PATTERNS = {
  */
 export function checkTargetWordUsage(wordObj, text) {
   const normalizedText = text.toLowerCase();
-  const stems = wordObj.stems || [wordObj.word];
+  const rawWord = wordObj.headword || wordObj.word || "";
+  const stems = wordObj.stems && wordObj.stems.length > 0 ? wordObj.stems : [rawWord];
   
   for (const stem of stems) {
+    if (!stem) continue;
     const regex = new RegExp(`\\b${escapeRegExp(stem.toLowerCase())}\\b`, 'i');
     const match = normalizedText.match(regex);
     if (match) {
@@ -110,12 +112,16 @@ export function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = '
   // Target vocabulary status
   const vocabStatus = targetVocabulary.map(v => {
     const res = checkTargetWordUsage(v, text);
+    const word = v.headword || v.word;
     return {
-      word: v.word,
+      word: word,
+      headword: word,
+      pos: v.pos || '',
+      cefr: v.cefr || '',
       used: res.used,
       matchedStem: res.matchedStem,
-      collocation: v.collocation,
-      ipa: v.ipa
+      collocation: v.collocation || '',
+      ipa: v.ipa || ''
     };
   });
 
@@ -166,7 +172,7 @@ export function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = '
 /**
  * Full FluentEdge C1/C2 Assessment Algorithm
  */
-export function evaluateEssay(text, currentTopic, targetLevel = 'C1') {
+export function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVocabulary = null) {
   const words = text.trim() ? text.trim().split(/\s+/) : [];
   const wordCount = words.length;
   const isC2 = targetLevel === 'C2';
@@ -182,7 +188,9 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1') {
     .filter(s => s.length > 0);
 
   // 1. Target Vocabulary Analysis
-  const targetVocabulary = currentTopic.targetVocabulary || [];
+  const targetVocabulary = (activeVocabulary && activeVocabulary.length > 0)
+    ? activeVocabulary
+    : ((currentTopic && currentTopic.targetVocabulary) || []);
   const targetUsageResults = targetVocabulary.map(v => {
     const usage = checkTargetWordUsage(v, text);
     return {
@@ -328,16 +336,17 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1') {
   let langScore = 2.5;
   const feedbackLang = [];
 
-  // Target vocabulary weight
-  const vocabRatio = usedTargetCount / Math.max(1, targetVocabulary.length);
+  // Target vocabulary weight (calibrated for 9-word challenge: 3 verbs, 2 nouns, 2 adj, 2 adv)
   const targetRequired = isC2 ? 6 : 4;
 
-  if (usedTargetCount >= targetRequired && vocabRatio >= 0.7) {
-    langScore += 1.5;
-    feedbackLang.push(`Outstanding command of required ${targetLevel} topic vocabulary (${usedTargetCount}/${targetVocabulary.length} words seamlessly integrated).`);
-  } else if (usedTargetCount >= 4) {
+  if (targetVocabulary.length === 0) {
     langScore += 0.8;
-    feedbackLang.push(`Good integration of target vocabulary (${usedTargetCount}/${targetVocabulary.length} words used), but ${isC2 ? 'C2 mode demands at least 6 items' : 'aim for at least 5 to secure top band'}.`);
+  } else if (usedTargetCount >= targetRequired) {
+    langScore += 1.5;
+    feedbackLang.push(`Outstanding command of required ${targetLevel} target vocabulary (${usedTargetCount}/${targetVocabulary.length} words seamlessly integrated).`);
+  } else if (usedTargetCount >= (isC2 ? 4 : 2)) {
+    langScore += 0.8;
+    feedbackLang.push(`Good integration of target vocabulary (${usedTargetCount}/${targetVocabulary.length} words used), but ${isC2 ? 'C2 mode demands at least 6 items' : 'aim for at least 4 to secure top band'}.`);
   } else {
     langScore -= 0.5;
     feedbackLang.push(`Target vocabulary underutilized: only ${usedTargetCount}/${targetVocabulary.length} required words incorporated. ${targetLevel} demands high lexical precision.`);
@@ -371,11 +380,18 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1') {
   let meetsC1 = false;
   let meetsC2 = false;
 
-  if (normalizedPercentage >= CEFR_DESCRIPTORS.C2.minScore && usedTargetCount >= 5 && identifiedStructures.length >= 2) {
+  const targetThresholdMetC2 = targetVocabulary.length > 0
+    ? (usedTargetCount >= Math.min(5, Math.ceil(targetVocabulary.length * 0.5)))
+    : true;
+  const targetThresholdMetC1 = targetVocabulary.length > 0
+    ? (usedTargetCount >= Math.min(4, Math.ceil(targetVocabulary.length * 0.4)))
+    : true;
+
+  if (normalizedPercentage >= CEFR_DESCRIPTORS.C2.minScore && targetThresholdMetC2 && identifiedStructures.length >= 2) {
     cefrResult = CEFR_DESCRIPTORS.C2;
     meetsC1 = true;
     meetsC2 = true;
-  } else if (normalizedPercentage >= CEFR_DESCRIPTORS.C1.minScore && usedTargetCount >= 4) {
+  } else if (normalizedPercentage >= CEFR_DESCRIPTORS.C1.minScore && targetThresholdMetC1) {
     cefrResult = CEFR_DESCRIPTORS.C1;
     meetsC1 = true;
     meetsC2 = false;
@@ -390,8 +406,12 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1') {
   }
 
   // Determine gatekeeper success based on active targetLevel
+  const targetGateMet = targetVocabulary.length > 0
+    ? (usedTargetCount >= Math.min(6, Math.ceil(targetVocabulary.length * 0.6)))
+    : true;
+
   const meetsThreshold = isC2
-    ? (meetsC2 && normalizedPercentage >= 85 && usedTargetCount >= 6 && identifiedStructures.length >= 2 && wordCount >= 260)
+    ? (meetsC2 && normalizedPercentage >= 85 && targetGateMet && identifiedStructures.length >= 2 && wordCount >= 260)
     : meetsC1;
 
   return {

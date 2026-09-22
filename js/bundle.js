@@ -2497,6 +2497,7 @@ class FluentEdgeApp {
     this.speechEngine = new SpeechEngine();
     this.lastEvaluationResult = null;
     this.meetsC1Threshold = false;
+    this.topicProgress = this.loadTopicProgress();
 
     this.dom = {};
     this.init();
@@ -2540,6 +2541,13 @@ class FluentEdgeApp {
       // Topic Card
       topicCounterCurrent: document.getElementById('topicCounterCurrent'),
       topicCounterTotal: document.getElementById('topicCounterTotal'),
+      topicStatusBadge: document.getElementById('topicStatusBadge'),
+      topicProgressTracker: document.getElementById('topicProgressTracker'),
+      trackerStats: document.getElementById('trackerStats'),
+      trackerBentoStrip: document.getElementById('trackerBentoStrip'),
+      trackerPrevBtn: document.getElementById('trackerPrevBtn'),
+      trackerNextBtn: document.getElementById('trackerNextBtn'),
+      topicJumpSelect: document.getElementById('topicJumpSelect'),
       prevTopicBtn: document.getElementById('prevTopicBtn'),
       nextTopicBtn: document.getElementById('nextTopicBtn'),
       topicCategory: document.getElementById('topicCategory'),
@@ -2622,6 +2630,20 @@ class FluentEdgeApp {
     // Topic events
     this.dom.prevTopicBtn.addEventListener('click', () => this.cyclePrevTopic());
     this.dom.nextTopicBtn.addEventListener('click', () => this.cycleNextTopic());
+    if (this.dom.trackerPrevBtn) {
+      this.dom.trackerPrevBtn.addEventListener('click', () => this.cyclePrevTopic());
+    }
+    if (this.dom.trackerNextBtn) {
+      this.dom.trackerNextBtn.addEventListener('click', () => this.cycleNextTopic());
+    }
+    if (this.dom.topicJumpSelect) {
+      this.dom.topicJumpSelect.addEventListener('change', (e) => {
+        const idx = parseInt(e.target.value, 10);
+        if (!isNaN(idx) && idx !== this.currentTopicIndex) {
+          this.loadTopic(idx);
+        }
+      });
+    }
     this.dom.toggleStructuresBtn.addEventListener('click', () => this.toggleStructuresAccordion());
     this.dom.toggleSampleExcerptBtn.addEventListener('click', () => this.toggleSampleExcerpt());
 
@@ -2803,6 +2825,9 @@ class FluentEdgeApp {
     this.dom.sampleExcerptBox.textContent = `"${this.currentTopic.sampleExcerpt}"`;
     this.dom.sampleExcerptBox.style.display = 'none';
 
+    // Update topic curriculum progress UI & card badge
+    this.updateTopicProgressUI();
+
     // Reset editor analysis for new topic
     this.handleEditorInput();
   }
@@ -2937,6 +2962,9 @@ class FluentEdgeApp {
         <span class="radar-badge-empty">Write complex structures (e.g. "Seldom has...", "What is of paramount...", "It is widely contended that...") to activate radar.</span>
       `;
     }
+
+    // Dynamic card status badge update (e.g. Draft in Progress)
+    this.updateCurrentTopicBadge();
   }
 
   loadSampleDraft() {
@@ -3024,6 +3052,7 @@ class FluentEdgeApp {
     // Save to history
     this.saveSessionToHistory({
       type: 'writing',
+      topicId: this.currentTopic.id,
       targetLevel: this.targetLevel,
       topicTitle: this.currentTopic.title,
       text: text,
@@ -3031,6 +3060,16 @@ class FluentEdgeApp {
       percentage: evalResult.percentage,
       band: evalResult.cefr.band,
       meetsThreshold: evalResult.meetsThreshold,
+      date: new Date().toISOString()
+    });
+
+    // Record topic progress
+    this.recordTopicEvaluation(this.currentTopic.id, {
+      score: evalResult.rawTotal,
+      percentage: evalResult.percentage,
+      band: evalResult.cefr.band,
+      meetsThreshold: evalResult.meetsThreshold,
+      targetLevel: this.targetLevel,
       date: new Date().toISOString()
     });
   }
@@ -3269,10 +3308,244 @@ class FluentEdgeApp {
   }
 
   clearHistory() {
-    if (confirm("Clear your FluentEdge training logs?")) {
+    if (confirm("Clear your FluentEdge training logs and topic progress?")) {
       localStorage.removeItem('fluentedge_history');
+      localStorage.removeItem('fluentedge_topic_progress');
+      this.topicProgress = {};
       this.renderHistory();
-      this.showToast("History cleared.", "info");
+      this.updateTopicProgressUI();
+      this.showToast("History and topic progress cleared.", "info");
+    }
+  }
+
+  // ==========================================
+  // TOPIC PROGRESS TRACKING & INDICATORS
+  // ==========================================
+
+  loadTopicProgress() {
+    let progress = {};
+    try {
+      const saved = localStorage.getItem('fluentedge_topic_progress');
+      if (saved) {
+        progress = JSON.parse(saved);
+      }
+    } catch (e) {
+      console.warn("Could not load topic progress from localStorage", e);
+    }
+
+    // Automatically synchronize with existing history if available
+    try {
+      const history = JSON.parse(localStorage.getItem('fluentedge_history') || '[]');
+      let hasNewSync = false;
+      history.forEach(item => {
+        if (item.type === 'writing') {
+          const topic = this.topics.find(t => 
+            (item.topicId && t.id === item.topicId) || 
+            (item.topicTitle && t.title === item.topicTitle)
+          );
+          if (topic) {
+            const key = topic.id;
+            const existing = progress[key];
+            if (!existing || (item.percentage !== undefined && item.percentage > (existing.percentage || 0))) {
+              progress[key] = {
+                evaluated: true,
+                score: item.score,
+                percentage: item.percentage,
+                band: item.band,
+                meetsThreshold: item.meetsThreshold,
+                targetLevel: item.targetLevel || 'C1',
+                date: item.date
+              };
+              hasNewSync = true;
+            }
+          }
+        }
+      });
+      if (hasNewSync) {
+        localStorage.setItem('fluentedge_topic_progress', JSON.stringify(progress));
+      }
+    } catch (e) {}
+
+    return progress;
+  }
+
+  recordTopicEvaluation(topicId, result) {
+    const existing = this.topicProgress[topicId];
+    this.topicProgress[topicId] = {
+      evaluated: true,
+      score: result.score,
+      percentage: result.percentage,
+      band: result.band,
+      meetsThreshold: result.meetsThreshold,
+      targetLevel: result.targetLevel,
+      date: result.date,
+      bestScore: existing && existing.bestScore ? Math.max(existing.bestScore, result.score) : result.score,
+      bestPercentage: existing && existing.bestPercentage ? Math.max(existing.bestPercentage, result.percentage) : result.percentage,
+      attemptsCount: ((existing && existing.attemptsCount) || 0) + 1
+    };
+
+    try {
+      localStorage.setItem('fluentedge_topic_progress', JSON.stringify(this.topicProgress));
+    } catch (e) {
+      console.warn("Could not save topic progress to localStorage", e);
+    }
+
+    this.updateTopicProgressUI();
+  }
+
+  updateTopicProgressUI() {
+    // 1. Update Curriculum Mastery Header Summary
+    if (this.dom.trackerStats) {
+      const completedCount = this.topics.filter(t => this.topicProgress[t.id]?.meetsThreshold).length;
+      const attemptedCount = this.topics.filter(t => this.topicProgress[t.id]?.evaluated).length;
+      if (completedCount === this.topics.length) {
+        this.dom.trackerStats.textContent = `★ All ${this.topics.length} Prompts Mastered!`;
+      } else if (attemptedCount > completedCount) {
+        this.dom.trackerStats.textContent = `${completedCount} / ${this.topics.length} Mastered • ${attemptedCount} Attempted`;
+      } else {
+        this.dom.trackerStats.textContent = `${completedCount} / ${this.topics.length} Prompts Completed`;
+      }
+    }
+
+    // 2. Synchronize Quick Jump Selector
+    if (this.dom.topicJumpSelect) {
+      if (this.dom.topicJumpSelect.options.length !== this.topics.length) {
+        this.dom.topicJumpSelect.innerHTML = this.topics.map((t, i) => {
+          const num = String(i + 1).padStart(2, '0');
+          const prog = this.topicProgress[t.id];
+          let mark = '○';
+          if (prog?.evaluated) {
+            mark = prog.meetsThreshold ? '✓' : '⟳';
+          }
+          return `<option value="${i}">[${mark}] #${num}: ${t.title.substring(0, 30)}...</option>`;
+        }).join('');
+      } else {
+        // Update marks in existing options
+        Array.from(this.dom.topicJumpSelect.options).forEach((opt, i) => {
+          const t = this.topics[i];
+          const num = String(i + 1).padStart(2, '0');
+          const prog = this.topicProgress[t.id];
+          let mark = '○';
+          if (prog?.evaluated) {
+            mark = prog.meetsThreshold ? '✓' : '⟳';
+          }
+          opt.textContent = `[${mark}] #${num}: ${t.title.substring(0, 30)}...`;
+        });
+      }
+      this.dom.topicJumpSelect.value = String(this.currentTopicIndex);
+    }
+
+    // 3. Render / Update Fixed Bento Boxes (Slots stay stationary; numbers change)
+    if (this.dom.trackerBentoStrip) {
+      const offsets = [-2, -1, 0, 1, 2];
+      const total = this.topics.length;
+
+      this.dom.trackerBentoStrip.innerHTML = offsets.map(offset => {
+        const topicIndex = ((this.currentTopicIndex + offset) % total + total) % total;
+        const topic = this.topics[topicIndex];
+        const prog = this.topicProgress[topic.id];
+        const isCenter = (offset === 0);
+        const numStr = String(topicIndex + 1).padStart(2, '0');
+
+        let statusClass = 'status-unattempted';
+        let statusIcon = '○';
+        let badgeText = 'Not Started';
+        let tooltip = `Prompt #${numStr}: ${topic.title} (Not Attempted)`;
+
+        if (prog?.evaluated) {
+          if (prog.meetsThreshold) {
+            statusClass = 'status-passed';
+            statusIcon = '✓';
+            const cleanBand = (prog.band || 'C1').replace('Estimated ', '');
+            badgeText = `${cleanBand} (${prog.percentage}%)`;
+            tooltip = `Prompt #${numStr}: ${topic.title} (Passed: ${prog.score}/20 • ${prog.percentage}%)`;
+          } else {
+            statusClass = 'status-revision';
+            statusIcon = '⟳';
+            badgeText = `Revise (${prog.percentage}%)`;
+            tooltip = `Prompt #${numStr}: ${topic.title} (Revision: ${prog.score}/20 • ${prog.percentage}%)`;
+          }
+        } else if (isCenter && this.dom.essayInput && this.dom.essayInput.value.trim().length > 0) {
+          statusClass = 'status-draft';
+          statusIcon = '✎';
+          badgeText = 'Drafting';
+          tooltip = `Prompt #${numStr}: ${topic.title} (Draft in Progress)`;
+        }
+
+        const boxTypeClass = isCenter ? 'active-bento' : 'adjacent-bento';
+        const activePill = isCenter ? `<span class="bento-active-pill">ACTIVE</span>` : '';
+
+        return `
+          <div class="bento-box ${boxTypeClass} ${statusClass}" 
+               data-target-index="${topicIndex}" 
+               role="tab" 
+               aria-selected="${isCenter}" 
+               title="${tooltip}">
+            <div class="bento-top">
+              <span class="bento-num">#${numStr}</span>
+              <span class="bento-indicator ${statusClass}">${statusIcon}</span>
+            </div>
+            <div class="bento-title" title="${topic.title}">${topic.title}</div>
+            <div class="bento-footer">
+              <span class="bento-badge ${statusClass}">${badgeText}</span>
+              ${activePill}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add click on bento boxes: clicking an adjacent box shifts that topic to active center
+      this.dom.trackerBentoStrip.querySelectorAll('.bento-box').forEach(box => {
+        box.addEventListener('click', () => {
+          const targetIdx = parseInt(box.getAttribute('data-target-index'), 10);
+          if (!isNaN(targetIdx) && targetIdx !== this.currentTopicIndex) {
+            this.loadTopic(targetIdx);
+          }
+        });
+      });
+    }
+
+    // 4. Update Card Status Badge for current topic
+    this.updateCurrentTopicBadge();
+  }
+
+  updateCurrentTopicBadge() {
+    if (!this.dom.topicStatusBadge) return;
+
+    const currentProg = this.topicProgress[this.currentTopic.id];
+    const hasDraft = this.dom.essayInput && this.dom.essayInput.value.trim().length > 0;
+
+    if (currentProg?.evaluated) {
+      if (currentProg.meetsThreshold) {
+        const cleanBand = (currentProg.band || 'C1').replace('Estimated ', '');
+        this.dom.topicStatusBadge.className = 'topic-status-badge status-passed';
+        this.dom.topicStatusBadge.title = `Evaluated: ${currentProg.score}/20 (${currentProg.percentage}%) • Standard Met`;
+        this.dom.topicStatusBadge.innerHTML = `
+          <span class="status-icon">✓</span>
+          <span class="status-label">Evaluated • ${cleanBand} (${currentProg.percentage}%)</span>
+        `;
+      } else {
+        this.dom.topicStatusBadge.className = 'topic-status-badge status-revision';
+        this.dom.topicStatusBadge.title = `Evaluated: ${currentProg.score}/20 (${currentProg.percentage}%) • Revision Recommended`;
+        this.dom.topicStatusBadge.innerHTML = `
+          <span class="status-icon">⟳</span>
+          <span class="status-label">Evaluated • Needs Revision (${currentProg.percentage}%)</span>
+        `;
+      }
+    } else if (hasDraft) {
+      this.dom.topicStatusBadge.className = 'topic-status-badge status-draft';
+      this.dom.topicStatusBadge.title = 'Draft in progress for this prompt';
+      this.dom.topicStatusBadge.innerHTML = `
+        <span class="status-icon">✎</span>
+        <span class="status-label">Draft in Progress</span>
+      `;
+    } else {
+      this.dom.topicStatusBadge.className = 'topic-status-badge status-unattempted';
+      this.dom.topicStatusBadge.title = 'No evaluation recorded yet for this prompt';
+      this.dom.topicStatusBadge.innerHTML = `
+        <span class="status-icon">○</span>
+        <span class="status-label">Not Attempted</span>
+      `;
     }
   }
 

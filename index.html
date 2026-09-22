@@ -110,6 +110,10 @@
               <span class="topic-counter-sep">/</span>
               <span class="topic-counter-total" id="topicCounterTotal">—</span>
             </span>
+            <span class="topic-status-badge status-unattempted" id="topicStatusBadge" title="Topic Evaluation Status">
+              <span class="status-icon">○</span>
+              <span class="status-label">Not Attempted</span>
+            </span>
           </div>
           <div class="panel-actions">
             <button id="prevTopicBtn" class="btn btn-secondary" title="Previous Topic (Alt+←)">
@@ -125,6 +129,39 @@
               </svg>
               Next Topic
               <kbd class="hotkey-badge">Alt+→</kbd>
+            </button>
+          </div>
+        </div>
+
+        <!-- Topic Curriculum Progress Tracker with Dynamic Bento Carousel -->
+        <div class="topic-progress-tracker" id="topicProgressTracker" aria-label="Curriculum Progress Navigation">
+          <div class="tracker-header">
+            <div class="tracker-header-left">
+              <span class="tracker-title">Curriculum Mastery</span>
+              <span class="tracker-stats" id="trackerStats">0 / 12 Prompts Completed</span>
+            </div>
+            <div class="tracker-header-right">
+              <select id="topicJumpSelect" class="topic-jump-select" title="Jump directly to any prompt" aria-label="Jump directly to prompt">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+          </div>
+
+          <div class="tracker-bento-viewport">
+            <button type="button" id="trackerPrevBtn" class="bento-nav-btn" title="Previous Prompt (Alt+←)" aria-label="Previous Prompt">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+
+            <div class="tracker-bento-strip" id="trackerBentoStrip" role="tablist" aria-label="Topic Prompts Carousel">
+              <!-- 5 Fixed Bento Boxes dynamically changing their numbers & statuses -->
+            </div>
+
+            <button type="button" id="trackerNextBtn" class="bento-nav-btn" title="Next Prompt (Alt+→)" aria-label="Next Prompt">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
             </button>
           </div>
         </div>

@@ -7,7 +7,7 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
 ## 1. Topic & Curriculum Enhancements
 - [ ] **Expand Topics**: Add more C1/C2 writing prompts to the `topics.js` file.
 - [x] **C2 Proficiency Dedicated Mode**: Introduce C2 essay prompts with stricter word count limits (280–320 words) and higher syntactic thresholds. *(Completed: added dedicated C2 prompts in `topics.js`, 280–320 word count targets with live guidance, and stricter C2 evaluation thresholds)*
-- [x] **Topic Progress Indicators**: Visual badge or checkmark on the topic card indicating whether an essay has already been written and evaluated for that specific prompt. *(Completed: dynamic card status badge [Passed, Revision, Draft, Not Attempted], interactive 12-prompt curriculum navigator strip with completion summary, localStorage persistence, and history sync)*
+- [ ] **Topic Progress Indicators**: Visual badge or checkmark on the topic card indicating whether an essay has already been written and evaluated for that specific prompt.
 - [ ] **Required Save States**: If any text is written inside the editor-wrapper, any other action that would change the page or close the application should be blocked until the user clicks chooses either "Save" button or "Cancel" button. If the user clicks the "Save" button the text should be saved in the local storage and remove the warning. If the user clicks the "Cancel" button the text should be deleted and the warning should be removed.
 - [ ] **Test Mode with Countdown**: Create a test mode for the user to practice writing essays under timed conditions. Timer must be placed close to the writing box. 
 

@@ -21,7 +21,6 @@ class FluentEdgeApp {
     this.speechEngine = new SpeechEngine();
     this.lastEvaluationResult = null;
     this.meetsC1Threshold = false;
-    this.topicProgress = this.loadTopicProgress();
 
     this.dom = {};
     this.init();
@@ -32,7 +31,7 @@ class FluentEdgeApp {
     this.bindEvents();
     this.bindHotkeys();
     this.setupSpeechEngineCallbacks();
-    this.setTargetLevel(this.targetLevel);
+    this.setTargetLevel(this.targetLevel, true);
     this.loadTopic(0);
     this.renderHistory();
   }
@@ -65,13 +64,6 @@ class FluentEdgeApp {
       // Topic Card
       topicCounterCurrent: document.getElementById('topicCounterCurrent'),
       topicCounterTotal: document.getElementById('topicCounterTotal'),
-      topicStatusBadge: document.getElementById('topicStatusBadge'),
-      topicProgressTracker: document.getElementById('topicProgressTracker'),
-      trackerStats: document.getElementById('trackerStats'),
-      trackerBentoStrip: document.getElementById('trackerBentoStrip'),
-      trackerPrevBtn: document.getElementById('trackerPrevBtn'),
-      trackerNextBtn: document.getElementById('trackerNextBtn'),
-      topicJumpSelect: document.getElementById('topicJumpSelect'),
       prevTopicBtn: document.getElementById('prevTopicBtn'),
       nextTopicBtn: document.getElementById('nextTopicBtn'),
       topicCategory: document.getElementById('topicCategory'),
@@ -112,6 +104,16 @@ class FluentEdgeApp {
       gatekeeperSubtext: document.getElementById('gatekeeperSubtext'),
       gatekeeperActionBtn: document.getElementById('gatekeeperActionBtn'),
 
+      // Front-and-Center Requirement Alert Modal
+      reqAlertBackdrop: document.getElementById('reqAlertBackdrop'),
+      reqAlertCard: document.getElementById('reqAlertCard'),
+      reqAlertPill: document.getElementById('reqAlertPill'),
+      reqAlertTitle: document.getElementById('reqAlertTitle'),
+      reqAlertDesc: document.getElementById('reqAlertDesc'),
+      reqAlertBody: document.getElementById('reqAlertBody'),
+      reqAlertActionBtn: document.getElementById('reqAlertActionBtn'),
+      closeReqAlertBtn: document.getElementById('closeReqAlertBtn'),
+
       // Speaking Studio
       returnToWritingBtn: document.getElementById('returnToWritingBtn'),
       teleprompterText: document.getElementById('teleprompterText'),
@@ -146,22 +148,13 @@ class FluentEdgeApp {
     // Topic events
     this.dom.prevTopicBtn.addEventListener('click', () => this.cyclePrevTopic());
     this.dom.nextTopicBtn.addEventListener('click', () => this.cycleNextTopic());
-    if (this.dom.trackerPrevBtn) {
-      this.dom.trackerPrevBtn.addEventListener('click', () => this.cyclePrevTopic());
-    }
-    if (this.dom.trackerNextBtn) {
-      this.dom.trackerNextBtn.addEventListener('click', () => this.cycleNextTopic());
-    }
-    if (this.dom.topicJumpSelect) {
-      this.dom.topicJumpSelect.addEventListener('change', (e) => {
-        const idx = parseInt(e.target.value, 10);
-        if (!isNaN(idx) && idx !== this.currentTopicIndex) {
-          this.loadTopic(idx);
-        }
-      });
-    }
     if (this.dom.rerollVocabBtn) {
       this.dom.rerollVocabBtn.addEventListener('click', () => {
+        if (this.hasEssayContent()) {
+          if (!confirm("You have an essay in progress. Rerolling compulsory target lexis will generate a new set of 9 words, and words you have already written may no longer count. Are you sure you want to reroll?")) {
+            return;
+          }
+        }
         this.refreshRandomVocabulary(true);
       });
     }
@@ -178,6 +171,19 @@ class FluentEdgeApp {
     });
     this.dom.gatekeeperActionBtn.addEventListener('click', () => this.handleGatekeeperAction());
 
+    // Front-and-Center Requirement Alert Modal events
+    if (this.dom.closeReqAlertBtn) {
+      this.dom.closeReqAlertBtn.addEventListener('click', () => this.closeRequirementAlert());
+    }
+    if (this.dom.reqAlertActionBtn) {
+      this.dom.reqAlertActionBtn.addEventListener('click', () => this.closeRequirementAlert());
+    }
+    if (this.dom.reqAlertBackdrop) {
+      this.dom.reqAlertBackdrop.addEventListener('click', (e) => {
+        if (e.target === this.dom.reqAlertBackdrop) this.closeRequirementAlert();
+      });
+    }
+
     // Speaking Studio events
     this.dom.returnToWritingBtn.addEventListener('click', () => this.returnToWriting());
     this.dom.startSpeakingBtn.addEventListener('click', () => this.startSpeakingSession());
@@ -189,12 +195,34 @@ class FluentEdgeApp {
     this.dom.historyDrawerBtn.addEventListener('click', () => this.openHistoryDrawer());
     this.dom.closeHistoryBtn.addEventListener('click', () => this.closeHistoryDrawer());
     this.dom.clearHistoryBtn.addEventListener('click', () => this.clearHistory());
+
+    // Guard against accidental window/tab close or refresh when draft exists
+    window.addEventListener('beforeunload', (e) => {
+      if (this.hasEssayContent()) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
   }
 
   bindHotkeys() {
     document.addEventListener('keydown', (e) => {
-      const modalOpen = this.dom.evalModalBackdrop.classList.contains('visible') ||
-                        this.dom.evalModalBackdrop.style.display === 'flex';
+      const reqAlertOpen = this.dom.reqAlertBackdrop && (
+        this.dom.reqAlertBackdrop.classList.contains('open') ||
+        this.dom.reqAlertBackdrop.style.display === 'flex'
+      );
+
+      // Escape / Enter when requirement alert is open -> close alert & focus editor
+      if (reqAlertOpen && (e.key === 'Escape' || e.key === 'Enter')) {
+        e.preventDefault();
+        this.closeRequirementAlert();
+        return;
+      }
+
+      const modalOpen = (this.dom.evalModalBackdrop.classList.contains('visible') ||
+                        this.dom.evalModalBackdrop.style.display === 'flex' ||
+                        this.dom.evalModalBackdrop.classList.contains('open')) ||
+                        Boolean(reqAlertOpen);
       const inTextField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
 
       // Alt+M  →  Toggle C1 / C2 Standard Mode
@@ -257,7 +285,15 @@ class FluentEdgeApp {
     };
   }
 
-  setTargetLevel(level) {
+  setTargetLevel(level, force = false) {
+    if (!force && level === this.targetLevel) {
+      return;
+    }
+    if (!force && this.hasEssayContent()) {
+      if (!confirm("You have an essay in progress. Switching target standards between C1 and C2 will reconfigure your word count target and compulsory vocabulary. Are you sure you want to switch standards?")) {
+        return;
+      }
+    }
     this.targetLevel = level;
     try {
       localStorage.setItem('fluentedge_target_level', level);
@@ -337,20 +373,29 @@ class FluentEdgeApp {
     // Draw 9 random target vocabulary items (3 Verbs, 2 Nouns, 2 Adj, 2 Adv)
     this.refreshRandomVocabulary(true);
 
-    // Update topic curriculum progress UI & card badge
-    this.updateTopicProgressUI();
-
     // Reset editor analysis for new topic
     this.handleEditorInput();
   }
 
   cyclePrevTopic() {
+    if (this.hasEssayContent()) {
+      if (!confirm("You have an essay in progress. Navigating to another topic will discard your current draft. Are you sure you want to leave this prompt?")) {
+        return;
+      }
+    }
     const prevIndex = (this.currentTopicIndex - 1 + this.topics.length) % this.topics.length;
+    if (this.dom.essayInput) this.dom.essayInput.value = "";
     this.loadTopic(prevIndex);
   }
 
   cycleNextTopic() {
+    if (this.hasEssayContent()) {
+      if (!confirm("You have an essay in progress. Navigating to another topic will discard your current draft. Are you sure you want to leave this prompt?")) {
+        return;
+      }
+    }
     const nextIndex = (this.currentTopicIndex + 1) % this.topics.length;
+    if (this.dom.essayInput) this.dom.essayInput.value = "";
     this.loadTopic(nextIndex);
   }
 
@@ -461,13 +506,70 @@ class FluentEdgeApp {
       `;
     }
 
-    // Dynamic card status badge update (e.g. Draft in Progress)
-    this.updateCurrentTopicBadge();
+    // Update Evaluate Essay Button state based on compulsory lexis fulfillment
+    const allLexisFulfilled = metrics.targetWordsTotal > 0 && metrics.targetWordsUsed >= metrics.targetWordsTotal;
+    if (this.dom.evaluateEssayBtn) {
+      if (allLexisFulfilled) {
+        this.dom.evaluateEssayBtn.classList.remove('btn-locked-lexis');
+        this.dom.evaluateEssayBtn.classList.add('btn-lexis-ready');
+        this.dom.evaluateEssayBtn.setAttribute('aria-disabled', 'false');
+        this.dom.evaluateEssayBtn.title = `All ${metrics.targetWordsTotal} compulsory target words fulfilled! Click or press Ctrl+Enter to evaluate.`;
+        this.dom.evaluateEssayBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          Evaluate Text (All 9 Lexis Fulfilled)
+          <kbd class="hotkey-badge">Ctrl+↵</kbd>
+        `;
+      } else {
+        this.dom.evaluateEssayBtn.classList.remove('btn-lexis-ready');
+        this.dom.evaluateEssayBtn.classList.add('btn-locked-lexis');
+        this.dom.evaluateEssayBtn.setAttribute('aria-disabled', 'true');
+        this.dom.evaluateEssayBtn.title = `Incorporate all ${metrics.targetWordsTotal} compulsory target words to unlock evaluation (currently ${metrics.targetWordsUsed}/${metrics.targetWordsTotal} used).`;
+        this.dom.evaluateEssayBtn.innerHTML = `
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Evaluate Text (${metrics.targetWordsUsed}/${metrics.targetWordsTotal} Lexis Used)
+          <kbd class="hotkey-badge">Ctrl+↵</kbd>
+        `;
+      }
+    }
   }
 
+  highlightMissingVocabChips(missingNames) {
+    if (!missingNames || missingNames.length === 0 || !this.dom.vocabGrid) return;
 
+    missingNames.forEach(name => {
+      const chip = this.dom.vocabGrid.querySelector(`[data-word="${name}"]`);
+      if (chip) {
+        chip.classList.remove('chip-missing-pulse');
+        void chip.offsetWidth; // Force reflow to re-trigger CSS animation
+        chip.classList.add('chip-missing-pulse');
+        setTimeout(() => {
+          chip.classList.remove('chip-missing-pulse');
+        }, 1200);
+      }
+    });
+
+    const vocabSection = document.querySelector('.vocabulary-section');
+    if (vocabSection && window.innerWidth <= 1024) {
+      vocabSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  hasEssayContent() {
+    return Boolean(this.dom.essayInput && this.dom.essayInput.value.trim().length > 0);
+  }
 
   clearEssay() {
+    if (this.hasEssayContent()) {
+      if (!confirm("Are you sure you want to clear your essay draft? This action cannot be undone.")) {
+        return;
+      }
+    }
     this.dom.essayInput.value = "";
     this.handleEditorInput();
   }
@@ -476,13 +578,171 @@ class FluentEdgeApp {
   // FLUENTEDGE C1/C2 WRITING ASSESSMENT & GATEKEEPER
   // ==========================================
 
+  showRequirementAlert({ isTextEmpty, isUnderMinWords, wordCount, minWords, targetWordsUsed, targetWordsTotal, missingLexis }) {
+    if (!this.dom.reqAlertBackdrop || !this.dom.reqAlertBody) return;
+
+    this.pendingMissingLexis = missingLexis ? missingLexis.map(m => m.word) : [];
+
+    let itemsHtml = '';
+
+    // 1. Word Count Requirement Item
+    if (isTextEmpty) {
+      itemsHtml += `
+        <div class="req-item item-missing">
+          <div class="req-item-icon">✕</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Essay Draft Required</span>
+              <span style="font-size: 11px; color: #f87171; font-weight: 700;">0 Words Written</span>
+            </div>
+            <div class="req-item-subtitle">
+              Your essay editor is currently empty. Please write your response to the topic prompt before submitting for evaluation.
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (isUnderMinWords) {
+      const wordsNeeded = minWords - wordCount;
+      itemsHtml += `
+        <div class="req-item item-missing">
+          <div class="req-item-icon">✕</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Minimum Length Required</span>
+              <span style="font-size: 11px; color: #f87171; font-weight: 700;">${wordCount} / ${minWords} Words</span>
+            </div>
+            <div class="req-item-subtitle">
+              Your draft contains ${wordCount} words. A minimum of ${minWords} words is required for rigorous CEFR assessment (needs ${wordsNeeded} more word${wordsNeeded === 1 ? '' : 's'}).
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      itemsHtml += `
+        <div class="req-item item-met">
+          <div class="req-item-icon">✓</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Length Requirement Satisfied</span>
+              <span style="font-size: 11px; color: #34d399; font-weight: 700;">${wordCount} Words</span>
+            </div>
+            <div class="req-item-subtitle">
+              Draft satisfies the minimum length requirement (${minWords}+ words).
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // 2. Compulsory Target Lexis Requirement Item
+    if (missingLexis && missingLexis.length > 0) {
+      const missingChipsHtml = missingLexis.map(item => `
+        <span class="req-missing-chip" title="Missing compulsory word: ${item.word}">
+          ${item.pos ? `<span class="pos-tag">${item.pos}</span>` : ''}
+          ${item.word}
+        </span>
+      `).join('');
+
+      itemsHtml += `
+        <div class="req-item item-missing">
+          <div class="req-item-icon">✕</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Compulsory Target Lexis</span>
+              <span style="font-size: 11px; color: #fbbf24; font-weight: 700;">${targetWordsUsed} / ${targetWordsTotal} Used (${missingLexis.length} Missing)</span>
+            </div>
+            <div class="req-item-subtitle">
+              You must incorporate all ${targetWordsTotal} compulsory target words (verbs, nouns, adjectives, adverbs) before evaluation can proceed.
+            </div>
+            <div class="req-missing-chips-box">
+              <div class="req-chips-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Missing Words to Incorporate:
+              </div>
+              <div class="req-chips-flex">
+                ${missingChipsHtml}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      itemsHtml += `
+        <div class="req-item item-met">
+          <div class="req-item-icon">✓</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Compulsory Target Lexis Satisfied</span>
+              <span style="font-size: 11px; color: #34d399; font-weight: 700;">${targetWordsTotal} / ${targetWordsTotal} Used</span>
+            </div>
+            <div class="req-item-subtitle">
+              All 9 compulsory target words have been successfully incorporated into your draft.
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    this.dom.reqAlertBody.innerHTML = itemsHtml;
+
+    // Show modal front and center
+    this.dom.reqAlertBackdrop.style.display = 'flex';
+    void this.dom.reqAlertBackdrop.offsetWidth; // Force reflow
+    this.dom.reqAlertBackdrop.classList.add('open');
+    if (this.dom.reqAlertActionBtn) {
+      this.dom.reqAlertActionBtn.focus();
+    }
+  }
+
+  closeRequirementAlert() {
+    if (!this.dom.reqAlertBackdrop) return;
+    this.dom.reqAlertBackdrop.classList.remove('open');
+    setTimeout(() => {
+      this.dom.reqAlertBackdrop.style.display = 'none';
+      if (this.dom.essayInput) {
+        this.dom.essayInput.focus();
+      }
+      if (this.pendingMissingLexis && this.pendingMissingLexis.length > 0) {
+        this.highlightMissingVocabChips(this.pendingMissingLexis);
+        this.pendingMissingLexis = null;
+      }
+    }, 250);
+  }
+
   triggerEvaluation() {
     const text = this.dom.essayInput.value.trim();
-    if (!text) {
+    const words = text ? text.split(/\s+/).filter(Boolean) : [];
+    const metrics = analyzeQuickMetrics(text, this.activeVocabulary, this.targetLevel);
+    const missingVocab = metrics.vocabStatus.filter(v => !v.used);
+    const missingLexis = missingVocab.map(v => ({
+      word: v.headword || v.word,
+      pos: v.pos || ''
+    }));
+
+    const isTextEmpty = !text || words.length === 0;
+    const isUnderMinWords = !isTextEmpty && words.length < 50;
+    const isMissingLexis = missingLexis.length > 0;
+
+    // Front-and-Center Alert when requirements are not met yet
+    if (isTextEmpty || isUnderMinWords || isMissingLexis) {
+      this.showRequirementAlert({
+        isTextEmpty,
+        isUnderMinWords,
+        wordCount: words.length,
+        minWords: 50,
+        targetWordsUsed: metrics.targetWordsUsed,
+        targetWordsTotal: metrics.targetWordsTotal,
+        missingLexis
+      });
       return;
     }
 
-    if (text.split(/\s+/).length < 50) {
+    // Confirmation before moving forward to evaluation and assessment modal
+    if (!confirm("Are you ready to submit your essay for evaluation? All 9 compulsory target words have been fulfilled. Your draft will be assessed against the CEFR scales.")) {
       return;
     }
 
@@ -552,16 +812,6 @@ class FluentEdgeApp {
       meetsThreshold: evalResult.meetsThreshold,
       date: new Date().toISOString()
     });
-
-    // Record topic progress
-    this.recordTopicEvaluation(this.currentTopic.id, {
-      score: evalResult.rawTotal,
-      percentage: evalResult.percentage,
-      band: evalResult.cefr.band,
-      meetsThreshold: evalResult.meetsThreshold,
-      targetLevel: this.targetLevel,
-      date: new Date().toISOString()
-    });
   }
 
   closeEvaluationModal() {
@@ -580,6 +830,13 @@ class FluentEdgeApp {
   proceedToSpeakingPhase() {
     const text = this.dom.essayInput.value.trim();
     if (!text) return;
+
+    // Strict Guard: Compulsory Target Lexis must be completely fulfilled
+    const metrics = analyzeQuickMetrics(text, this.activeVocabulary, this.targetLevel);
+    if (metrics.targetWordsTotal > 0 && metrics.targetWordsUsed < metrics.targetWordsTotal) {
+      this.showToast(`Cannot advance: All ${metrics.targetWordsTotal} compulsory target words must be used (${metrics.targetWordsUsed}/${metrics.targetWordsTotal} used).`, "warning");
+      return;
+    }
 
     this.dom.mainWritingWorkspace.style.display = 'none';
     this.dom.speakingStudio.style.display = 'block';
@@ -796,241 +1053,11 @@ class FluentEdgeApp {
   }
 
   clearHistory() {
-    localStorage.removeItem('fluentedge_history');
-    localStorage.removeItem('fluentedge_topic_progress');
-    this.topicProgress = {};
-    this.renderHistory();
-    this.updateTopicProgressUI();
-  }
-
-  // ==========================================
-  // TOPIC PROGRESS TRACKING & INDICATORS
-  // ==========================================
-
-  loadTopicProgress() {
-    let progress = {};
-    try {
-      const saved = localStorage.getItem('fluentedge_topic_progress');
-      if (saved) {
-        progress = JSON.parse(saved);
-      }
-    } catch (e) {
-      console.warn("Could not load topic progress from localStorage", e);
-    }
-
-    // Automatically synchronize with existing history if available
-    try {
-      const history = JSON.parse(localStorage.getItem('fluentedge_history') || '[]');
-      let hasNewSync = false;
-      history.forEach(item => {
-        if (item.type === 'writing') {
-          const topic = this.topics.find(t => 
-            (item.topicId && t.id === item.topicId) || 
-            (item.topicTitle && t.title === item.topicTitle)
-          );
-          if (topic) {
-            const key = topic.id;
-            const existing = progress[key];
-            if (!existing || (item.percentage !== undefined && item.percentage > (existing.percentage || 0))) {
-              progress[key] = {
-                evaluated: true,
-                score: item.score,
-                percentage: item.percentage,
-                band: item.band,
-                meetsThreshold: item.meetsThreshold,
-                targetLevel: item.targetLevel || 'C1',
-                date: item.date
-              };
-              hasNewSync = true;
-            }
-          }
-        }
-      });
-      if (hasNewSync) {
-        localStorage.setItem('fluentedge_topic_progress', JSON.stringify(progress));
-      }
-    } catch (e) {}
-
-    return progress;
-  }
-
-  recordTopicEvaluation(topicId, result) {
-    const existing = this.topicProgress[topicId];
-    this.topicProgress[topicId] = {
-      evaluated: true,
-      score: result.score,
-      percentage: result.percentage,
-      band: result.band,
-      meetsThreshold: result.meetsThreshold,
-      targetLevel: result.targetLevel,
-      date: result.date,
-      bestScore: existing && existing.bestScore ? Math.max(existing.bestScore, result.score) : result.score,
-      bestPercentage: existing && existing.bestPercentage ? Math.max(existing.bestPercentage, result.percentage) : result.percentage,
-      attemptsCount: ((existing && existing.attemptsCount) || 0) + 1
-    };
-
-    try {
-      localStorage.setItem('fluentedge_topic_progress', JSON.stringify(this.topicProgress));
-    } catch (e) {
-      console.warn("Could not save topic progress to localStorage", e);
-    }
-
-    this.updateTopicProgressUI();
-  }
-
-  updateTopicProgressUI() {
-    // 1. Update Curriculum Mastery Header Summary
-    if (this.dom.trackerStats) {
-      const completedCount = this.topics.filter(t => this.topicProgress[t.id]?.meetsThreshold).length;
-      const attemptedCount = this.topics.filter(t => this.topicProgress[t.id]?.evaluated).length;
-      if (completedCount === this.topics.length) {
-        this.dom.trackerStats.textContent = `★ All ${this.topics.length} Prompts Mastered!`;
-      } else if (attemptedCount > completedCount) {
-        this.dom.trackerStats.textContent = `${completedCount} / ${this.topics.length} Mastered • ${attemptedCount} Attempted`;
-      } else {
-        this.dom.trackerStats.textContent = `${completedCount} / ${this.topics.length} Prompts Completed`;
-      }
-    }
-
-    // 2. Synchronize Quick Jump Selector
-    if (this.dom.topicJumpSelect) {
-      if (this.dom.topicJumpSelect.options.length !== this.topics.length) {
-        this.dom.topicJumpSelect.innerHTML = this.topics.map((t, i) => {
-          const num = String(i + 1).padStart(2, '0');
-          const prog = this.topicProgress[t.id];
-          let mark = '○';
-          if (prog?.evaluated) {
-            mark = prog.meetsThreshold ? '✓' : '⟳';
-          }
-          return `<option value="${i}">[${mark}] #${num}: ${t.title.substring(0, 30)}...</option>`;
-        }).join('');
-      } else {
-        // Update marks in existing options
-        Array.from(this.dom.topicJumpSelect.options).forEach((opt, i) => {
-          const t = this.topics[i];
-          const num = String(i + 1).padStart(2, '0');
-          const prog = this.topicProgress[t.id];
-          let mark = '○';
-          if (prog?.evaluated) {
-            mark = prog.meetsThreshold ? '✓' : '⟳';
-          }
-          opt.textContent = `[${mark}] #${num}: ${t.title.substring(0, 30)}...`;
-        });
-      }
-      this.dom.topicJumpSelect.value = String(this.currentTopicIndex);
-    }
-
-    // 3. Render / Update Fixed Bento Boxes (Slots stay stationary; numbers change)
-    if (this.dom.trackerBentoStrip) {
-      const offsets = [-2, -1, 0, 1, 2];
-      const total = this.topics.length;
-
-      this.dom.trackerBentoStrip.innerHTML = offsets.map(offset => {
-        const topicIndex = ((this.currentTopicIndex + offset) % total + total) % total;
-        const topic = this.topics[topicIndex];
-        const prog = this.topicProgress[topic.id];
-        const isCenter = (offset === 0);
-        const numStr = String(topicIndex + 1).padStart(2, '0');
-
-        let statusClass = 'status-unattempted';
-        let statusIcon = '○';
-        let badgeText = 'Not Started';
-        let tooltip = `Prompt #${numStr}: ${topic.title} (Not Attempted)`;
-
-        if (prog?.evaluated) {
-          if (prog.meetsThreshold) {
-            statusClass = 'status-passed';
-            statusIcon = '✓';
-            const cleanBand = (prog.band || 'C1').replace('Estimated ', '');
-            badgeText = `${cleanBand} (${prog.percentage}%)`;
-            tooltip = `Prompt #${numStr}: ${topic.title} (Passed: ${prog.score}/20 • ${prog.percentage}%)`;
-          } else {
-            statusClass = 'status-revision';
-            statusIcon = '⟳';
-            badgeText = `Revise (${prog.percentage}%)`;
-            tooltip = `Prompt #${numStr}: ${topic.title} (Revision: ${prog.score}/20 • ${prog.percentage}%)`;
-          }
-        } else if (isCenter && this.dom.essayInput && this.dom.essayInput.value.trim().length > 0) {
-          statusClass = 'status-draft';
-          statusIcon = '✎';
-          badgeText = 'Drafting';
-          tooltip = `Prompt #${numStr}: ${topic.title} (Draft in Progress)`;
-        }
-
-        const boxTypeClass = isCenter ? 'active-bento' : 'adjacent-bento';
-        const activePill = isCenter ? `<span class="bento-active-pill">ACTIVE</span>` : '';
-
-        return `
-          <div class="bento-box ${boxTypeClass} ${statusClass}" 
-               data-target-index="${topicIndex}" 
-               role="tab" 
-               aria-selected="${isCenter}" 
-               title="${tooltip}">
-            <div class="bento-top">
-              <span class="bento-num">#${numStr}</span>
-              <span class="bento-indicator ${statusClass}">${statusIcon}</span>
-            </div>
-            <div class="bento-title" title="${topic.title}">${topic.title}</div>
-            <div class="bento-footer">
-              <span class="bento-badge ${statusClass}">${badgeText}</span>
-              ${activePill}
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      // Add click on bento boxes: clicking an adjacent box shifts that topic to active center
-      this.dom.trackerBentoStrip.querySelectorAll('.bento-box').forEach(box => {
-        box.addEventListener('click', () => {
-          const targetIdx = parseInt(box.getAttribute('data-target-index'), 10);
-          if (!isNaN(targetIdx) && targetIdx !== this.currentTopicIndex) {
-            this.loadTopic(targetIdx);
-          }
-        });
-      });
-    }
-
-    // 4. Update Card Status Badge for current topic
-    this.updateCurrentTopicBadge();
-  }
-
-  updateCurrentTopicBadge() {
-    if (!this.dom.topicStatusBadge) return;
-
-    const currentProg = this.topicProgress[this.currentTopic.id];
-    const hasDraft = this.dom.essayInput && this.dom.essayInput.value.trim().length > 0;
-
-    if (currentProg?.evaluated) {
-      if (currentProg.meetsThreshold) {
-        const cleanBand = (currentProg.band || 'C1').replace('Estimated ', '');
-        this.dom.topicStatusBadge.className = 'topic-status-badge status-passed';
-        this.dom.topicStatusBadge.title = `Evaluated: ${currentProg.score}/20 (${currentProg.percentage}%) • Standard Met`;
-        this.dom.topicStatusBadge.innerHTML = `
-          <span class="status-icon">✓</span>
-          <span class="status-label">Evaluated • ${cleanBand} (${currentProg.percentage}%)</span>
-        `;
-      } else {
-        this.dom.topicStatusBadge.className = 'topic-status-badge status-revision';
-        this.dom.topicStatusBadge.title = `Evaluated: ${currentProg.score}/20 (${currentProg.percentage}%) • Revision Recommended`;
-        this.dom.topicStatusBadge.innerHTML = `
-          <span class="status-icon">⟳</span>
-          <span class="status-label">Evaluated • Needs Revision (${currentProg.percentage}%)</span>
-        `;
-      }
-    } else if (hasDraft) {
-      this.dom.topicStatusBadge.className = 'topic-status-badge status-draft';
-      this.dom.topicStatusBadge.title = 'Draft in progress for this prompt';
-      this.dom.topicStatusBadge.innerHTML = `
-        <span class="status-icon">✎</span>
-        <span class="status-label">Draft in Progress</span>
-      `;
-    } else {
-      this.dom.topicStatusBadge.className = 'topic-status-badge status-unattempted';
-      this.dom.topicStatusBadge.title = 'No evaluation recorded yet for this prompt';
-      this.dom.topicStatusBadge.innerHTML = `
-        <span class="status-icon">○</span>
-        <span class="status-label">Not Attempted</span>
-      `;
+    if (confirm("Clear your FluentEdge training logs?")) {
+      localStorage.removeItem('fluentedge_history');
+      localStorage.removeItem('fluentedge_topic_progress');
+      this.renderHistory();
+      this.showToast("History cleared.", "info");
     }
   }
 

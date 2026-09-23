@@ -103,15 +103,34 @@ const customVocab = [
 const quickMetrics = analyzeQuickMetrics(sampleCustomText, customVocab, 'C1');
 console.log("Quick Metrics words detected:", quickMetrics.targetWordsUsed, "/ 9");
 
+console.log("\n=== TEST 6: 100% Compulsory Target Lexis Guard (9/9 Fulfillment) ===");
+const missingWordsPartial = quickMetrics.vocabStatus.filter(v => !v.used).map(v => v.headword || v.word);
+const isPartialBlocked = quickMetrics.targetWordsUsed < quickMetrics.targetWordsTotal;
+console.log("Partial (8/9) Blocked:", isPartialBlocked, "| Missing words detected:", missingWordsPartial);
+
+// Text with the missing word 'perpetuate' added
+const completeCustomText = sampleCustomText + " We must not perpetuate these difficulties.";
+const completeMetrics = analyzeQuickMetrics(completeCustomText, customVocab, 'C1');
+const missingWordsComplete = completeMetrics.vocabStatus.filter(v => !v.used).map(v => v.headword || v.word);
+const isCompleteFulfilled = completeMetrics.targetWordsUsed === completeMetrics.targetWordsTotal;
+console.log("Complete (9/9) Fulfilled:", isCompleteFulfilled, "| Words used:", completeMetrics.targetWordsUsed, "/ 9");
+
+const lexisGuardPassed = isPartialBlocked && 
+                         missingWordsPartial.length === 1 && 
+                         missingWordsPartial[0] === 'perpetuate' &&
+                         isCompleteFulfilled &&
+                         missingWordsComplete.length === 0;
+
 const allPassed = evalPassC1.meetsThreshold && 
                   !evalFailB1.meetsThreshold && 
                   evalPassC2.meetsThreshold && 
                   !evalC1inC2.meetsThreshold &&
                   structureValid &&
-                  quickMetrics.targetWordsUsed >= 7;
+                  quickMetrics.targetWordsUsed >= 7 &&
+                  lexisGuardPassed;
 
 if (allPassed) {
-  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator & 9-Word Lexicon Engine accurately configured! <<<");
+  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 9-Word Lexicon Engine & 100% Compulsory Lexis Guard accurately configured! <<<");
 } else {
   console.error("\n>>> TEST FAILED! <<<", {
     evalPassC1: evalPassC1.meetsThreshold,
@@ -119,7 +138,8 @@ if (allPassed) {
     evalPassC2: evalPassC2.meetsThreshold,
     evalC1inC2: evalC1inC2.meetsThreshold,
     structureValid,
-    targetWordsUsed: quickMetrics.targetWordsUsed
+    targetWordsUsed: quickMetrics.targetWordsUsed,
+    lexisGuardPassed
   });
   process.exit(1);
 }

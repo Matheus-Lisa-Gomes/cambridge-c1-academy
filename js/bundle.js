@@ -10838,18 +10838,22 @@ function getRandomVocabularySet(level = 'C1') {
   const allAdvs = VOCABULARY_LEXICON.filter(w => (w.pos || '').toLowerCase() === 'adverb');
 
   const selectedVerbs = sampleUnique(verbs.length >= 3 ? verbs : allVerbs, 3);
-  const selectedNouns = sampleUnique(nouns.length >= 2 ? nouns : allNouns, 2);
-  const selectedAdjs = sampleUnique(adjs.length >= 2 ? adjs : allAdjs, 2);
+  const selectedNouns = sampleUnique(nouns.length >= 3 ? nouns : allNouns, 3);
   const selectedAdvs = sampleUnique(advs.length >= 2 ? advs : allAdvs, 2);
+  const selectedAdjs = sampleUnique(adjs.length >= 2 ? adjs : allAdjs, 2);
 
-  const selected9 = [
-    ...selectedVerbs,
-    ...selectedNouns,
-    ...selectedAdjs,
-    ...selectedAdvs
+  // Paired 5-row by 2-column layout:
+  // Column 1 (Left):  Verb 1, Verb 2, Verb 3, Adverb 1, Adverb 2
+  // Column 2 (Right): Noun 1, Noun 2, Noun 3, Adjective 1, Adjective 2
+  const selected10 = [
+    selectedVerbs[0], selectedNouns[0], // Row 1: Verb 1 | Noun 1
+    selectedVerbs[1], selectedNouns[1], // Row 2: Verb 2 | Noun 2
+    selectedVerbs[2], selectedNouns[2], // Row 3: Verb 3 | Noun 3
+    selectedAdvs[0],  selectedAdjs[0],  // Row 4: Adverb 1 | Adjective 1
+    selectedAdvs[1],  selectedAdjs[1]   // Row 5: Adverb 2 | Adjective 2
   ];
 
-  return selected9.map(item => ({
+  return selected10.map(item => ({
     ...item,
     word: item.headword,
     stems: generateWordStems(item.headword, item.pos)
@@ -12137,7 +12141,7 @@ class FluentEdgeApp {
     if (this.dom.rerollVocabBtn) {
       this.dom.rerollVocabBtn.addEventListener('click', () => {
         if (this.hasEssayContent()) {
-          if (!confirm("You have an essay in progress. Rerolling compulsory target lexis will generate a new set of 9 words, and words you have already written may no longer count. Are you sure you want to reroll?")) {
+          if (!confirm("You have an essay in progress. Rerolling compulsory target lexis will generate a new set of 10 words, and words you have already written may no longer count. Are you sure you want to reroll?")) {
             return;
           }
         }
@@ -12356,7 +12360,7 @@ class FluentEdgeApp {
     this.dom.topicTime.textContent = this.currentTopic.recommendedTime;
     this.dom.topicTitle.textContent = this.currentTopic.title;
 
-    // Draw 9 random target vocabulary items (3 Verbs, 2 Nouns, 2 Adj, 2 Adv)
+    // Draw 10 random target vocabulary items (3 Verbs, 3 Nouns, 2 Adj, 2 Adv)
     this.refreshRandomVocabulary(true);
 
     // Reset editor analysis for new topic
@@ -12487,9 +12491,7 @@ class FluentEdgeApp {
       `).join('');
     } else {
       this.dom.radarCountDisplay.textContent = `0 structures detected`;
-      this.dom.radarBadgesRow.innerHTML = `
-        <span class="radar-badge-empty">Write complex structures (e.g. "Seldom has...", "What is of paramount...", "It is widely contended that...") to activate radar.</span>
-      `;
+      this.dom.radarBadgesRow.innerHTML = '';
     }
 
     // Update Evaluate Essay Button state based on compulsory lexis fulfillment
@@ -12505,7 +12507,7 @@ class FluentEdgeApp {
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-          Evaluate Text (All 9 Lexis Fulfilled)
+          Evaluate Text (All ${metrics.targetWordsTotal} Lexis Fulfilled)
           <kbd class="hotkey-badge">Ctrl+↵</kbd>
         `;
       } else {
@@ -12624,7 +12626,7 @@ class FluentEdgeApp {
     if (missingLexis && missingLexis.length > 0) {
       const missingChipsHtml = missingLexis.map(item => `
         <span class="req-missing-chip" title="Missing compulsory word: ${item.word}">
-          ${item.pos ? `<span class="pos-tag">${item.pos}</span>` : ''}
+          ${item.pos ? `<span class="pos-tag pos-${(item.pos || '').toLowerCase()}">${item.pos}</span>` : ''}
           ${item.word}
         </span>
       `).join('');
@@ -12666,7 +12668,7 @@ class FluentEdgeApp {
               <span style="font-size: 11px; color: #34d399; font-weight: 700;">${targetWordsTotal} / ${targetWordsTotal} Used</span>
             </div>
             <div class="req-item-subtitle">
-              All 9 compulsory target words have been successfully incorporated into your draft.
+              All ${targetWordsTotal} compulsory target words have been successfully incorporated into your draft.
             </div>
           </div>
         </div>
@@ -12728,7 +12730,7 @@ class FluentEdgeApp {
     }
 
     // Confirmation before moving forward to evaluation and assessment modal
-    if (!confirm("Are you ready to submit your essay for evaluation? All 9 compulsory target words have been fulfilled. Your draft will be assessed against the CEFR scales.")) {
+    if (!confirm(`Are you ready to submit your essay for evaluation? All ${metrics.targetWordsTotal} compulsory target words have been fulfilled. Your draft will be assessed against the CEFR scales.`)) {
       return;
     }
 

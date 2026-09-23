@@ -182,18 +182,22 @@ export function getRandomVocabularySet(level = 'C1') {
   const allAdvs = VOCABULARY_LEXICON.filter(w => (w.pos || '').toLowerCase() === 'adverb');
 
   const selectedVerbs = sampleUnique(verbs.length >= 3 ? verbs : allVerbs, 3);
-  const selectedNouns = sampleUnique(nouns.length >= 2 ? nouns : allNouns, 2);
-  const selectedAdjs = sampleUnique(adjs.length >= 2 ? adjs : allAdjs, 2);
+  const selectedNouns = sampleUnique(nouns.length >= 3 ? nouns : allNouns, 3);
   const selectedAdvs = sampleUnique(advs.length >= 2 ? advs : allAdvs, 2);
+  const selectedAdjs = sampleUnique(adjs.length >= 2 ? adjs : allAdjs, 2);
 
-  const selected9 = [
-    ...selectedVerbs,
-    ...selectedNouns,
-    ...selectedAdjs,
-    ...selectedAdvs
+  // Paired 5-row by 2-column layout:
+  // Column 1 (Left):  Verb 1, Verb 2, Verb 3, Adverb 1, Adverb 2
+  // Column 2 (Right): Noun 1, Noun 2, Noun 3, Adjective 1, Adjective 2
+  const selected10 = [
+    selectedVerbs[0], selectedNouns[0], // Row 1: Verb 1 | Noun 1
+    selectedVerbs[1], selectedNouns[1], // Row 2: Verb 2 | Noun 2
+    selectedVerbs[2], selectedNouns[2], // Row 3: Verb 3 | Noun 3
+    selectedAdvs[0],  selectedAdjs[0],  // Row 4: Adverb 1 | Adjective 1
+    selectedAdvs[1],  selectedAdjs[1]   // Row 5: Adverb 2 | Adjective 2
   ];
 
-  return selected9.map(item => ({
+  return selected10.map(item => ({
     ...item,
     word: item.headword,
     stems: generateWordStems(item.headword, item.pos)

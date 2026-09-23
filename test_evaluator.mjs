@@ -53,7 +53,7 @@ console.log("Percentage:", evalC1inC2.percentage + "%");
 console.log("Meets C2 Threshold:", evalC1inC2.meetsThreshold);
 console.log("Content feedback:", evalC1inC2.scales.content.feedback);
 
-console.log("\n=== TEST 5: 9-Word Vocabulary Generator (3 Verbs, 2 Nouns, 2 Adjectives, 2 Adverbs) ===");
+console.log("\n=== TEST 5: 10-Word Vocabulary Generator (3 Verbs, 3 Nouns, 2 Adjectives, 2 Adverbs) ===");
 import { getRandomVocabularySet } from './js/data/vocabulary.js';
 
 const vocabSetC1 = getRandomVocabularySet('C1');
@@ -64,9 +64,9 @@ const c1Nouns = vocabSetC1.filter(w => w.pos.toLowerCase() === 'noun');
 const c1Adjs = vocabSetC1.filter(w => w.pos.toLowerCase() === 'adjective');
 const c1Advs = vocabSetC1.filter(w => w.pos.toLowerCase() === 'adverb');
 
-console.log("C1 Vocab Count:", vocabSetC1.length, "(Expected: 9)");
+console.log("C1 Vocab Count:", vocabSetC1.length, "(Expected: 10)");
 console.log("Verbs:", c1Verbs.length, "(Expected: 3)");
-console.log("Nouns:", c1Nouns.length, "(Expected: 2)");
+console.log("Nouns:", c1Nouns.length, "(Expected: 3)");
 console.log("Adjectives:", c1Adjs.length, "(Expected: 2)");
 console.log("Adverbs:", c1Advs.length, "(Expected: 2)");
 
@@ -75,25 +75,39 @@ const c2Nouns = vocabSetC2.filter(w => w.pos.toLowerCase() === 'noun');
 const c2Adjs = vocabSetC2.filter(w => w.pos.toLowerCase() === 'adjective');
 const c2Advs = vocabSetC2.filter(w => w.pos.toLowerCase() === 'adverb');
 
-const structureValid = vocabSetC1.length === 9 &&
+const structureValid = vocabSetC1.length === 10 &&
                        c1Verbs.length === 3 &&
-                       c1Nouns.length === 2 &&
+                       c1Nouns.length === 3 &&
                        c1Adjs.length === 2 &&
                        c1Advs.length === 2 &&
-                       vocabSetC2.length === 9 &&
+                       vocabSetC2.length === 10 &&
                        c2Verbs.length === 3 &&
-                       c2Nouns.length === 2 &&
+                       c2Nouns.length === 3 &&
                        c2Adjs.length === 2 &&
-                       c2Advs.length === 2;
+                       c2Advs.length === 2 &&
+                       // Verify paired 5-row x 2-col distribution:
+                       vocabSetC1[0].pos.toLowerCase() === 'verb' &&
+                       vocabSetC1[1].pos.toLowerCase() === 'noun' &&
+                       vocabSetC1[2].pos.toLowerCase() === 'verb' &&
+                       vocabSetC1[3].pos.toLowerCase() === 'noun' &&
+                       vocabSetC1[4].pos.toLowerCase() === 'verb' &&
+                       vocabSetC1[5].pos.toLowerCase() === 'noun' &&
+                       vocabSetC1[6].pos.toLowerCase() === 'adverb' &&
+                       vocabSetC1[7].pos.toLowerCase() === 'adjective' &&
+                       vocabSetC1[8].pos.toLowerCase() === 'adverb' &&
+                       vocabSetC1[9].pos.toLowerCase() === 'adjective';
+
+console.log("Paired 2-Column Row Layout Valid:", structureValid);
 
 // Test evaluation with active vocabulary
-const sampleCustomText = `Seldom has society encountered such challenges. The authorities concurred and decided to alleviate the burden gracefully. This remarkable scenario proves that the outcome was extraordinarily effective.`;
+const sampleCustomText = `Seldom has society encountered such challenges. The authorities concurred and decided to alleviate the burden gracefully. This remarkable scenario proves that the outcome was an extraordinarily effective catalyst.`;
 const customVocab = [
   { headword: "concur", pos: "verb", cefr: "C1", stems: ["concur", "concurs", "concurred", "concurring"] },
   { headword: "alleviate", pos: "verb", cefr: "C1", stems: ["alleviate", "alleviates", "alleviated", "alleviating"] },
   { headword: "perpetuate", pos: "verb", cefr: "C1", stems: ["perpetuate", "perpetuates", "perpetuated"] },
   { headword: "scenario", pos: "noun", cefr: "C1", stems: ["scenario", "scenarios"] },
   { headword: "burden", pos: "noun", cefr: "C1", stems: ["burden", "burdens"] },
+  { headword: "catalyst", pos: "noun", cefr: "C1", stems: ["catalyst", "catalysts"] },
   { headword: "remarkable", pos: "adjective", cefr: "C1", stems: ["remarkable"] },
   { headword: "effective", pos: "adjective", cefr: "C1", stems: ["effective"] },
   { headword: "gracefully", pos: "adverb", cefr: "C1", stems: ["gracefully"] },
@@ -101,19 +115,19 @@ const customVocab = [
 ];
 
 const quickMetrics = analyzeQuickMetrics(sampleCustomText, customVocab, 'C1');
-console.log("Quick Metrics words detected:", quickMetrics.targetWordsUsed, "/ 9");
+console.log("Quick Metrics words detected:", quickMetrics.targetWordsUsed, "/ 10");
 
-console.log("\n=== TEST 6: 100% Compulsory Target Lexis Guard (9/9 Fulfillment) ===");
+console.log("\n=== TEST 6: 100% Compulsory Target Lexis Guard (10/10 Fulfillment) ===");
 const missingWordsPartial = quickMetrics.vocabStatus.filter(v => !v.used).map(v => v.headword || v.word);
 const isPartialBlocked = quickMetrics.targetWordsUsed < quickMetrics.targetWordsTotal;
-console.log("Partial (8/9) Blocked:", isPartialBlocked, "| Missing words detected:", missingWordsPartial);
+console.log("Partial (9/10) Blocked:", isPartialBlocked, "| Missing words detected:", missingWordsPartial);
 
 // Text with the missing word 'perpetuate' added
 const completeCustomText = sampleCustomText + " We must not perpetuate these difficulties.";
 const completeMetrics = analyzeQuickMetrics(completeCustomText, customVocab, 'C1');
 const missingWordsComplete = completeMetrics.vocabStatus.filter(v => !v.used).map(v => v.headword || v.word);
 const isCompleteFulfilled = completeMetrics.targetWordsUsed === completeMetrics.targetWordsTotal;
-console.log("Complete (9/9) Fulfilled:", isCompleteFulfilled, "| Words used:", completeMetrics.targetWordsUsed, "/ 9");
+console.log("Complete (10/10) Fulfilled:", isCompleteFulfilled, "| Words used:", completeMetrics.targetWordsUsed, "/ 10");
 
 const lexisGuardPassed = isPartialBlocked && 
                          missingWordsPartial.length === 1 && 
@@ -126,11 +140,11 @@ const allPassed = evalPassC1.meetsThreshold &&
                   evalPassC2.meetsThreshold && 
                   !evalC1inC2.meetsThreshold &&
                   structureValid &&
-                  quickMetrics.targetWordsUsed >= 7 &&
+                  quickMetrics.targetWordsUsed >= 8 &&
                   lexisGuardPassed;
 
 if (allPassed) {
-  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 9-Word Lexicon Engine & 100% Compulsory Lexis Guard accurately configured! <<<");
+  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine & 100% Compulsory Lexis Guard accurately configured! <<<");
 } else {
   console.error("\n>>> TEST FAILED! <<<", {
     evalPassC1: evalPassC1.meetsThreshold,

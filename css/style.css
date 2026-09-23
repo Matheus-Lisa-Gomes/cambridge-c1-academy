@@ -444,11 +444,12 @@ body.theme-c2 .brand-crest {
   color: var(--text-secondary);
 }
 
-/* Main Grid Layout */
+/* Main Grid Layout - Side-by-Side Workspace Panels */
 .main-workspace {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 24px;
+  align-items: start;
 }
 
 /* Glass Card */
@@ -745,7 +746,7 @@ body.theme-c2 #evaluateEssayBtn.btn-lexis-ready svg {
 
 .vocab-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -899,15 +900,15 @@ body.theme-c2 #evaluateEssayBtn.btn-lexis-ready svg {
 }
 
 .pos-noun {
-  background: rgba(168, 85, 247, 0.15);
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.35);
 }
 
 .pos-adjective {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: rgba(249, 115, 22, 0.15);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.35);
 }
 
 .pos-adverb {
@@ -1002,7 +1003,8 @@ body.theme-c2 #evaluateEssayBtn.btn-lexis-ready svg {
 
 .essay-textarea {
   width: 100%;
-  height: 260px;
+  height: 300px;
+  min-height: 240px;
   background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -1070,6 +1072,7 @@ body.theme-c2 #evaluateEssayBtn.btn-lexis-ready svg {
 }
 
 .radar-badge-empty {
+  display: none !important;
   font-size: 12px;
   color: var(--text-muted);
   font-style: italic;
@@ -1526,14 +1529,29 @@ body.theme-c2 .req-missing-chip {
   text-transform: uppercase;
   padding: 1px 5px;
   border-radius: 3px;
-  background: rgba(245, 158, 11, 0.25);
-  color: #fbbf24;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f1f5f9;
   font-weight: 700;
 }
 
-body.theme-c2 .req-missing-chip .pos-tag {
-  background: rgba(168, 85, 247, 0.25);
-  color: #c084fc;
+.req-missing-chip .pos-tag.pos-verb {
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+}
+
+.req-missing-chip .pos-tag.pos-noun {
+  background: rgba(244, 63, 94, 0.25);
+  color: #fda4af;
+}
+
+.req-missing-chip .pos-tag.pos-adjective {
+  background: rgba(249, 115, 22, 0.25);
+  color: #fdba74;
+}
+
+.req-missing-chip .pos-tag.pos-adverb {
+  background: rgba(20, 184, 166, 0.25);
+  color: #5eead4;
 }
 
 .req-alert-footer {
@@ -1817,6 +1835,12 @@ body.theme-c2 .req-missing-chip .pos-tag {
   }
   .visualizer-canvas {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .vocab-grid {
+    grid-template-columns: 1fr;
   }
 }
 

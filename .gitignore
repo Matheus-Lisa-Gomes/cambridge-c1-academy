@@ -16,3 +16,9 @@ scratch/
 # Private strategy & monetization documents
 [Mm]oneta[rz]ation.*
 [Mm]onetization.*
+
+# Markdown documentation (ignore all except README)
+*.md
+*.MD
+!README.md
+!README.MD

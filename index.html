@@ -173,8 +173,24 @@
             </svg>
             <h2 id="writingStudioHeading">Writing Studio</h2>
           </div>
-          <div style="display: flex; gap: 8px;">
-            <button id="clearEssayBtn" class="btn btn-secondary btn-icon-only">
+          <div class="panel-actions">
+            <button id="copyAiPromptBtn" class="btn btn-secondary btn-sm ai-prompt-btn"
+              title="Copy an engineered AI prompt containing all 10 compulsory words to generate an essay in ChatGPT/Claude/Gemini (Alt+P)"
+              aria-label="Copy AI Prompt to generate essay">
+              <svg class="ai-sparkle-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+              </svg>
+              <span id="copyAiPromptBtnText">AI Prompt</span>
+            </button>
+            <button id="previewAiPromptBtn" class="btn btn-secondary btn-icon-only"
+              title="Inspect and preview the generated AI prompt"
+              aria-label="Inspect AI Prompt">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+            <button id="clearEssayBtn" class="btn btn-secondary btn-icon-only" title="Clear essay text" aria-label="Clear essay">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="3 6 5 6 21 6"></polyline>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -187,17 +203,42 @@
         <div class="editor-toolbar">
           <div class="editor-metrics-live">
             <div class="metric-live-item">
+              <svg class="metric-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
               <span>Words:</span>
               <span class="metric-live-val" id="liveWordCount">0</span>
-              <span id="targetWordCountHint" style="font-size: 11px; color: var(--text-muted);">(220-260 target)</span>
+              <span id="targetWordCountHint" class="metric-target-hint">(220-260 target)</span>
             </div>
             <div class="metric-live-item">
+              <svg class="metric-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="21" y1="10" x2="3" y2="10"></line>
+                <line x1="21" y1="6" x2="3" y2="6"></line>
+                <line x1="21" y1="14" x2="3" y2="14"></line>
+                <line x1="21" y1="18" x2="7" y2="18"></line>
+              </svg>
               <span>Paragraphs:</span>
               <span class="metric-live-val" id="liveParaCount">0</span>
             </div>
           </div>
-          <div id="lengthGuidanceBadge" class="radar-badge" style="font-size: 11px;">
+          <div id="lengthGuidanceBadge" class="radar-badge">
             Awaiting input
+          </div>
+        </div>
+
+        <!-- Real-time C1 Syntax & Register Radar -->
+        <div class="live-radar-box">
+          <div class="radar-header">
+            <span>C1/C2 Grammar &amp; Syntax Radar</span>
+            <span id="radarCountDisplay">0 structures detected</span>
+          </div>
+          <div class="radar-badges-row" id="radarBadgesRow">
+            <span class="radar-badge-empty" style="display: none;">Write complex structures (e.g. "Seldom has...", "What is of paramount...",
+              "It is widely contended that...") to activate radar.</span>
           </div>
         </div>
 
@@ -206,18 +247,6 @@
           <textarea id="essayInput" class="essay-textarea"
             placeholder="Compose your C1/C2 essay here... Incorporate the compulsory target vocabulary words shown above."
             spellcheck="true"></textarea>
-        </div>
-
-        <!-- Real-time C1 Syntax & Register Radar -->
-        <div class="live-radar-box">
-          <div class="radar-header">
-            <span>C1/C2 Grammar & Syntax Radar</span>
-            <span id="radarCountDisplay">0 structures detected</span>
-          </div>
-          <div class="radar-badges-row" id="radarBadgesRow">
-            <span class="radar-badge-empty" style="display: none;">Write complex structures (e.g. "Seldom has...", "What is of paramount...",
-              "It is widely contended that...") to activate radar.</span>
-          </div>
         </div>
 
         <!-- Submit Evaluation Button -->
@@ -463,6 +492,99 @@
         <button id="reqAlertActionBtn" class="btn btn-primary req-alert-btn">
           <span>Return to Editor &amp; Continue Writing</span>
           <kbd class="hotkey-badge">Esc</kbd>
+        </button>
+        <button id="reqAlertCopyAiBtn" class="btn btn-secondary req-alert-ai-btn"
+          title="Copy AI prompt containing all 10 compulsory words to generate essay in ChatGPT/Claude/Gemini">
+          <svg class="ai-sparkle-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+          </svg>
+          <span id="reqAlertCopyAiBtnText">Generate with AI Instead (Copy Prompt)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Generated Essay Prompt Modal -->
+  <div class="ai-prompt-backdrop" id="aiPromptModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="aiPromptModalTitle" style="display: none;">
+    <div class="ai-prompt-card" id="aiPromptModalCard">
+      <button id="closeAiPromptModalBtn" class="btn btn-secondary btn-icon-only ai-prompt-close" aria-label="Close AI prompt modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="ai-prompt-icon-wrapper">
+        <svg class="ai-sparkle-icon-large" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+        </svg>
+      </div>
+
+      <div class="ai-prompt-header">
+        <div class="ai-prompt-badge-row">
+          <span class="ai-prompt-pill" id="aiPromptLevelBadge">C1 ADVANCED PROMPT</span>
+          <span class="ai-prompt-words-pill" id="aiPromptWordTargetBadge">220–260 Words Target</span>
+        </div>
+        <h3 class="ai-prompt-title" id="aiPromptModalTitle">AI Essay Generator Prompt</h3>
+        <p class="ai-prompt-desc">
+          Engineered for <strong>ChatGPT</strong>, <strong>Claude</strong>, <strong>Gemini</strong>, or any LLM. Injects all 10 compulsory target vocabulary items, word count constraints, and syntax radar patterns to guarantee C1/C2 pass marks.
+        </p>
+      </div>
+
+      <div class="ai-prompt-vocab-box">
+        <div class="ai-prompt-vocab-heading">
+          <span>Compulsory Lexis Injected (10/10)</span>
+          <span class="ai-prompt-vocab-count" id="aiPromptVocabCount">10 items</span>
+        </div>
+        <div class="ai-prompt-vocab-chips" id="aiPromptVocabChips">
+          <!-- Dynamically populated chips -->
+        </div>
+      </div>
+
+      <div class="ai-prompt-preview-wrap">
+        <div class="ai-prompt-preview-bar">
+          <span class="preview-label">Prompt Output</span>
+          <button id="copyPromptInsideModalBtn" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 4px 10px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="modalCopyBtnText">Copy Prompt</span>
+          </button>
+        </div>
+        <textarea id="aiPromptTextarea" class="ai-prompt-textarea" readonly spellcheck="false"></textarea>
+      </div>
+
+      <div class="ai-prompt-steps-row">
+        <div class="ai-prompt-step">
+          <span class="ai-step-idx">1</span>
+          <span class="ai-step-txt">Copy prompt</span>
+        </div>
+        <span class="ai-step-div">›</span>
+        <div class="ai-prompt-step">
+          <span class="ai-step-idx">2</span>
+          <span class="ai-step-txt">Paste into LLM</span>
+        </div>
+        <span class="ai-step-div">›</span>
+        <div class="ai-prompt-step">
+          <span class="ai-step-idx">3</span>
+          <span class="ai-step-txt">Paste essay here</span>
+        </div>
+        <span class="ai-step-div">›</span>
+        <div class="ai-prompt-step">
+          <span class="ai-step-idx">4</span>
+          <span class="ai-step-txt">Evaluate &amp; Speak</span>
+        </div>
+      </div>
+
+      <div class="ai-prompt-footer">
+        <button id="primaryCopyAiPromptBtn" class="btn btn-primary ai-copy-action-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span id="primaryCopyBtnLabel">Copy Prompt to Clipboard</span>
+          <kbd class="hotkey-badge">Enter</kbd>
         </button>
       </div>
     </div>

@@ -11440,6 +11440,67 @@ function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVocabulary 
   };
 }
 
+/**
+ * Generates an optimized prompt for external LLMs (ChatGPT, Claude, Gemini, etc.)
+ * to craft an essay adhering to FluentEdge's C1/C2 standards and incorporating
+ * all compulsory target lexis items.
+ */
+function generateAiEssayPrompt(topic, targetVocabulary = [], targetLevel = 'C1') {
+  const isC2 = targetLevel === 'C2';
+  const levelStandard = isC2 ? 'CEFR C2 Proficiency (Mastery)' : 'CEFR C1 Advanced';
+  const minWords = isC2 ? 280 : 220;
+  const maxWords = isC2 ? 320 : 260;
+  const topicTitle = topic ? topic.title : 'Contemporary Issues & Ethics';
+  const topicCategory = topic ? topic.category : 'General Academic';
+  const topicType = topic ? topic.type : (isC2 ? 'C2 Proficiency Discursive Essay' : 'C1/C2 Academic Essay');
+
+  const vocabItems = targetVocabulary.map((v, i) => {
+    const word = v.headword || v.word || '';
+    const pos = v.pos ? `[${v.pos}]` : '';
+    const def = v.definition ? ` — ${v.definition}` : '';
+    const colloc = v.collocation ? ` (collocation: "${v.collocation}")` : '';
+    return `${i + 1}. ${word} ${pos}${def}${colloc}`;
+  }).join('\n');
+
+  return `Write an academic essay at the ${levelStandard} standard in response to the following topic:
+
+ESSAY TOPIC:
+- Title: "${topicTitle}"
+- Category: ${topicCategory}
+- Genre: ${topicType}
+
+MANDATORY CRITERIA & CONSTRAINTS:
+
+1. STRICT LENGTH TARGET:
+   - The essay MUST be strictly between ${minWords} and ${maxWords} words.
+   - Do not write fewer than ${minWords} words, and do not exceed ${maxWords} words.
+
+2. COMPULSORY TARGET LEXIS (10/10 REQUIRED):
+   Incorporate ALL 10 of the following target vocabulary words into the essay. Each word must be used accurately in its exact form or a natural grammatical inflection (e.g., conjugated verb, plural noun, participial form):
+${vocabItems}
+
+3. SOPHISTICATED SYNTACTIC STRUCTURES:
+   Include at least 3 to 5 of the following C1/C2 grammatical structures to satisfy syntactic complexity benchmarks:
+   - Negative / Limiting Inversion (e.g. "Seldom has...", "Under no circumstances should...", "Not only is...")
+   - Cleft / Focus Structure (e.g. "What remains of paramount concern is...", "It is this systemic flaw that...")
+   - Passive Reporting Clause (e.g. "It is widely contended that...", "It is commonly maintained that...")
+   - Inverted Conditional (e.g. "Were authorities to intervene...", "Had society recognized...")
+   - Advanced Concession / Contrast Marker (e.g. "Notwithstanding the...", "Albeit challenging,...", "Inasmuch as...")
+   - Fronted Participle Clause (e.g. "Having considered the ramifications,...", "Confronted with mounting evidence,...")
+
+4. FORMAL REGISTER & TONE:
+   - Maintain a formal, analytical academic register.
+   - DO NOT use informal contractions (write "do not", "cannot", "will not", "it is" — avoid "don't", "can't", "won't", "it's").
+   - DO NOT use colloquialisms or informal phrasing (avoid "a lot of", "kids", "things", "stuff").
+
+5. PARAGRAPH STRUCTURE:
+   - Structure the essay into 3 to 4 distinct, cohesive paragraphs: an introduction with a clear thesis, 2 balanced and critical analytical body paragraphs, and a conclusive synthesis.
+
+OUTPUT INSTRUCTION:
+Output ONLY the raw essay text. Do not include a title, heading, introduction, word count notes, commentary, or markdown quotes. Begin immediately with the first sentence of the essay.`;
+}
+
+
 
   // ==========================================
   // 4. SPEECH & PRONUNCIATION ENGINE
@@ -12118,7 +12179,26 @@ class FluentEdgeApp {
       speakingReportPanel: document.getElementById('speakingReportPanel'),
 
       // Toast
-      toastContainer: document.getElementById('toastContainer')
+      toastContainer: document.getElementById('toastContainer'),
+
+      // AI Essay Prompt Generator
+      copyAiPromptBtn: document.getElementById('copyAiPromptBtn'),
+      copyAiPromptBtnText: document.getElementById('copyAiPromptBtnText'),
+      previewAiPromptBtn: document.getElementById('previewAiPromptBtn'),
+      reqAlertCopyAiBtn: document.getElementById('reqAlertCopyAiBtn'),
+      reqAlertCopyAiBtnText: document.getElementById('reqAlertCopyAiBtnText'),
+      aiPromptModalBackdrop: document.getElementById('aiPromptModalBackdrop'),
+      aiPromptModalCard: document.getElementById('aiPromptModalCard'),
+      closeAiPromptModalBtn: document.getElementById('closeAiPromptModalBtn'),
+      copyPromptInsideModalBtn: document.getElementById('copyPromptInsideModalBtn'),
+      modalCopyBtnText: document.getElementById('modalCopyBtnText'),
+      primaryCopyAiPromptBtn: document.getElementById('primaryCopyAiPromptBtn'),
+      primaryCopyBtnLabel: document.getElementById('primaryCopyBtnLabel'),
+      aiPromptLevelBadge: document.getElementById('aiPromptLevelBadge'),
+      aiPromptWordTargetBadge: document.getElementById('aiPromptWordTargetBadge'),
+      aiPromptVocabChips: document.getElementById('aiPromptVocabChips'),
+      aiPromptVocabCount: document.getElementById('aiPromptVocabCount'),
+      aiPromptTextarea: document.getElementById('aiPromptTextarea')
     };
   }
 
@@ -12193,6 +12273,34 @@ class FluentEdgeApp {
         e.returnValue = '';
       }
     });
+
+    // AI Essay Prompt Generator events
+    if (this.dom.copyAiPromptBtn) {
+      this.dom.copyAiPromptBtn.addEventListener('click', () => this.handleQuickCopyAiPrompt());
+    }
+    if (this.dom.previewAiPromptBtn) {
+      this.dom.previewAiPromptBtn.addEventListener('click', () => this.openAiPromptModal());
+    }
+    if (this.dom.closeAiPromptModalBtn) {
+      this.dom.closeAiPromptModalBtn.addEventListener('click', () => this.closeAiPromptModal());
+    }
+    if (this.dom.copyPromptInsideModalBtn) {
+      this.dom.copyPromptInsideModalBtn.addEventListener('click', () => this.handleModalCopyAiPrompt());
+    }
+    if (this.dom.primaryCopyAiPromptBtn) {
+      this.dom.primaryCopyAiPromptBtn.addEventListener('click', () => this.handleModalCopyAiPrompt());
+    }
+    if (this.dom.aiPromptModalBackdrop) {
+      this.dom.aiPromptModalBackdrop.addEventListener('click', (e) => {
+        if (e.target === this.dom.aiPromptModalBackdrop) this.closeAiPromptModal();
+      });
+    }
+    if (this.dom.reqAlertCopyAiBtn) {
+      this.dom.reqAlertCopyAiBtn.addEventListener('click', () => {
+        this.closeRequirementAlert();
+        this.handleQuickCopyAiPrompt(true);
+      });
+    }
   }
 
   bindHotkeys() {
@@ -12209,11 +12317,38 @@ class FluentEdgeApp {
         return;
       }
 
+      const aiPromptOpen = this.dom.aiPromptModalBackdrop && (
+        this.dom.aiPromptModalBackdrop.classList.contains('open') ||
+        this.dom.aiPromptModalBackdrop.style.display === 'flex'
+      );
+
+      // Escape / Enter when AI prompt modal is open
+      if (aiPromptOpen) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          this.closeAiPromptModal();
+          return;
+        }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.handleModalCopyAiPrompt();
+          return;
+        }
+      }
+
       const modalOpen = (this.dom.evalModalBackdrop.classList.contains('visible') ||
                         this.dom.evalModalBackdrop.style.display === 'flex' ||
                         this.dom.evalModalBackdrop.classList.contains('open')) ||
-                        Boolean(reqAlertOpen);
+                        Boolean(reqAlertOpen) ||
+                        Boolean(aiPromptOpen);
       const inTextField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+
+      // Alt+P  →  Copy AI Prompt
+      if (e.altKey && (e.key === 'p' || e.key === 'P') && !modalOpen) {
+        e.preventDefault();
+        this.handleQuickCopyAiPrompt();
+        return;
+      }
 
       // Alt+M  →  Toggle C1 / C2 Standard Mode
       if (e.altKey && (e.key === 'm' || e.key === 'M') && !modalOpen) {
@@ -12403,17 +12538,18 @@ class FluentEdgeApp {
           <div class="vocab-chip-top">
             <div class="vocab-word-title">
               <span class="vocab-word-text">${headword}</span>
-              <span class="vocab-pos-pill ${posClass}">${v.pos}</span>
-              <span class="vocab-cefr-pill">${v.cefr}</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 4px;">
-              <span class="vocab-used-check">✓ USED</span>
-              <button class="vocab-audio-btn" data-speak="${headword}">
+            <div class="vocab-chip-actions">
+              <span class="vocab-used-check">✓</span>
+              <button class="vocab-audio-btn" data-speak="${headword}" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of ${headword}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
               </button>
             </div>
           </div>
-          <div class="vocab-type-meta">${(v.pos || '').toUpperCase()} • ${v.cefr} Target Lexis</div>
+          <div class="vocab-pills-row">
+            <span class="vocab-pos-pill ${posClass}">${v.pos}</span>
+            <span class="vocab-cefr-pill">${v.cefr}</span>
+          </div>
         </div>
       `;
     }).join('');
@@ -13046,6 +13182,166 @@ class FluentEdgeApp {
       localStorage.removeItem('fluentedge_topic_progress');
       this.renderHistory();
       this.showToast("History cleared.", "info");
+    }
+  }
+
+  // ==========================================
+  // AI ESSAY PROMPT GENERATOR
+  // ==========================================
+
+  getAiEssayPrompt() {
+    return generateAiEssayPrompt(this.currentTopic, this.activeVocabulary, this.targetLevel);
+  }
+
+  async copyTextToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (err) {
+        // Fallback to execCommand below
+      }
+    }
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    let successful = false;
+    try {
+      successful = document.execCommand('copy');
+    } catch (err) {
+      successful = false;
+    }
+    document.body.removeChild(textArea);
+    return successful;
+  }
+
+  async handleQuickCopyAiPrompt(fromAlert = false) {
+    const promptText = this.getAiEssayPrompt();
+    const success = await this.copyTextToClipboard(promptText);
+
+    if (success) {
+      // Animate toolbar button
+      if (this.dom.copyAiPromptBtn && this.dom.copyAiPromptBtnText) {
+        this.dom.copyAiPromptBtn.classList.add('copied');
+        const origText = this.dom.copyAiPromptBtnText.textContent;
+        this.dom.copyAiPromptBtnText.textContent = "✓ Prompt Copied!";
+        setTimeout(() => {
+          this.dom.copyAiPromptBtn.classList.remove('copied');
+          this.dom.copyAiPromptBtnText.textContent = origText;
+        }, 2600);
+      }
+
+      // Animate alert button if triggered from requirement alert
+      if (fromAlert && this.dom.reqAlertCopyAiBtnText) {
+        this.dom.reqAlertCopyAiBtnText.textContent = "✓ Copied to Clipboard!";
+      }
+
+      this.showToast("✓ AI Prompt copied! Paste into ChatGPT, Claude, or Gemini.", "success");
+    } else {
+      // Fallback: open modal so user can view/copy manually
+      this.openAiPromptModal();
+      this.showToast("Clipboard write restricted — copy prompt directly from preview.", "info");
+    }
+  }
+
+  openAiPromptModal() {
+    if (!this.dom.aiPromptModalBackdrop) return;
+
+    const isC2 = this.targetLevel === 'C2';
+    const promptText = this.getAiEssayPrompt();
+
+    // Badges
+    if (this.dom.aiPromptLevelBadge) {
+      this.dom.aiPromptLevelBadge.textContent = isC2 ? "C2 PROFICIENCY PROMPT" : "C1 ADVANCED PROMPT";
+    }
+    if (this.dom.aiPromptWordTargetBadge) {
+      this.dom.aiPromptWordTargetBadge.textContent = isC2 ? "280–320 Words Target" : "220–260 Words Target";
+    }
+    if (this.dom.aiPromptVocabCount) {
+      this.dom.aiPromptVocabCount.textContent = `${this.activeVocabulary.length} items`;
+    }
+
+    // Render 10 mini vocabulary chips
+    if (this.dom.aiPromptVocabChips) {
+      this.dom.aiPromptVocabChips.innerHTML = this.activeVocabulary.map(v => {
+        const word = v.headword || v.word || '';
+        const pos = v.pos || 'lex';
+        const posClass = `pos-${pos.toLowerCase()}`;
+        return `
+          <div class="ai-mini-chip">
+            <span class="ai-mini-pos ${posClass}">${pos}</span>
+            <span>${word}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Populate textarea
+    if (this.dom.aiPromptTextarea) {
+      this.dom.aiPromptTextarea.value = promptText;
+    }
+
+    // Reset copy button labels
+    if (this.dom.modalCopyBtnText) {
+      this.dom.modalCopyBtnText.textContent = "Copy Prompt";
+    }
+    if (this.dom.primaryCopyBtnLabel) {
+      this.dom.primaryCopyBtnLabel.textContent = "Copy Prompt to Clipboard";
+    }
+
+    // Open modal
+    this.dom.aiPromptModalBackdrop.style.display = 'flex';
+    void this.dom.aiPromptModalBackdrop.offsetWidth;
+    this.dom.aiPromptModalBackdrop.classList.add('open');
+
+    if (this.dom.primaryCopyAiPromptBtn) {
+      this.dom.primaryCopyAiPromptBtn.focus();
+    }
+  }
+
+  closeAiPromptModal() {
+    if (!this.dom.aiPromptModalBackdrop) return;
+    this.dom.aiPromptModalBackdrop.classList.remove('open');
+    setTimeout(() => {
+      this.dom.aiPromptModalBackdrop.style.display = 'none';
+      if (this.dom.essayInput) {
+        this.dom.essayInput.focus();
+      }
+    }, 250);
+  }
+
+  async handleModalCopyAiPrompt() {
+    const promptText = this.dom.aiPromptTextarea ? this.dom.aiPromptTextarea.value : this.getAiEssayPrompt();
+    const success = await this.copyTextToClipboard(promptText);
+
+    if (success) {
+      if (this.dom.modalCopyBtnText) {
+        this.dom.modalCopyBtnText.textContent = "✓ Copied!";
+      }
+      if (this.dom.primaryCopyBtnLabel) {
+        this.dom.primaryCopyBtnLabel.textContent = "✓ Prompt Copied to Clipboard!";
+      }
+      if (this.dom.primaryCopyAiPromptBtn) {
+        this.dom.primaryCopyAiPromptBtn.classList.add('copied');
+      }
+
+      this.showToast("✓ AI Prompt copied! Paste into ChatGPT, Claude, or Gemini.", "success");
+
+      setTimeout(() => {
+        if (this.dom.modalCopyBtnText) this.dom.modalCopyBtnText.textContent = "Copy Prompt";
+        if (this.dom.primaryCopyBtnLabel) this.dom.primaryCopyBtnLabel.textContent = "Copy Prompt to Clipboard";
+        if (this.dom.primaryCopyAiPromptBtn) this.dom.primaryCopyAiPromptBtn.classList.remove('copied');
+      }, 3000);
+    } else {
+      if (this.dom.aiPromptTextarea) {
+        this.dom.aiPromptTextarea.select();
+      }
+      this.showToast("Prompt selected — press Ctrl+C to copy manually.", "info");
     }
   }
 

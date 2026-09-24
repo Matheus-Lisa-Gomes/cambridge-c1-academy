@@ -442,3 +442,64 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVoca
     }
   };
 }
+
+/**
+ * Generates an optimized prompt for external LLMs (ChatGPT, Claude, Gemini, etc.)
+ * to craft an essay adhering to FluentEdge's C1/C2 standards and incorporating
+ * all compulsory target lexis items.
+ */
+export function generateAiEssayPrompt(topic, targetVocabulary = [], targetLevel = 'C1') {
+  const isC2 = targetLevel === 'C2';
+  const levelStandard = isC2 ? 'CEFR C2 Proficiency (Mastery)' : 'CEFR C1 Advanced';
+  const minWords = isC2 ? 280 : 220;
+  const maxWords = isC2 ? 320 : 260;
+  const topicTitle = topic ? topic.title : 'Contemporary Issues & Ethics';
+  const topicCategory = topic ? topic.category : 'General Academic';
+  const topicType = topic ? topic.type : (isC2 ? 'C2 Proficiency Discursive Essay' : 'C1/C2 Academic Essay');
+
+  const vocabItems = targetVocabulary.map((v, i) => {
+    const word = v.headword || v.word || '';
+    const pos = v.pos ? `[${v.pos}]` : '';
+    const def = v.definition ? ` — ${v.definition}` : '';
+    const colloc = v.collocation ? ` (collocation: "${v.collocation}")` : '';
+    return `${i + 1}. ${word} ${pos}${def}${colloc}`;
+  }).join('\n');
+
+  return `Write an academic essay at the ${levelStandard} standard in response to the following topic:
+
+ESSAY TOPIC:
+- Title: "${topicTitle}"
+- Category: ${topicCategory}
+- Genre: ${topicType}
+
+MANDATORY CRITERIA & CONSTRAINTS:
+
+1. STRICT LENGTH TARGET:
+   - The essay MUST be strictly between ${minWords} and ${maxWords} words.
+   - Do not write fewer than ${minWords} words, and do not exceed ${maxWords} words.
+
+2. COMPULSORY TARGET LEXIS (10/10 REQUIRED):
+   Incorporate ALL 10 of the following target vocabulary words into the essay. Each word must be used accurately in its exact form or a natural grammatical inflection (e.g., conjugated verb, plural noun, participial form):
+${vocabItems}
+
+3. SOPHISTICATED SYNTACTIC STRUCTURES:
+   Include at least 3 to 5 of the following C1/C2 grammatical structures to satisfy syntactic complexity benchmarks:
+   - Negative / Limiting Inversion (e.g. "Seldom has...", "Under no circumstances should...", "Not only is...")
+   - Cleft / Focus Structure (e.g. "What remains of paramount concern is...", "It is this systemic flaw that...")
+   - Passive Reporting Clause (e.g. "It is widely contended that...", "It is commonly maintained that...")
+   - Inverted Conditional (e.g. "Were authorities to intervene...", "Had society recognized...")
+   - Advanced Concession / Contrast Marker (e.g. "Notwithstanding the...", "Albeit challenging,...", "Inasmuch as...")
+   - Fronted Participle Clause (e.g. "Having considered the ramifications,...", "Confronted with mounting evidence,...")
+
+4. FORMAL REGISTER & TONE:
+   - Maintain a formal, analytical academic register.
+   - DO NOT use informal contractions (write "do not", "cannot", "will not", "it is" — avoid "don't", "can't", "won't", "it's").
+   - DO NOT use colloquialisms or informal phrasing (avoid "a lot of", "kids", "things", "stuff").
+
+5. PARAGRAPH STRUCTURE:
+   - Structure the essay into 3 to 4 distinct, cohesive paragraphs: an introduction with a clear thesis, 2 balanced and critical analytical body paragraphs, and a conclusive synthesis.
+
+OUTPUT INSTRUCTION:
+Output ONLY the raw essay text. Do not include a title, heading, introduction, word count notes, commentary, or markdown quotes. Begin immediately with the first sentence of the essay.`;
+}
+

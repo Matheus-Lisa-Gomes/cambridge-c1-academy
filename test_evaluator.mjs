@@ -129,6 +129,27 @@ const missingWordsComplete = completeMetrics.vocabStatus.filter(v => !v.used).ma
 const isCompleteFulfilled = completeMetrics.targetWordsUsed === completeMetrics.targetWordsTotal;
 console.log("Complete (10/10) Fulfilled:", isCompleteFulfilled, "| Words used:", completeMetrics.targetWordsUsed, "/ 10");
 
+console.log("\n=== TEST 7: AI Essay Generator Prompt Builder ===");
+import { generateAiEssayPrompt } from './js/modules/evaluator.js';
+const promptC1 = generateAiEssayPrompt(topicAI, customVocab, 'C1');
+const promptC2 = generateAiEssayPrompt(topicC2, customVocab, 'C2');
+
+const promptC1HasTitle = promptC1.includes(topicAI.title);
+const promptC1HasC1Standard = promptC1.includes("CEFR C1 Advanced") && promptC1.includes("220 and 260 words");
+const promptC2HasC2Standard = promptC2.includes("CEFR C2 Proficiency (Mastery)") && promptC2.includes("280 and 320 words");
+const promptHasAllWords = customVocab.every(v => promptC1.includes(v.headword || v.word));
+const promptHasSyntaxRules = promptC1.includes("Negative / Limiting Inversion") && promptC1.includes("Cleft / Focus Structure");
+const promptHasOutputRule = promptC1.includes("Output ONLY the raw essay text");
+
+console.log("C1 Prompt contains topic title:", promptC1HasTitle);
+console.log("C1 Prompt contains C1 word range (220-260):", promptC1HasC1Standard);
+console.log("C2 Prompt contains C2 word range (280-320):", promptC2HasC2Standard);
+console.log("Prompt embeds all 10 compulsory words:", promptHasAllWords);
+console.log("Prompt includes syntax radar requirements:", promptHasSyntaxRules);
+console.log("Prompt specifies clean raw output:", promptHasOutputRule);
+
+const aiPromptTestPassed = promptC1HasTitle && promptC1HasC1Standard && promptC2HasC2Standard && promptHasAllWords && promptHasSyntaxRules && promptHasOutputRule;
+
 const lexisGuardPassed = isPartialBlocked && 
                          missingWordsPartial.length === 1 && 
                          missingWordsPartial[0] === 'perpetuate' &&
@@ -141,10 +162,11 @@ const allPassed = evalPassC1.meetsThreshold &&
                   !evalC1inC2.meetsThreshold &&
                   structureValid &&
                   quickMetrics.targetWordsUsed >= 8 &&
-                  lexisGuardPassed;
+                  lexisGuardPassed &&
+                  aiPromptTestPassed;
 
 if (allPassed) {
-  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine & 100% Compulsory Lexis Guard accurately configured! <<<");
+  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard & AI Prompt Generator accurately configured! <<<");
 } else {
   console.error("\n>>> TEST FAILED! <<<", {
     evalPassC1: evalPassC1.meetsThreshold,
@@ -153,7 +175,9 @@ if (allPassed) {
     evalC1inC2: evalC1inC2.meetsThreshold,
     structureValid,
     targetWordsUsed: quickMetrics.targetWordsUsed,
-    lexisGuardPassed
+    lexisGuardPassed,
+    aiPromptTestPassed
   });
   process.exit(1);
 }
+

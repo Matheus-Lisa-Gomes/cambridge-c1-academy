@@ -53,6 +53,8 @@ The Common European Framework of Reference for Languages (CEFR) proficiency leve
 
 * **Dynamic Word Meter & Live Guidance**: Real-time feedback adapting to the active standard (220–260 target for C1 vs 280–320 target for C2).
 
+* **AI Essay Generator Prompt (`Alt+P`)**: One-click prompt generator engineered for ChatGPT, Claude, and Gemini. Embeds all 10 compulsory vocabulary words, active C1/C2 word count constraints, formal register rules, and syntax radar patterns, allowing learners to generate compliant essays instantly and advance directly to the reading & speaking phase. Includes an interactive inspection modal with mini POS chips and copy feedback.
+
 * **Dynamic Vocabulary Tracker**: Automatically detects required vocabulary as you write, turning chips into green "✓ USED" badges.
 
 * **Syntax Radar**: Live detector for advanced grammatical structures:

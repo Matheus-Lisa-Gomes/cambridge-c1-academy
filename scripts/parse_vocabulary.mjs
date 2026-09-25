@@ -28,6 +28,20 @@ const csvPath = path.join(rootDir, 'data', 'vocabulary.csv');
 const raw = fs.readFileSync(csvPath, 'utf8');
 const lines = raw.split(/\r?\n/).filter(line => line.trim().length > 0);
 
+const defsDir = path.join(rootDir, 'data', 'definitions');
+const definitions = {};
+if (fs.existsSync(defsDir)) {
+  const defFiles = fs.readdirSync(defsDir).filter(f => f.endsWith('.json'));
+  for (const file of defFiles) {
+    try {
+      const data = JSON.parse(fs.readFileSync(path.join(defsDir, file), 'utf8'));
+      Object.assign(definitions, data);
+    } catch (err) {
+      console.error(`Error loading definition file ${file}:`, err.message);
+    }
+  }
+}
+
 const entries = [];
 for (let i = 1; i < lines.length; i++) {
   const parts = parseCSVLine(lines[i]);
@@ -37,10 +51,20 @@ for (let i = 1; i < lines.length; i++) {
   if (pos === 'vern') pos = 'verb';
   let cefr = (parts[2] || '').trim().toUpperCase();
 
+  const hwLower = headword.toLowerCase();
+  const posLower = pos.toLowerCase();
+  const keyExact = `${hwLower}_${posLower}`;
+  const keyBase = hwLower.split('/')[0].trim();
+  const keyBaseExact = `${keyBase}_${posLower}`;
+  const noteDef = (parts[3] || '').trim();
+
+  const definition = noteDef || definitions[keyExact] || definitions[keyBaseExact] || definitions[hwLower] || definitions[keyBase] || '';
+
   entries.push({
     headword,
     pos,
-    cefr
+    cefr,
+    definition
   });
 }
 

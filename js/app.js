@@ -482,6 +482,7 @@ class FluentEdgeApp {
       const usage = checkTargetWordUsage(v, text);
       const headword = v.headword || v.word;
       const posClass = `pos-${(v.pos || 'noun').toLowerCase()}`;
+      const definition = v.definition || '';
       return `
         <div class="vocab-chip ${usage.used ? 'used' : ''}" data-word="${headword}">
           <div class="vocab-chip-top">
@@ -495,6 +496,7 @@ class FluentEdgeApp {
               </button>
             </div>
           </div>
+          ${definition ? `<div class="vocab-definition">${definition}</div>` : ''}
           <div class="vocab-pills-row">
             <span class="vocab-pos-pill ${posClass}">${v.pos}</span>
             <span class="vocab-cefr-pill">${v.cefr}</span>
@@ -709,12 +711,15 @@ class FluentEdgeApp {
 
     // 2. Compulsory Target Lexis Requirement Item
     if (missingLexis && missingLexis.length > 0) {
-      const missingChipsHtml = missingLexis.map(item => `
-        <span class="req-missing-chip" title="Missing compulsory word: ${item.word}">
+      const missingChipsHtml = missingLexis.map(item => {
+        const tooltip = item.definition ? `${item.word}: ${item.definition}` : `Missing compulsory word: ${item.word}`;
+        return `
+        <span class="req-missing-chip" title="${tooltip}">
           ${item.pos ? `<span class="pos-tag pos-${(item.pos || '').toLowerCase()}">${item.pos}</span>` : ''}
           ${item.word}
         </span>
-      `).join('');
+      `;
+      }).join('');
 
       itemsHtml += `
         <div class="req-item item-missing">
@@ -1221,8 +1226,10 @@ class FluentEdgeApp {
         const word = v.headword || v.word || '';
         const pos = v.pos || 'lex';
         const posClass = `pos-${pos.toLowerCase()}`;
+        const def = v.definition || '';
+        const tooltip = def ? `${word} (${pos}) — ${def}` : word;
         return `
-          <div class="ai-mini-chip">
+          <div class="ai-mini-chip" title="${tooltip}">
             <span class="ai-mini-pos ${posClass}">${pos}</span>
             <span>${word}</span>
           </div>

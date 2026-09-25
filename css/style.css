@@ -757,6 +757,10 @@ body.theme-c2 #evaluateEssayBtn.btn-lexis-ready svg {
   padding: 12px 14px;
   transition: var(--transition);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 82px;
 }
 
 .vocab-chip:hover {
@@ -825,6 +829,7 @@ body.theme-c2 #evaluateEssayBtn.btn-lexis-ready svg {
   display: flex;
   align-items: center;
   gap: 6px;
+  margin-top: auto;
 }
 
 .vocab-ipa {
@@ -857,9 +862,26 @@ body.theme-c2 #evaluateEssayBtn.btn-lexis-ready svg {
 }
 
 .vocab-definition {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.38;
+  margin: 3px 0 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.vocab-chip:hover .vocab-definition {
+  color: rgba(241, 245, 249, 0.95);
+}
+
+.vocab-chip.used .vocab-definition {
+  color: rgba(226, 232, 240, 0.82);
 }
 
 .vocab-subtitle-left {

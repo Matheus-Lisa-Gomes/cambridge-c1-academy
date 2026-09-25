@@ -1130,20 +1130,27 @@ body.theme-c2 .step-badge {
   padding-top: 22px;
   border-top: 1px solid var(--border-subtle);
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-align: center;
 }
 
 .stage-cta-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
-  padding: 14px 30px;
+  padding: 14px 34px;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.3px;
   border-radius: var(--radius-md);
   box-shadow: 0 4px 18px rgba(223, 177, 91, 0.3);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .stage-cta-btn:hover {
@@ -2918,11 +2925,16 @@ body.theme-c2 .req-missing-chip {
     grid-template-columns: 1fr;
   }
   .stage-footer-action {
-    justify-content: stretch;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
   }
   .stage-cta-btn {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     justify-content: center;
+    margin: 0 auto;
   }
   .panel-topic-preview {
     display: none;

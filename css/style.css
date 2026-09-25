@@ -1222,6 +1222,47 @@ body.theme-c2 .stage2-topic-card:hover {
 }
 
 /* ==========================================================================
+   STAGE 2: SIDE-BY-SIDE SPLIT WORKSPACE (Lexis Left, Editor Right)
+   ========================================================================== */
+.stage2-workspace-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 14px;
+}
+
+.stage2-left-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+.stage2-left-pane .vocabulary-section {
+  margin-top: 0;
+}
+
+.stage2-right-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+.stage2-right-pane .editor-toolbar {
+  margin-top: 0;
+}
+
+.stage2-right-pane .essay-textarea {
+  height: 380px;
+  min-height: 280px;
+}
+
+@media (max-width: 1080px) {
+  .stage2-workspace-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* ==========================================================================
    STAGE 2: COMPACT COMPULSORY TARGET LEXIS STRIP
    ========================================================================== */
 .stage2-lexis-dock {

@@ -466,96 +466,292 @@
           <span class="topic-preview-pill" id="writingTopicPill" style="display: none;">Artificial Intelligence, Moral Agency &amp; Societal Autonomy</span>
         </div>
 
-        <!-- Compulsory Vocabulary Pack (3 Verbs, 3 Nouns, 2 Adjectives, 2 Adverbs) -->
-        <div class="vocabulary-section">
-          <div class="section-subtitle">
-            <div class="vocab-subtitle-left">
-              <span>Compulsory Target Lexis (<span id="vocabUsedCounter">0/10</span> Used)</span>
-              <span class="vocab-structure-tag" style="display: none;">3 Verbs • 3 Nouns • 2 Adj • 2 Adv</span>
-            </div>
-            <div class="vocab-subtitle-right">
-              <button id="rerollVocabBtn" class="btn btn-secondary btn-sm" title="Draw 10 new random compulsory words">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="23 4 23 10 17 10"></polyline>
-                  <polyline points="1 20 1 14 7 14"></polyline>
-                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                </svg>
-                Reroll Lexis
-              </button>
+        <!-- Stage 2 Side-by-Side Workspace Layout -->
+        <div class="stage2-workspace-layout">
+          <!-- Left Side: Vocabulary Section -->
+          <div class="stage2-left-pane">
+            <div class="vocabulary-section">
+              <div class="section-subtitle">
+                <div class="vocab-subtitle-left">
+                  <span>Compulsory Target Lexis (<span id="vocabUsedCounter">0/10</span> Used)</span>
+                  <span class="vocab-structure-tag" style="display: none;">3 Verbs • 3 Nouns • 2 Adj • 2 Adv</span>
+                </div>
+                <div class="vocab-subtitle-right">
+                  <button id="rerollVocabBtn" class="btn btn-secondary btn-sm" title="Draw 10 new random compulsory words">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="23 4 23 10 17 10"></polyline>
+                      <polyline points="1 20 1 14 7 14"></polyline>
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Reroll Lexis
+                  </button>
+                </div>
+              </div>
+
+              <div class="vocab-grid" id="vocabGrid">
+                <div class="vocab-chip" data-word="reproach">
+                  <div class="vocab-chip-top">
+                    <div class="vocab-word-title">
+                      <span class="vocab-word-text">reproach</span>
+                    </div>
+                    <div class="vocab-chip-actions">
+                      <span class="vocab-used-check">✓</span>
+                      <button class="vocab-audio-btn" data-speak="reproach" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of reproach">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="vocab-definition">to address someone in such a way as to express disapproval</div>
+                  <div class="vocab-pills-row">
+                    <span class="vocab-pos-pill pos-verb">verb</span>
+                    <span class="vocab-cefr-pill">C2</span>
+                  </div>
+                </div>
+
+                <div class="vocab-chip" data-word="marketability">
+                  <div class="vocab-chip-top">
+                    <div class="vocab-word-title">
+                      <span class="vocab-word-text">marketability</span>
+                    </div>
+                    <div class="vocab-chip-actions">
+                      <span class="vocab-used-check">✓</span>
+                      <button class="vocab-audio-btn" data-speak="marketability" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of marketability">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="vocab-definition">the ease with which a product can be sold commercially</div>
+                  <div class="vocab-pills-row">
+                    <span class="vocab-pos-pill pos-noun">noun</span>
+                    <span class="vocab-cefr-pill">C2</span>
+                  </div>
+                </div>
+
+                <div class="vocab-chip" data-word="whir">
+                  <div class="vocab-chip-top">
+                    <div class="vocab-word-title">
+                      <span class="vocab-word-text">whir</span>
+                    </div>
+                    <div class="vocab-chip-actions">
+                      <span class="vocab-used-check">✓</span>
+                      <button class="vocab-audio-btn" data-speak="whir" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of whir">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="vocab-definition">to emit a continuous, subdued buzzing or rotary sound</div>
+                  <div class="vocab-pills-row">
+                    <span class="vocab-pos-pill pos-verb">verb</span>
+                    <span class="vocab-cefr-pill">C2</span>
+                  </div>
+                </div>
+
+                <div class="vocab-chip" data-word="soliloquy">
+                  <div class="vocab-chip-top">
+                    <div class="vocab-word-title">
+                      <span class="vocab-word-text">soliloquy</span>
+                    </div>
+                    <div class="vocab-chip-actions">
+                      <span class="vocab-used-check">✓</span>
+                      <button class="vocab-audio-btn" data-speak="soliloquy" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of soliloquy">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="vocab-definition">an act of speaking one's thoughts aloud when by oneself in drama</div>
+                  <div class="vocab-pills-row">
+                    <span class="vocab-pos-pill pos-noun">noun</span>
+                    <span class="vocab-cefr-pill">C2</span>
+                  </div>
+                </div>
+
+                <div class="vocab-chip" data-word="shamble">
+                  <div class="vocab-chip-top">
+                    <div class="vocab-word-title">
+                      <span class="vocab-word-text">shamble</span>
+                    </div>
+                    <div class="vocab-chip-actions">
+                      <span class="vocab-used-check">✓</span>
+                      <button class="vocab-audio-btn" data-speak="shamble" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of shamble">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="vocab-definition">to walk with a slow, shuffling, awkward, or unsteady gait</div>
+                  <div class="vocab-pills-row">
+                    <span class="vocab-pos-pill pos-verb">verb</span>
+                    <span class="vocab-cefr-pill">C2</span>
+                  </div>
+                </div>
+
+                <div class="vocab-chip" data-word="cinematographer">
+                  <div class="vocab-chip-top">
+                    <div class="vocab-word-title">
+                      <span class="vocab-word-text">cinematographer</span>
+                    </div>
+                    <div class="vocab-chip-actions">
+                      <span class="vocab-used-check">✓</span>
+                      <button class="vocab-audio-btn" data-speak="cinematographer" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of cinematographer">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="vocab-definition">a chief camera operator and lighting director in filmmaking</div>
+                  <div class="vocab-pills-row">
+                    <span class="vocab-pos-pill pos-noun">noun</span>
+                    <span class="vocab-cefr-pill">C2</span>
+                  </div>
+                </div>
+
+                <div class="vocab-chip" data-word="diligently">
+                  <div class="vocab-chip-top">
+                    <div class="vocab-word-title">
+                      <span class="vocab-word-text">diligently</span>
+                    </div>
+                    <div class="vocab-chip-actions">
+                      <span class="vocab-used-check">✓</span>
+                      <button class="vocab-audio-btn" data-speak="diligently" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of diligently">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="vocab-definition">with persistent, attentive effort and meticulous care</div>
+                  <div class="vocab-pills-row">
+                    <span class="vocab-pos-pill pos-adverb">adverb</span>
+                    <span class="vocab-cefr-pill">C2</span>
+                  </div>
+                </div>
+
+                <div class="vocab-chip" data-word="ad lib">
+                  <div class="vocab-chip-top">
+                    <div class="vocab-word-title">
+                      <span class="vocab-word-text">ad lib</span>
+                    </div>
+                    <div class="vocab-chip-actions">
+                      <span class="vocab-used-check">✓</span>
+                      <button class="vocab-audio-btn" data-speak="ad lib" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of ad lib">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="vocab-definition">to speak, sing, or act spontaneously without preparation</div>
+                  <div class="vocab-pills-row">
+                    <span class="vocab-pos-pill pos-adjective">adjective</span>
+                    <span class="vocab-cefr-pill">C2</span>
+                  </div>
+                </div>
+
+                <div class="vocab-chip" data-word="treacherously">
+                  <div class="vocab-chip-top">
+                    <div class="vocab-word-title">
+                      <span class="vocab-word-text">treacherously</span>
+                    </div>
+                    <div class="vocab-chip-actions">
+                      <span class="vocab-used-check">✓</span>
+                      <button class="vocab-audio-btn" data-speak="treacherously" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of treacherously">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="vocab-definition">in a deceptive, disloyal, or dangerously hazardous manner</div>
+                  <div class="vocab-pills-row">
+                    <span class="vocab-pos-pill pos-adverb">adverb</span>
+                    <span class="vocab-cefr-pill">C2</span>
+                  </div>
+                </div>
+
+                <div class="vocab-chip" data-word="kinetic">
+                  <div class="vocab-chip-top">
+                    <div class="vocab-word-title">
+                      <span class="vocab-word-text">kinetic</span>
+                    </div>
+                    <div class="vocab-chip-actions">
+                      <span class="vocab-used-check">✓</span>
+                      <button class="vocab-audio-btn" data-speak="kinetic" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of kinetic">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="vocab-definition">relating to, resulting from, or produced by physical motion</div>
+                  <div class="vocab-pills-row">
+                    <span class="vocab-pos-pill pos-adjective">adjective</span>
+                    <span class="vocab-cefr-pill">C2</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="vocab-grid" id="vocabGrid">
-            <!-- Dynamically populated 10 vocabulary chips -->
-          </div>
-        </div>
+          <!-- Right Side: Everything below it -->
+          <div class="stage2-right-pane">
+            <!-- Hidden legacy dock to prevent null checks -->
+            <div class="stage2-lexis-dock" id="stage2LexisDock" style="display: none;">
+              <strong id="stage2VocabCountDisplay">0/10</strong>
+              <div id="stage2VocabChips"></div>
+            </div>
 
-        <!-- Hidden legacy dock to prevent null checks -->
-        <div class="stage2-lexis-dock" id="stage2LexisDock" style="display: none;">
-          <strong id="stage2VocabCountDisplay">0/10</strong>
-          <div id="stage2VocabChips"></div>
-        </div>
+            <!-- Live Toolbar -->
+            <div class="editor-toolbar">
+              <div class="editor-metrics-live">
+                <div class="metric-live-item">
+                  <svg class="metric-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                  <span>Words:</span>
+                  <span class="metric-live-val" id="liveWordCount">0</span>
+                  <span id="targetWordCountHint" class="metric-target-hint">(220-260 target)</span>
+                </div>
+                <div class="metric-live-item">
+                  <svg class="metric-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="21" y1="10" x2="3" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="21" y1="18" x2="7" y2="18"></line>
+                  </svg>
+                  <span>Paragraphs:</span>
+                  <span class="metric-live-val" id="liveParaCount">0</span>
+                </div>
+              </div>
+              <div id="lengthGuidanceBadge" class="radar-badge">
+                Awaiting input
+              </div>
+            </div>
 
-        <!-- Live Toolbar -->
-        <div class="editor-toolbar">
-          <div class="editor-metrics-live">
-            <div class="metric-live-item">
-              <svg class="metric-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
+            <!-- Real-time C1/C2 Syntax & Register Radar -->
+            <div class="live-radar-box">
+              <div class="radar-header">
+                <span>C1/C2 Grammar &amp; Syntax Radar</span>
+                <span id="radarCountDisplay" class="radar-count-badge zero">0/4 Structures Required (C1)</span>
+              </div>
+              <div class="radar-badges-row" id="radarBadgesRow">
+                <span class="radar-badge-empty">Write complex structures (e.g. Negative Inversion "Seldom has...", Cleft "What remains...", Passive Reporting "It is widely contended...") to activate radar. Minimum 4 required for C1 (6 for C2).</span>
+              </div>
+            </div>
+
+            <!-- Editor Area -->
+            <div class="editor-wrapper">
+              <textarea id="essayInput" class="essay-textarea"
+                placeholder="Compose your C1/C2 essay here... Incorporate the compulsory target vocabulary words shown on the left."
+                spellcheck="true"></textarea>
+            </div>
+
+            <!-- Submit Evaluation Button -->
+            <button id="evaluateEssayBtn" class="btn btn-primary btn-locked-lexis" style="width: 100%; padding: 14px; font-size: 15px;"
+              title="Incorporate all 10 compulsory target words and at least 4 syntactic structures to unlock evaluation"
+              aria-disabled="true">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
-              <span>Words:</span>
-              <span class="metric-live-val" id="liveWordCount">0</span>
-              <span id="targetWordCountHint" class="metric-target-hint">(220-260 target)</span>
-            </div>
-            <div class="metric-live-item">
-              <svg class="metric-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="21" y1="10" x2="3" y2="10"></line>
-                <line x1="21" y1="6" x2="3" y2="6"></line>
-                <line x1="21" y1="14" x2="3" y2="14"></line>
-                <line x1="21" y1="18" x2="7" y2="18"></line>
-              </svg>
-              <span>Paragraphs:</span>
-              <span class="metric-live-val" id="liveParaCount">0</span>
-            </div>
-          </div>
-          <div id="lengthGuidanceBadge" class="radar-badge">
-            Awaiting input
+              Evaluate Text (0/10 Lexis • 0/4 Syntax)
+              <kbd class="hotkey-badge">Ctrl+↵</kbd>
+            </button>
           </div>
         </div>
-
-        <!-- Real-time C1/C2 Syntax & Register Radar -->
-        <div class="live-radar-box">
-          <div class="radar-header">
-            <span>C1/C2 Grammar &amp; Syntax Radar</span>
-            <span id="radarCountDisplay" class="radar-count-badge zero">0/4 Structures Required (C1)</span>
-          </div>
-          <div class="radar-badges-row" id="radarBadgesRow">
-            <span class="radar-badge-empty">Write complex structures (e.g. Negative Inversion "Seldom has...", Cleft "What remains...", Passive Reporting "It is widely contended...") to activate radar. Minimum 4 required for C1 (6 for C2).</span>
-          </div>
-        </div>
-
-        <!-- Editor Area -->
-        <div class="editor-wrapper">
-          <textarea id="essayInput" class="essay-textarea"
-            placeholder="Compose your C1/C2 essay here... Incorporate the compulsory target vocabulary words shown above."
-            spellcheck="true"></textarea>
-        </div>
-
-        <!-- Submit Evaluation Button -->
-        <button id="evaluateEssayBtn" class="btn btn-primary btn-locked-lexis" style="width: 100%; padding: 14px; font-size: 15px;"
-          title="Incorporate all 10 compulsory target words and at least 4 syntactic structures to unlock evaluation"
-          aria-disabled="true">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
-          Evaluate Text (0/10 Lexis • 0/4 Syntax)
-          <kbd class="hotkey-badge">Ctrl+↵</kbd>
-        </button>
       </section>
 
       <!-- STAGE 3: Speaking & Pronunciation Studio -->

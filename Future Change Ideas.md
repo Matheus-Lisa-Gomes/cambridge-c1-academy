@@ -23,10 +23,14 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
 - [ ] **Compared Essays through time**: When the same topic has two or more essays, the candidate can compare them and see the improvements they have made. 
 - [ ] **Auto-Save Drafts**: Automatically persist current essay drafts in `localStorage` keyed by topic ID so progress is not lost upon navigation or refresh.
 - [ ] **Export Options**: Export evaluated essays with examiner feedback to PDF, Markdown, or clean TXT.
-- [ ] **Expanded Syntax Patterns**: Add detection for additional C1/C2 structures:
+- [x] **Expanded Syntax Patterns**: Add detection for additional C1/C2 structures:
   - Absolute clauses (*The conference concluded, delegates departed...*)
-  - Nominalization density scoring
   - Subjunctive constructions (*It is critical that authorities be...*)
+  - Mixed unreal conditionals (*Had we acted earlier, the community would now be...*)
+  - Correlative comparatives (*The more..., the greater...*)
+  - Prepositional / formal relative clauses (*the ramifications of which...*)
+  - Inverted concessions with though/as (*Arduous though it may be...*)
+  *(Completed: expanded radar to 12 comprehensive C1/C2 patterns with real-time detection, AI prompt generation rules, and evaluator scoring integration)*
 - [ ] **Grammar & Spelling Linter**: Optional offline/client-side spellchecker or formal register highlighter.
 - [ ] **Block Auto Correction and Copied Texts from all outside sources**: Create mechanism to block any auto correction, and copied text that might be produced from any outside source.
 

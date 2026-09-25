@@ -13161,7 +13161,7 @@ const INFORMAL_PATTERNS = [
   /\b(can't|don't|won't|isn't|aren't|didn't|doesn't|haven't|hasn't|hadn't)\b/i // Contractions discouraged in formal essays
 ];
 
-// Complex C1/C2 Syntactic Patterns
+// Complex C1/C2 Syntactic Patterns (12 Comprehensive Structures)
 const SYNTACTIC_PATTERNS = {
   negativeInversion: {
     name: "Negative / Limiting Inversion",
@@ -13171,8 +13171,8 @@ const SYNTACTIC_PATTERNS = {
   },
   cleftSentence: {
     name: "Cleft / Focus Structure",
-    description: "What [clause] is/was... or It is/was [focus] that/who...",
-    regex: /\b(what\s+[a-z\s]{3,25}\s+(is|was|remains|proves)|it\s+(is|was)\s+[a-z\s]{3,25}\s+(that|who|which))\b/i,
+    description: "What [clause] is/was/remains... or It is/was [focus] that/who...",
+    regex: /\b(what\s+[a-z\s]{1,50}\s+(is|was|remains|proves)|it\s+(is|was)\s+[a-z\s]{1,60}\s+(that|who|which))\b/i,
     weight: 1.0
   },
   passiveReporting: {
@@ -13184,7 +13184,7 @@ const SYNTACTIC_PATTERNS = {
   invertedConditional: {
     name: "Inverted / Conditional without 'If'",
     description: "Were [subject] to... / Had [subject] [participle]... / Should [subject]...",
-    regex: /\b(were\s+[a-z\s]{2,20}\s+to\s+[a-z]+|had\s+[a-z\s]{2,20}\s+[a-z]+ed|should\s+[a-z\s]{2,20}\s+[a-z]+)\b/i,
+    regex: /\b(were\s+[a-z\s]{2,20}\s+to\s+[a-z]+|had\s+[a-z\s]{2,20}\s+[a-z]+(ed|en|t)|should\s+[a-z\s]{2,20}\s+[a-z]+)\b/i,
     weight: 1.1
   },
   complexConcession: {
@@ -13196,8 +13196,44 @@ const SYNTACTIC_PATTERNS = {
   participleClause: {
     name: "Fronted Participle / Gerund Clause",
     description: "Having considered... / Confronted with... / Bearing in mind...",
-    regex: /^(having\s+[a-z]+ed|confronted\s+with|bearing\s+in\s+mind|given\s+the|judging\s+by)\s+[a-z\s,]+/im,
+    regex: /(^|[.!?]\s+)(having\s+[a-z]+(ed|en|t)|confronted\s+with|bearing\s+in\s+mind|given\s+the|judging\s+by)\s+[a-z\s,]+/i,
     weight: 0.8
+  },
+  mandativeSubjunctive: {
+    name: "Mandative / Formulaic Subjunctive",
+    description: "It is imperative / vital / crucial that [subject] be / remain...",
+    regex: /\b(imperative|vital|crucial|essential|paramount|mandatory|critical|prerequisite|demands?|insists?|stipulates?)\s+that\s+[a-z\s]{2,25}\s+(be|remain|adopt|curtail|undergo|scrutinize|implement)\b/i,
+    weight: 1.1
+  },
+  absoluteClause: {
+    name: "Nominative Absolute Clause",
+    description: "The deliberation having concluded... / All things considered...",
+    regex: /(^|[.!?]\s+)(the\s+[a-z\s]{2,20}\s+(having\s+been\s+[a-z]+|having\s+[a-z]+(ed|en|t)|concluded|exhausted|settled)|all\s+(things|factors|arguments|options)\s+considered|circumstances\s+permitting)/i,
+    weight: 1.2
+  },
+  mixedConditional: {
+    name: "Mixed Unreal Conditional",
+    description: "Had [past action]... [present result would be]...",
+    regex: /\b(had\s+[a-z\s]{2,20}\s+[a-z]+(ed|en|t)|if\s+[a-z\s]{2,20}\s+had\s+[a-z]+(ed|en|t))\b.*?\b(would|could|might)\s+(not\s+)?(be|remain|appear|exist|now|currently)\b/i,
+    weight: 1.1
+  },
+  prepositionalRelative: {
+    name: "Prepositional / Formal Relative Clause",
+    description: "the ramifications of which, by virtue of which, the extent to which",
+    regex: /\b(by\s+virtue\s+of\s+which|in\s+light\s+of\s+which|the\s+[a-z]+\s+of\s+which|the\s+extent\s+to\s+which|against\s+which|upon\s+which|under\s+which|whereby)\b/i,
+    weight: 0.9
+  },
+  correlativeComparative: {
+    name: "Correlative / Proportional Comparative",
+    description: "The more..., the greater... / The higher..., the more...",
+    regex: /(^|[.!?]\s+)the\s+(more|greater|higher|less|fewer|deeper|further|[a-z]+er)\s+[a-z\s,]{3,35},\s+the\s+(more|greater|higher|less|fewer|deeper|further|[a-z]+er)\b/i,
+    weight: 1.0
+  },
+  invertedConcession: {
+    name: "Inverted Concession with Though / As",
+    description: "Arduous though it may be... / Compelling as it seems...",
+    regex: /\b([a-z]+)\s+(though|as)\s+(it|they|this|he|she|one)\s+(may|might|is|are|was|were|seems?|appears?)(\s+be)?\s*,/i,
+    weight: 1.0
   }
 };
 
@@ -13620,9 +13656,15 @@ ${vocabItems}
    - Negative / Limiting Inversion (e.g. "Seldom has...", "Under no circumstances should...", "Not only is...")
    - Cleft / Focus Structure (e.g. "What remains of paramount concern is...", "It is this systemic flaw that...")
    - Passive Reporting Clause (e.g. "It is widely contended that...", "It is commonly maintained that...")
-   - Inverted Conditional (e.g. "Were authorities to intervene...", "Had society recognized...")
+   - Inverted Conditional without 'If' (e.g. "Were authorities to intervene...", "Had society recognized...")
    - Advanced Concession / Contrast Marker (e.g. "Notwithstanding the...", "Albeit challenging,...", "Inasmuch as...")
    - Fronted Participle Clause (e.g. "Having considered the ramifications,...", "Confronted with mounting evidence,...")
+   - Mandative Subjunctive (e.g. "It is imperative that authorities be transparent...", "vital that society remain vigilant...")
+   - Nominative Absolute Clause (e.g. "The conference having concluded, delegates departed...", "All things considered,...")
+   - Mixed Unreal Conditional (e.g. "Had regulators intervened a decade ago, contemporary democracy would not now be vulnerable...")
+   - Complex Prepositional / Formal Relative (e.g. "the ramifications of which...", "by virtue of which...", "the extent to which...")
+   - Correlative / Proportional Comparative (e.g. "The more interconnected platforms become, the greater the potential risk...")
+   - Inverted Concession with Though / As (e.g. "Arduous though it may be,...", "Compelling as the argument seems,...")
 
 4. FORMAL REGISTER & TONE:
    - Maintain a formal, analytical academic register.

@@ -492,8 +492,8 @@ class FluentEdgeApp {
 
     if (this.dom.step1LexisHint) {
       this.dom.step1LexisHint.textContent = isC2
-        ? "Prompt & Compulsory C2 Vocabulary"
-        : "Prompt & Compulsory C1 Vocabulary";
+        ? "C2 Standards, Criteria & Workflow"
+        : "C1 Standards, Criteria & Workflow";
     }
     if (this.dom.step2WordCountHint) {
       this.dom.step2WordCountHint.textContent = isC2

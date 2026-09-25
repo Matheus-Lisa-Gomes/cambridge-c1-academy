@@ -65,11 +65,11 @@
 
     <!-- Phase Stepper -->
     <nav class="phase-stepper" aria-label="Training stages">
-      <div class="step-card active" id="stepIndicator1" role="button" tabindex="0" title="Stage 1: Topic & Advanced Lexis Educational Guide">
+      <div class="step-card active" id="stepIndicator1" role="button" tabindex="0" title="Stage 1: Training Guide &amp; Evaluation Criteria">
         <div class="step-number">1</div>
         <div class="step-info">
-          <h4>Topic &amp; Advanced Lexis</h4>
-          <p id="step1LexisHint">Prompt &amp; Compulsory C1 Vocabulary</p>
+          <h4>Guidelines &amp; Evaluation</h4>
+          <p id="step1LexisHint">Standards, Criteria &amp; Workflow</p>
         </div>
       </div>
       <div class="step-card" id="stepIndicator2" role="button" tabindex="0" title="Stage 2: Writing &amp; Evaluation Studio">
@@ -96,7 +96,7 @@
     <!-- Main Workspace Container -->
     <main class="main-workspace stage-flow-workspace" id="mainWritingWorkspace">
 
-      <!-- STAGE 1: Educational Stage (Topic & Advanced Lexis) -->
+      <!-- STAGE 1: Educational Stage (Guidelines & Evaluation Criteria) -->
       <section class="stage-section stage-1-view glass-panel active-stage" id="stage1Panel" aria-labelledby="topicHeading">
         <div class="panel-header">
           <div class="panel-title">
@@ -104,7 +104,7 @@
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
-            <h2 id="topicHeading">Stage 1: Topic &amp; Advanced Lexis</h2>
+            <h2 id="topicHeading">Stage 1: Guidelines &amp; Evaluation Criteria</h2>
           </div>
         </div>
 
@@ -188,6 +188,191 @@
               </div>
             </div>
           </div>
+
+          <!-- Technical Bento Grid: Workflow, Evaluation Criteria & Writing Leniences -->
+          <div class="reqs-bento-section">
+            <div class="bento-section-header">
+              <span class="bento-section-tag">Technical Architecture &amp; Assessment Workflow</span>
+              <h3 class="bento-section-title">How You Are Evaluated in Stages 2 &amp; 3</h3>
+              <p class="bento-section-subtitle">A comprehensive technical breakdown of analytical scoring, writing stage flexibility, and oral acoustic measurement.</p>
+            </div>
+
+            <div class="reqs-bento-grid">
+              <!-- Bento Card 1: Stage 2 Analytical Evaluation Scales -->
+              <div class="bento-card bento-card-eval">
+                <div class="bento-card-header">
+                  <div class="bento-icon-badge">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                  </div>
+                  <div>
+                    <span class="bento-label">Stage 2 Analytical Assessment</span>
+                    <h4 class="bento-title">Writing Studio: 4 Core Evaluation Scales (20 Pts)</h4>
+                  </div>
+                </div>
+                <p class="bento-text">
+                  Your essay is evaluated via a multi-dimensional rubric assessing four analytical parameters (0–5 marks each) to calculate an aggregate score and overall band:
+                </p>
+                <div class="bento-rubric-list">
+                  <div class="bento-rubric-item">
+                    <strong class="rubric-name">Content (0–5):</strong>
+                    <span>Complete prompt fulfillment, nuanced thesis formulation, in-depth analytical argument.</span>
+                  </div>
+                  <div class="bento-rubric-item">
+                    <strong class="rubric-name">Communicative Achievement (0–5):</strong>
+                    <span>Academic tone, third-person stance, epistemic hedging, zero informal shortcuts/contractions.</span>
+                  </div>
+                  <div class="bento-rubric-item">
+                    <strong class="rubric-name">Organisation (0–5):</strong>
+                    <span>Cohesive discourse flow, logical paragraph architecture, sophisticated transitional devices.</span>
+                  </div>
+                  <div class="bento-rubric-item">
+                    <strong class="rubric-name">Language (0–5):</strong>
+                    <span>Sophisticated lexical collocation, morphological precision, complex clause structures.</span>
+                  </div>
+                </div>
+                <div class="bento-callout-pill">
+                  <span class="bento-pill-dot"></span>
+                  <span>Gatekeepers: 10/10 Compulsory Words + Minimum Radar Structures + ≥75% (C1) / ≥85% (C2) to unlock Stage 3</span>
+                </div>
+              </div>
+
+              <!-- Bento Card 2: Writing Studio Lenience / AI Prompt Fast-Track -->
+              <div class="bento-card bento-card-lenience">
+                <div class="bento-card-header">
+                  <div class="bento-icon-badge bento-icon-gold">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                  </div>
+                  <div>
+                    <span class="bento-label bento-label-accent">Writing Stage Lenience</span>
+                    <h4 class="bento-title">AI Fast-Track: Skip Straight to Speaking</h4>
+                  </div>
+                </div>
+                <p class="bento-text">
+                  If you prefer to focus primarily on oral delivery and pronunciation practice, you do not have to write an essay from scratch:
+                </p>
+                <div class="bento-steps-row">
+                  <div class="bento-step-box">
+                    <div class="step-badge">Step 1</div>
+                    <span class="step-desc">In Stage 2, click <strong>AI Prompt</strong> <kbd class="hotkey-badge">Alt+P</kbd> to copy an engineered prompt.</span>
+                  </div>
+                  <div class="bento-step-box">
+                    <div class="step-badge">Step 2</div>
+                    <span class="step-desc">Paste into ChatGPT, Claude, or Gemini to generate a model essay with all 10 words.</span>
+                  </div>
+                  <div class="bento-step-box">
+                    <div class="step-badge">Step 3</div>
+                    <span class="step-desc">Paste back into Stage 2 &amp; hit <strong>Evaluate</strong> <kbd class="hotkey-badge">Ctrl+Enter</kbd> to unlock Speaking!</span>
+                  </div>
+                </div>
+                <div class="bento-tip-box">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                  <span>Zero penalty applied: full flexibility to study model essays or jump directly into acoustic training.</span>
+                </div>
+              </div>
+
+              <!-- Bento Card 3: Stage 3 Speaking Evaluation (Speech-to-Text & Cadence) -->
+              <div class="bento-card bento-card-speaking">
+                <div class="bento-card-header">
+                  <div class="bento-icon-badge bento-icon-emerald">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                      <line x1="12" y1="19" x2="12" y2="23"></line>
+                      <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                  </div>
+                  <div>
+                    <span class="bento-label">Stage 3 Acoustic Evaluation</span>
+                    <h4 class="bento-title">Speaking Studio: Live Teleprompter &amp; Cadence</h4>
+                  </div>
+                </div>
+                <p class="bento-text">
+                  In Stage 3, you read your evaluated essay aloud. The speech engine analyzes your delivery through three real-time dimensions:
+                </p>
+                <div class="bento-metric-pills-row">
+                  <div class="bento-metric-pill">
+                    <div class="pill-metric-header">
+                      <span class="pill-dot emerald-dot"></span>
+                      <strong>Token Matching Accuracy</strong>
+                    </div>
+                    <p class="pill-metric-desc">Speech-to-Text recognition verifies each word against your text in real time. Accurate tokens illuminate green as you pronounce them.</p>
+                  </div>
+                  <div class="bento-metric-pill">
+                    <div class="pill-metric-header">
+                      <span class="pill-dot gold-dot"></span>
+                      <strong>Natural Cadence (WPM Rate)</strong>
+                    </div>
+                    <p class="pill-metric-desc">Monitors speaking pace against natural fluent delivery: 130–150 WPM (C1) and 140–165 WPM (C2) to eliminate unnatural pauses or rushed delivery.</p>
+                  </div>
+                  <div class="bento-metric-pill">
+                    <div class="pill-metric-header">
+                      <span class="pill-dot purple-dot"></span>
+                      <strong>Native British RP Model</strong>
+                    </div>
+                    <p class="pill-metric-desc">Listen to an AI-synthesized Received Pronunciation audio model demonstrating authentic sentence stress, pitch modulation, and liaisons.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bento Card 4: CEFR Standard Differences (C1 vs C2) -->
+              <div class="bento-card bento-card-standards">
+                <div class="bento-card-header">
+                  <div class="bento-icon-badge bento-icon-purple">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                    </svg>
+                  </div>
+                  <div>
+                    <span class="bento-label">Benchmark Calibration</span>
+                    <h4 class="bento-title">C1 vs C2 Dynamic Evaluation Standards</h4>
+                  </div>
+                </div>
+                <p class="bento-text">
+                  Switching between standards reconfigures all assessment thresholds across the entire training pipeline:
+                </p>
+                <div class="bento-compare-table">
+                  <div class="bento-compare-row bento-compare-head">
+                    <span>Dimension</span>
+                    <span class="c1-col">C1 Standard</span>
+                    <span class="c2-col">C2 Standard</span>
+                  </div>
+                  <div class="bento-compare-row">
+                    <span class="dim-name">Target Length</span>
+                    <span class="c1-col">220 – 260 words (3–4 paras)</span>
+                    <span class="c2-col">280 – 360+ words (4–5 paras)</span>
+                  </div>
+                  <div class="bento-compare-row">
+                    <span class="dim-name">Syntax Radar</span>
+                    <span class="c1-col">Min 4 Complex Structures</span>
+                    <span class="c2-col">Min 6 Mastery Structures</span>
+                  </div>
+                  <div class="bento-compare-row">
+                    <span class="dim-name">Passing Mark</span>
+                    <span class="c1-col">≥ 75% Overall (Band 4)</span>
+                    <span class="c2-col">≥ 85% Overall (Band 5)</span>
+                  </div>
+                  <div class="bento-compare-row">
+                    <span class="dim-name">Syntactic Focus</span>
+                    <span class="c1-col">Inversions, Clefts, Passive Reporting</span>
+                    <span class="c2-col">Nominative Absolutes, Subjunctives, Mixed Conditionals</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Stage 1 Footer Action: Proceed to Stage 2 -->
@@ -206,12 +391,12 @@
       <section class="stage-section stage-2-view glass-panel writing-studio" id="stage2Panel" aria-labelledby="writingStudioHeading" style="display: none;">
         <div class="panel-header">
           <div class="panel-header-left">
-            <button id="backToStage1Btn" class="btn btn-secondary btn-sm stage-nav-back-btn" title="Back to Stage 1: Topic &amp; Advanced Lexis Guide">
+            <button id="backToStage1Btn" class="btn btn-secondary btn-sm stage-nav-back-btn" title="Back to Stage 1: Guidelines &amp; Evaluation Criteria">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
               </svg>
-              <span>Stage 1: Topic &amp; Lexis</span>
+              <span>Stage 1: Guidelines &amp; Criteria</span>
             </button>
             <div class="panel-title">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2">

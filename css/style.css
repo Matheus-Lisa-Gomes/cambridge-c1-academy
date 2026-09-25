@@ -173,6 +173,11 @@ body.theme-c2 .brand-crest {
   gap: 16px;
 }
 
+/* Hide history drawer button on Stage 1 */
+body.stage-1-active #historyDrawerBtn {
+  display: none !important;
+}
+
 /* ==========================================================================
    TARGET STANDARD 3D CAROUSEL TOGGLE (C1 vs C2)
    Single overlapping button footprint with true 3D carousel perspective
@@ -187,6 +192,7 @@ body.theme-c2 .brand-crest {
   border: 1px solid var(--border-subtle);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+  cursor: pointer;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -202,6 +208,7 @@ body.theme-c2 .brand-crest {
   letter-spacing: 0.8px;
   white-space: nowrap;
   user-select: none;
+  cursor: pointer;
 }
 
 /* 3D Perspective Stage */
@@ -215,6 +222,7 @@ body.theme-c2 .brand-crest {
   align-items: center;
   justify-content: center;
   user-select: none;
+  cursor: pointer;
 }
 
 /* Overlapping 3D Carousel Cards */
@@ -795,6 +803,60 @@ body.theme-c2 .stage-cta-btn:hover {
 
 .stage-cta-btn:hover svg {
   transform: translateX(4px);
+}
+
+/* ==========================================================================
+   STAGE 2: TOPIC CARD & NAVIGATION
+   ========================================================================== */
+.stage2-topic-card {
+  background: rgba(13, 20, 36, 0.55);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin-bottom: 22px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.stage2-topic-card:hover {
+  border-color: var(--border-gold);
+}
+
+body.theme-c2 .stage2-topic-card:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.stage2-topic-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.stage2-topic-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stage2-topic-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stage2-topic-card .topic-title {
+  margin: 4px 0 0 0;
+  text-align: left;
+  font-size: 20px;
+  font-family: var(--font-serif);
+  color: var(--text-primary);
+  line-height: 1.4;
 }
 
 /* ==========================================================================

@@ -178,20 +178,34 @@ class FluentEdgeApp {
 
   bindEvents() {
     // Mode toggle events (overlapping card stack toggle)
+    const toggleStandard = () => {
+      this.setTargetLevel(this.targetLevel === 'C1' ? 'C2' : 'C1');
+    };
+
     if (this.dom.modeC1Btn) {
-      this.dom.modeC1Btn.addEventListener('click', () => {
-        this.setTargetLevel(this.targetLevel === 'C1' ? 'C2' : 'C1');
+      this.dom.modeC1Btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleStandard();
       });
     }
     if (this.dom.modeC2Btn) {
-      this.dom.modeC2Btn.addEventListener('click', () => {
-        this.setTargetLevel(this.targetLevel === 'C2' ? 'C1' : 'C2');
+      this.dom.modeC2Btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleStandard();
       });
+    }
+    const cefrSwitch = document.querySelector('.cefr-toggle-switch');
+    if (cefrSwitch) {
+      cefrSwitch.addEventListener('click', toggleStandard);
     }
 
     // Topic events
-    this.dom.prevTopicBtn.addEventListener('click', () => this.cyclePrevTopic());
-    this.dom.nextTopicBtn.addEventListener('click', () => this.cycleNextTopic());
+    if (this.dom.prevTopicBtn) {
+      this.dom.prevTopicBtn.addEventListener('click', () => this.cyclePrevTopic());
+    }
+    if (this.dom.nextTopicBtn) {
+      this.dom.nextTopicBtn.addEventListener('click', () => this.cycleNextTopic());
+    }
     if (this.dom.rerollVocabBtn) {
       this.dom.rerollVocabBtn.addEventListener('click', () => {
         if (this.hasEssayContent()) {
@@ -508,13 +522,13 @@ class FluentEdgeApp {
     }
     if (this.dom.reqsLevelTagline) {
       this.dom.reqsLevelTagline.textContent = isC2
-        ? 'Mastery Level (Cambridge CPE / IELTS 8.5–9.0 Native-Level Benchmark)'
-        : 'Effective Operational Proficiency (Cambridge CAE / IELTS 7.0–8.0 Benchmark)';
+        ? 'Mastery Level Academic Benchmark'
+        : 'Effective Operational Proficiency Standard';
     }
     if (this.dom.reqsHeaderCallout) {
       this.dom.reqsHeaderCallout.textContent = isC2
         ? 'The pinnacle of linguistic proficiency: effortless spontaneous expression, conceptual nuance, dialectical argumentation, and authoritative academic rhythm.'
-        : 'Official academic benchmark: demonstrate clear, smoothly flowing discourse with sophisticated lexical variety, cohesive transitions, and complex syntactic control.';
+        : 'Academic writing standard: demonstrate clear, smoothly flowing discourse with sophisticated lexical variety, cohesive transitions, and complex syntactic control.';
     }
     if (this.dom.reqsWordMetric) {
       this.dom.reqsWordMetric.textContent = isC2 ? '280 – 360+ words' : '220 – 260 words';
@@ -561,6 +575,12 @@ class FluentEdgeApp {
     }
 
     this.currentStage = stageNum;
+
+    // Toggle Stage 1 Active class on body (hides history drawer on Stage 1)
+    document.body.classList.toggle('stage-1-active', stageNum === 1);
+    if (this.dom.historyDrawerBtn) {
+      this.dom.historyDrawerBtn.style.display = stageNum === 1 ? 'none' : 'inline-flex';
+    }
 
     // Toggle Stage views
     if (this.dom.stage1Panel) {
@@ -630,13 +650,13 @@ class FluentEdgeApp {
     this.currentTopic = this.topics[index];
 
     // Update topic counter badge
-    this.dom.topicCounterCurrent.textContent = index + 1;
-    this.dom.topicCounterTotal.textContent = this.topics.length;
+    if (this.dom.topicCounterCurrent) this.dom.topicCounterCurrent.textContent = index + 1;
+    if (this.dom.topicCounterTotal) this.dom.topicCounterTotal.textContent = this.topics.length;
 
-    this.dom.topicCategory.textContent = this.currentTopic.category;
-    this.dom.topicType.textContent = this.currentTopic.type;
-    this.dom.topicTime.textContent = this.currentTopic.recommendedTime;
-    this.dom.topicTitle.textContent = this.currentTopic.title;
+    if (this.dom.topicCategory) this.dom.topicCategory.textContent = this.currentTopic.category;
+    if (this.dom.topicType) this.dom.topicType.textContent = this.currentTopic.type;
+    if (this.dom.topicTime) this.dom.topicTime.textContent = this.currentTopic.recommendedTime;
+    if (this.dom.topicTitle) this.dom.topicTitle.textContent = this.currentTopic.title;
 
     if (this.dom.writingTopicPill) {
       this.dom.writingTopicPill.textContent = this.currentTopic.title;
@@ -814,7 +834,6 @@ class FluentEdgeApp {
     const minRequiredStructures = metrics.minRequiredStructures;
     const detectedStructuresCount = metrics.detectedGrammar.length;
     const structuresMet = detectedStructuresCount >= minRequiredStructures;
-    const isC2 = this.targetLevel === 'C2';
     const levelLabel = isC2 ? 'C2' : 'C1';
 
     if (this.dom.radarCountDisplay) {

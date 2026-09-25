@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body class="stage-1-active">
 
   <div class="app-container">
 
@@ -54,7 +54,7 @@
           </div>
         </div>
 
-        <button id="historyDrawerBtn" class="btn btn-secondary">
+        <button id="historyDrawerBtn" class="btn btn-secondary" style="display: none;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path>
           </svg>
@@ -105,38 +105,8 @@
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
             <h2 id="topicHeading">Stage 1: Topic &amp; Advanced Lexis</h2>
-            <span class="topic-counter" id="topicCounter" aria-label="Topic index">
-              <span class="topic-counter-current" id="topicCounterCurrent">1</span>
-              <span class="topic-counter-sep">/</span>
-              <span class="topic-counter-total" id="topicCounterTotal">—</span>
-            </span>
-          </div>
-          <div class="panel-actions">
-            <button id="prevTopicBtn" class="btn btn-secondary">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 12H5M12 5l-7 7 7 7"></path>
-              </svg>
-              Previous Topic
-              <kbd class="hotkey-badge">Alt+←</kbd>
-            </button>
-            <button id="nextTopicBtn" class="btn btn-secondary">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14M12 5l7 7-7 7"></path>
-              </svg>
-              Next Topic
-              <kbd class="hotkey-badge">Alt+→</kbd>
-            </button>
           </div>
         </div>
-
-        <!-- Topic Details / Meta -->
-        <div class="topic-meta-row">
-          <span class="meta-pill" id="topicCategory">Technology &amp; Ethics</span>
-          <span class="meta-pill" id="topicType">C1/C2 Academic Essay</span>
-          <span class="meta-pill" id="topicTime">45 minutes recommended</span>
-        </div>
-
-        <h3 class="topic-title" id="topicTitle">Artificial Intelligence, Moral Agency &amp; Societal Autonomy</h3>
 
         <!-- Interactive C1 / C2 Educational Requirements Breakdown Card -->
         <div class="educational-requirements-card" id="stage1ReqsCard">
@@ -144,10 +114,10 @@
             <div class="reqs-header-left">
               <div class="reqs-badge-row">
                 <span class="reqs-level-indicator" id="reqsLevelIndicator">CEFR C1 STANDARD</span>
-                <span class="reqs-level-tagline" id="reqsLevelTagline">Effective Operational Proficiency (IELTS 7.0–8.0 / Cambridge CAE)</span>
+                <span class="reqs-level-tagline" id="reqsLevelTagline">Effective Operational Proficiency Standard</span>
               </div>
               <p class="reqs-header-callout" id="reqsHeaderCallout">
-                Official academic benchmark: demonstrate clear, smoothly flowing discourse with sophisticated lexical variety and complex syntactic control.
+                Academic writing benchmark: demonstrate clear, smoothly flowing discourse with sophisticated lexical variety, cohesive transitions, and complex syntactic control.
               </p>
             </div>
             <div class="reqs-header-right">
@@ -220,30 +190,6 @@
           </div>
         </div>
 
-        <!-- Compulsory Vocabulary Pack (3 Verbs, 3 Nouns, 2 Adjectives, 2 Adverbs) -->
-        <div class="vocabulary-section">
-          <div class="section-subtitle">
-            <div class="vocab-subtitle-left">
-              <span>Compulsory Target Lexis (<span id="vocabUsedCounter">0/10</span> Used)</span>
-              <span class="vocab-structure-tag" style="display: none;">3 Verbs • 3 Nouns • 2 Adj • 2 Adv</span>
-            </div>
-            <div class="vocab-subtitle-right">
-              <button id="rerollVocabBtn" class="btn btn-secondary btn-sm">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="23 4 23 10 17 10"></polyline>
-                  <polyline points="1 20 1 14 7 14"></polyline>
-                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                </svg>
-                Reroll Lexis
-              </button>
-            </div>
-          </div>
-
-          <div class="vocab-grid" id="vocabGrid">
-            <!-- Dynamically populated 10 vocabulary chips -->
-          </div>
-        </div>
-
         <!-- Stage 1 Footer Action: Proceed to Stage 2 -->
         <div class="stage-footer-action">
           <button id="proceedToStage2Btn" class="btn btn-primary stage-cta-btn">
@@ -275,9 +221,6 @@
               <h2 id="writingStudioHeading">Stage 2: Writing Studio</h2>
             </div>
           </div>
-          <div class="panel-topic-preview">
-            <span class="topic-preview-pill" id="writingTopicPill">Artificial Intelligence, Moral Agency &amp; Societal Autonomy</span>
-          </div>
           <div class="panel-actions">
             <button id="copyAiPromptBtn" class="btn btn-secondary btn-sm ai-prompt-btn"
               title="Copy an engineered AI prompt containing all 10 compulsory words to generate an essay in ChatGPT/Claude/Gemini (Alt+P)"
@@ -304,21 +247,68 @@
           </div>
         </div>
 
-        <!-- Stage 2 Compact Compulsory Target Lexis Strip -->
-        <div class="stage2-lexis-dock" id="stage2LexisDock">
-          <div class="stage2-lexis-header">
-            <div class="stage2-lexis-title">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-              </svg>
-              <span>Compulsory Target Lexis: <strong id="stage2VocabCountDisplay">0/10</strong> Used</span>
+        <!-- Stage 2 Topic Bar & Navigation -->
+        <div class="stage2-topic-card">
+          <div class="stage2-topic-topbar">
+            <div class="stage2-topic-meta">
+              <span class="meta-pill" id="topicCategory">Technology &amp; Ethics</span>
+              <span class="meta-pill" id="topicTime">45 minutes recommended</span>
+              <span class="meta-pill" id="topicType" style="display: none;">C1/C2 Academic Essay</span>
             </div>
-            <span class="stage2-lexis-hint">All 10 words required to unlock evaluation</span>
+            <div class="stage2-topic-nav">
+              <button id="prevTopicBtn" class="btn btn-secondary btn-sm" title="Previous Topic (Alt+←)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 12H5M12 5l-7 7 7 7"></path>
+                </svg>
+                <span>Prev Topic</span>
+                <kbd class="hotkey-badge">Alt+←</kbd>
+              </button>
+              <span class="topic-counter" id="topicCounter" aria-label="Topic index">
+                <span class="topic-counter-current" id="topicCounterCurrent">1</span>
+                <span class="topic-counter-sep">/</span>
+                <span class="topic-counter-total" id="topicCounterTotal">—</span>
+              </span>
+              <button id="nextTopicBtn" class="btn btn-secondary btn-sm" title="Next Topic (Alt+→)">
+                <span>Next Topic</span>
+                <kbd class="hotkey-badge">Alt+→</kbd>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14M12 5l7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
           </div>
-          <div class="stage2-lexis-chips" id="stage2VocabChips">
-            <!-- Populated dynamically with compact word badges -->
+          <h3 class="topic-title" id="topicTitle">Artificial Intelligence, Moral Agency &amp; Societal Autonomy</h3>
+          <span class="topic-preview-pill" id="writingTopicPill" style="display: none;">Artificial Intelligence, Moral Agency &amp; Societal Autonomy</span>
+        </div>
+
+        <!-- Compulsory Vocabulary Pack (3 Verbs, 3 Nouns, 2 Adjectives, 2 Adverbs) -->
+        <div class="vocabulary-section">
+          <div class="section-subtitle">
+            <div class="vocab-subtitle-left">
+              <span>Compulsory Target Lexis (<span id="vocabUsedCounter">0/10</span> Used)</span>
+              <span class="vocab-structure-tag" style="display: none;">3 Verbs • 3 Nouns • 2 Adj • 2 Adv</span>
+            </div>
+            <div class="vocab-subtitle-right">
+              <button id="rerollVocabBtn" class="btn btn-secondary btn-sm" title="Draw 10 new random compulsory words">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                Reroll Lexis
+              </button>
+            </div>
           </div>
+
+          <div class="vocab-grid" id="vocabGrid">
+            <!-- Dynamically populated 10 vocabulary chips -->
+          </div>
+        </div>
+
+        <!-- Hidden legacy dock to prevent null checks -->
+        <div class="stage2-lexis-dock" id="stage2LexisDock" style="display: none;">
+          <strong id="stage2VocabCountDisplay">0/10</strong>
+          <div id="stage2VocabChips"></div>
         </div>
 
         <!-- Live Toolbar -->

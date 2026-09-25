@@ -1195,8 +1195,8 @@ body.theme-c2 .stage2-topic-card:hover {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 16px;
+  margin-bottom: 0;
 }
 
 .stage2-topic-meta {
@@ -1206,20 +1206,22 @@ body.theme-c2 .stage2-topic-card:hover {
   flex-wrap: wrap;
 }
 
+.stage2-topic-card .topic-title {
+  margin: 0;
+  text-align: left;
+  font-size: 20px;
+  font-family: var(--font-serif);
+  color: var(--text-primary);
+  line-height: 1.35;
+  flex: 1 1 320px;
+}
+
 .stage2-topic-nav {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-left: auto;
-}
-
-.stage2-topic-card .topic-title {
-  margin: 4px 0 0 0;
-  text-align: left;
-  font-size: 20px;
-  font-family: var(--font-serif);
-  color: var(--text-primary);
-  line-height: 1.4;
+  flex-shrink: 0;
 }
 
 /* ==========================================================================

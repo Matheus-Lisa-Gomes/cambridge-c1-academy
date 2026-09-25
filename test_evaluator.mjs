@@ -7,7 +7,7 @@ const topicC2 = TOPICS.find(t => t.id === 'epistemic-authority-truth') || TOPICS
 
 console.log("=== TEST 1: Authentic C1 Model Essay in C1 Mode ===");
 const aiExcerpt = "Seldom has human ingenuity produced an instrument as transformative yet contentious as autonomous machine intelligence. While the ubiquitous integration of algorithmic computing promises unprecedented economic productivity, what remains of paramount concern is the inexorable dilution of human moral agency. It is widely contended that without stringent legislative benchmarks to delineate accountability, society risks delegating critical ethical adjudications to probabilistic models devoid of conscience.";
-const c1ModelEssay = aiExcerpt + " Furthermore, robust regulatory frameworks are imperative to mitigate systemic risks and clearly delineate boundaries between algorithmic assistance and unmitigated autonomy. Without such safeguards, the ubiquitous integration of smart tools will serve as a catalyst for disconcerting socio-economic upheaval, accelerating an inexorable transformation of human labor.";
+const c1ModelEssay = aiExcerpt + " Were governments to fail to establish statutory oversight, irreparable societal harm would ensue. Furthermore, robust regulatory frameworks are imperative to mitigate systemic risks and clearly delineate boundaries between algorithmic assistance and unmitigated autonomy. Without such safeguards, the ubiquitous integration of smart tools will serve as a catalyst for disconcerting socio-economic upheaval, accelerating an inexorable transformation of human labor.";
 
 const evalPassC1 = evaluateEssay(c1ModelEssay, topicAI, 'C1');
 console.log("Score:", evalPassC1.rawTotal, "/ 20");

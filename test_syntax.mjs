@@ -17,7 +17,7 @@ const patterns = {
   },
   complexConcession: {
     name: 'Advanced Concession / Contrast Marker',
-    regex: /\b(notwithstanding\s+the|albeit\s+|inasmuch\s+as|be\s+that\s+as\s+it\s+may|for\s+all\s+that|much\s+as\s+[a-z]+)\b/i
+    regex: /\b(notwithstanding(\s+[a-z]+)?|albeit\s+|inasmuch\s+as|be\s+that\s+as\s+it\s+may|for\s+all\s+that|much\s+as\s+[a-z]+)\b/i
   },
   participleClause: {
     name: 'Fronted Participle / Gerund Clause',
@@ -29,7 +29,7 @@ const patterns = {
   },
   absoluteClause: {
     name: 'Nominative Absolute Clause',
-    regex: /(^|[.!?]\s+)(the\s+[a-z\s]{2,20}\s+(having\s+been\s+[a-z]+|having\s+[a-z]+(ed|en|t)|concluded|exhausted|settled)|all\s+(things|factors|arguments|options)\s+considered|circumstances\s+permitting)/i
+    regex: /(^|[.!?]\s+)(the\s+[a-z\s]{2,30}\s+(having\s+(been\s+)?[a-z]+|concluded|exhausted|settled)|all\s+(things|factors|arguments|options)\s+considered|circumstances\s+permitting)/i
   },
   mixedConditional: {
     name: 'Mixed Unreal Conditional',

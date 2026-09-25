@@ -13190,7 +13190,7 @@ const SYNTACTIC_PATTERNS = {
   complexConcession: {
     name: "Advanced Concession / Contrast Marker",
     description: "Notwithstanding, Albeit, Inasmuch as, Be that as it may",
-    regex: /\b(notwithstanding\s+the|albeit\s+|inasmuch\s+as|be\s+that\s+as\s+it\s+may|for\s+all\s+that|much\s+as\s+[a-z]+)\b/i,
+    regex: /\b(notwithstanding(\s+[a-z]+)?|albeit\s+|inasmuch\s+as|be\s+that\s+as\s+it\s+may|for\s+all\s+that|much\s+as\s+[a-z]+)\b/i,
     weight: 0.9
   },
   participleClause: {
@@ -13208,7 +13208,7 @@ const SYNTACTIC_PATTERNS = {
   absoluteClause: {
     name: "Nominative Absolute Clause",
     description: "The deliberation having concluded... / All things considered...",
-    regex: /(^|[.!?]\s+)(the\s+[a-z\s]{2,20}\s+(having\s+been\s+[a-z]+|having\s+[a-z]+(ed|en|t)|concluded|exhausted|settled)|all\s+(things|factors|arguments|options)\s+considered|circumstances\s+permitting)/i,
+    regex: /(^|[.!?]\s+)(the\s+[a-z\s]{2,30}\s+(having\s+(been\s+)?[a-z]+|concluded|exhausted|settled)|all\s+(things|factors|arguments|options)\s+considered|circumstances\s+permitting)/i,
     weight: 1.2
   },
   mixedConditional: {
@@ -13322,6 +13322,8 @@ function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = 'C1') {
   const targetMin = isC2 ? 280 : 220;
   const targetMax = isC2 ? 320 : 260;
   const optimalMax = isC2 ? 340 : 280;
+  const minRequiredStructures = isC2 ? 6 : 4;
+  const structuresMet = detectedGrammar.length >= minRequiredStructures;
 
   return {
     wordCount,
@@ -13334,7 +13336,9 @@ function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = 'C1') {
     targetLevel,
     targetMin,
     targetMax,
-    optimalMax
+    optimalMax,
+    minRequiredStructures,
+    structuresMet
   };
 }
 
@@ -13522,16 +13526,20 @@ function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVocabulary 
   }
 
   // Syntactic complexity
-  const requiredStructs = isC2 ? 3 : 2;
-  if (identifiedStructures.length >= requiredStructs) {
+  const minRequiredStructs = isC2 ? 6 : 4;
+  const structsGateMetC2 = identifiedStructures.length >= 6;
+  const structsGateMetC1 = identifiedStructures.length >= 4;
+  const structsGateMet = isC2 ? structsGateMetC2 : structsGateMetC1;
+
+  if (identifiedStructures.length >= minRequiredStructs) {
     langScore += 1.0;
-    feedbackLang.push(`High grammatical ambition demonstrated: successfully incorporated ${identifiedStructures.length} advanced syntactic structures (${identifiedStructures.map(s => s.name).join(', ')}).`);
-  } else if (identifiedStructures.length >= 1) {
+    feedbackLang.push(`High grammatical ambition demonstrated: successfully incorporated ${identifiedStructures.length} advanced syntactic structures (${identifiedStructures.map(s => s.name).join(', ')}). Fulfills ${targetLevel} requirement (minimum ${minRequiredStructs} required).`);
+  } else if (identifiedStructures.length >= 2) {
     langScore += 0.4;
-    feedbackLang.push(`Used advanced syntax (${identifiedStructures[0].name}). Incorporating ${isC2 ? 'additional inverted conditionals or participle clauses' : 'an inverted conditional or cleft'} is required for C2 mastery.`);
+    feedbackLang.push(`Adequate syntactic variety (${identifiedStructures.length}/${minRequiredStructs} structures used: ${identifiedStructures.map(s => s.name).join(', ')}). ${targetLevel} standard requires at least ${minRequiredStructs} distinct complex structures.`);
   } else {
     langScore -= 0.6;
-    feedbackLang.push(`Syntax relies on basic structures. ${targetLevel} requires varied complex patterns (inversions, clefts, or participle clauses).`);
+    feedbackLang.push(`Syntax relies on basic structures (${identifiedStructures.length}/${minRequiredStructs} detected). ${targetLevel} requires at least ${minRequiredStructs} complex patterns (inversions, clefts, or participle clauses).`);
   }
 
   // Lexical diversity
@@ -13556,11 +13564,11 @@ function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVocabulary 
     ? (usedTargetCount >= Math.min(4, Math.ceil(targetVocabulary.length * 0.4)))
     : true;
 
-  if (normalizedPercentage >= CEFR_DESCRIPTORS.C2.minScore && targetThresholdMetC2 && identifiedStructures.length >= 2) {
+  if (normalizedPercentage >= CEFR_DESCRIPTORS.C2.minScore && targetThresholdMetC2 && structsGateMetC2) {
     cefrResult = CEFR_DESCRIPTORS.C2;
     meetsC1 = true;
     meetsC2 = true;
-  } else if (normalizedPercentage >= CEFR_DESCRIPTORS.C1.minScore && targetThresholdMetC1) {
+  } else if (normalizedPercentage >= CEFR_DESCRIPTORS.C1.minScore && targetThresholdMetC1 && structsGateMetC1) {
     cefrResult = CEFR_DESCRIPTORS.C1;
     meetsC1 = true;
     meetsC2 = false;
@@ -13580,8 +13588,8 @@ function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVocabulary 
     : true;
 
   const meetsThreshold = isC2
-    ? (meetsC2 && normalizedPercentage >= 85 && targetGateMet && identifiedStructures.length >= 2 && wordCount >= 260)
-    : meetsC1;
+    ? (meetsC2 && normalizedPercentage >= 85 && targetGateMet && structsGateMetC2 && wordCount >= 260)
+    : (meetsC1 && normalizedPercentage >= 75 && structsGateMetC1);
 
   return {
     rawTotal: Number(rawTotal.toFixed(1)),
@@ -13652,7 +13660,7 @@ MANDATORY CRITERIA & CONSTRAINTS:
 ${vocabItems}
 
 3. SOPHISTICATED SYNTACTIC STRUCTURES:
-   Include at least 3 to 5 of the following C1/C2 grammatical structures to satisfy syntactic complexity benchmarks:
+   Include at least ${isC2 ? 6 : 4} of the following C1/C2 grammatical structures to satisfy the obligatory ${targetLevel} syntactic complexity benchmark (minimum ${isC2 ? 6 : 4} required):
    - Negative / Limiting Inversion (e.g. "Seldom has...", "Under no circumstances should...", "Not only is...")
    - Cleft / Focus Structure (e.g. "What remains of paramount concern is...", "It is this systemic flaw that...")
    - Passive Reporting Clause (e.g. "It is widely contended that...", "It is commonly maintained that...")
@@ -15039,46 +15047,88 @@ class FluentEdgeApp {
       }
     });
 
-    // Real-time grammar radar
-    if (metrics.detectedGrammar.length > 0) {
-      this.dom.radarCountDisplay.textContent = `${metrics.detectedGrammar.length} advanced structures detected`;
-      this.dom.radarBadgesRow.innerHTML = metrics.detectedGrammar.map(g => `
-        <span class="radar-badge active">
-          ✓ ${g.name}
-        </span>
-      `).join('');
-    } else {
-      this.dom.radarCountDisplay.textContent = `0 structures detected`;
-      this.dom.radarBadgesRow.innerHTML = '';
+    // Real-time grammar radar with obligatory minimum structure threshold (4 for C1, 6 for C2)
+    const minRequiredStructures = metrics.minRequiredStructures;
+    const detectedStructuresCount = metrics.detectedGrammar.length;
+    const structuresMet = detectedStructuresCount >= minRequiredStructures;
+    const isC2 = this.targetLevel === 'C2';
+    const levelLabel = isC2 ? 'C2' : 'C1';
+
+    if (this.dom.radarCountDisplay) {
+      if (detectedStructuresCount === 0) {
+        this.dom.radarCountDisplay.textContent = `0/${minRequiredStructures} Structures Required (${levelLabel})`;
+        this.dom.radarCountDisplay.className = 'radar-count-badge zero';
+      } else if (!structuresMet) {
+        const needed = minRequiredStructures - detectedStructuresCount;
+        this.dom.radarCountDisplay.textContent = `${detectedStructuresCount}/${minRequiredStructures} Structures Required (Need ${needed} more)`;
+        this.dom.radarCountDisplay.className = 'radar-count-badge in-progress';
+      } else {
+        if (detectedStructuresCount === minRequiredStructures) {
+          this.dom.radarCountDisplay.textContent = `✓ ${detectedStructuresCount}/${minRequiredStructures} Structures Met (${levelLabel} Requirement Fulfilled)`;
+        } else {
+          const extra = detectedStructuresCount - minRequiredStructures;
+          this.dom.radarCountDisplay.textContent = `✓ ${detectedStructuresCount}/${minRequiredStructures} Structures Met (Minimum Achieved +${extra} Extra)`;
+        }
+        this.dom.radarCountDisplay.className = 'radar-count-badge fulfilled';
+      }
     }
 
-    // Update Evaluate Essay Button state based on compulsory lexis fulfillment
+    if (this.dom.radarBadgesRow) {
+      if (detectedStructuresCount > 0) {
+        this.dom.radarBadgesRow.innerHTML = metrics.detectedGrammar.map(g => `
+          <span class="radar-badge active">
+            ✓ ${g.name}
+          </span>
+        `).join('');
+      } else {
+        this.dom.radarBadgesRow.innerHTML = `
+          <span class="radar-badge-empty">
+            No advanced structures detected yet. Incorporate at least ${minRequiredStructures} complex patterns (${levelLabel} standard) to unlock evaluation.
+          </span>
+        `;
+      }
+    }
+
+    // Update Evaluate Essay Button state based on BOTH compulsory lexis AND minimum syntax fulfillment
     const allLexisFulfilled = metrics.targetWordsTotal > 0 && metrics.targetWordsUsed >= metrics.targetWordsTotal;
+    const allSyntaxFulfilled = structuresMet;
+    const allReady = allLexisFulfilled && allSyntaxFulfilled;
+
     if (this.dom.evaluateEssayBtn) {
-      if (allLexisFulfilled) {
+      if (allReady) {
         this.dom.evaluateEssayBtn.classList.remove('btn-locked-lexis');
         this.dom.evaluateEssayBtn.classList.add('btn-lexis-ready');
         this.dom.evaluateEssayBtn.setAttribute('aria-disabled', 'false');
-        this.dom.evaluateEssayBtn.title = `All ${metrics.targetWordsTotal} compulsory target words fulfilled! Click or press Ctrl+Enter to evaluate.`;
+        this.dom.evaluateEssayBtn.title = `All ${metrics.targetWordsTotal} compulsory target words and ${detectedStructuresCount}/${minRequiredStructures} syntactic structures fulfilled! Click or press Ctrl+Enter to evaluate.`;
         this.dom.evaluateEssayBtn.innerHTML = `
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-          Evaluate Text (All ${metrics.targetWordsTotal} Lexis Fulfilled)
+          Evaluate Text (All Lexis &amp; Syntax Fulfilled)
           <kbd class="hotkey-badge">Ctrl+↵</kbd>
         `;
       } else {
         this.dom.evaluateEssayBtn.classList.remove('btn-lexis-ready');
         this.dom.evaluateEssayBtn.classList.add('btn-locked-lexis');
         this.dom.evaluateEssayBtn.setAttribute('aria-disabled', 'true');
-        this.dom.evaluateEssayBtn.title = `Incorporate all ${metrics.targetWordsTotal} compulsory target words to unlock evaluation (currently ${metrics.targetWordsUsed}/${metrics.targetWordsTotal} used).`;
+
+        let statusSummary = '';
+        if (!allLexisFulfilled && !allSyntaxFulfilled) {
+          statusSummary = `${metrics.targetWordsUsed}/${metrics.targetWordsTotal} Lexis • ${detectedStructuresCount}/${minRequiredStructures} Syntax`;
+        } else if (!allLexisFulfilled) {
+          statusSummary = `${metrics.targetWordsUsed}/${metrics.targetWordsTotal} Lexis • Syntax Met`;
+        } else {
+          statusSummary = `Lexis Met • ${detectedStructuresCount}/${minRequiredStructures} Syntax`;
+        }
+
+        this.dom.evaluateEssayBtn.title = `Incorporate all ${metrics.targetWordsTotal} compulsory target words and at least ${minRequiredStructures} syntactic structures to unlock evaluation (currently ${metrics.targetWordsUsed}/${metrics.targetWordsTotal} words, ${detectedStructuresCount}/${minRequiredStructures} structures).`;
         this.dom.evaluateEssayBtn.innerHTML = `
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
           </svg>
-          Evaluate Text (${metrics.targetWordsUsed}/${metrics.targetWordsTotal} Lexis Used)
+          Evaluate Text (${statusSummary})
           <kbd class="hotkey-badge">Ctrl+↵</kbd>
         `;
       }
@@ -15124,7 +15174,19 @@ class FluentEdgeApp {
   // FLUENTEDGE C1/C2 WRITING ASSESSMENT & GATEKEEPER
   // ==========================================
 
-  showRequirementAlert({ isTextEmpty, isUnderMinWords, wordCount, minWords, targetWordsUsed, targetWordsTotal, missingLexis }) {
+  showRequirementAlert({
+    isTextEmpty,
+    isUnderMinWords,
+    wordCount,
+    minWords,
+    targetWordsUsed,
+    targetWordsTotal,
+    missingLexis,
+    detectedStructures = [],
+    detectedStructuresCount = 0,
+    minRequiredStructures = 4,
+    isMissingStructures = false
+  }) {
     if (!this.dom.reqAlertBackdrop || !this.dom.reqAlertBody) return;
 
     this.pendingMissingLexis = missingLexis ? missingLexis.map(m => m.word) : [];
@@ -15236,6 +15298,85 @@ class FluentEdgeApp {
       `;
     }
 
+    // 3. Syntactic Complexity Requirement Item (Obligatory minimum structures: 4 for C1, 6 for C2)
+    if (isMissingStructures) {
+      const structuresNeeded = minRequiredStructures - detectedStructuresCount;
+      const detectedChipsHtml = (detectedStructures && detectedStructures.length > 0)
+        ? detectedStructures.map(g => `<span class="req-structure-chip detected">✓ ${g.name}</span>`).join('')
+        : '<span style="font-size: 12px; color: #94a3b8; font-style: italic;">No advanced structures detected yet.</span>';
+
+      const suggestedPatterns = [
+        { name: "Inverted Conditional", example: 'Were governments to act... / Had society recognized...' },
+        { name: "Negative Inversion", example: 'Seldom has... / Under no circumstances should...' },
+        { name: "Cleft / Focus Structure", example: 'What remains of paramount concern is...' },
+        { name: "Passive Reporting Clause", example: 'It is widely contended that...' },
+        { name: "Advanced Concession Marker", example: 'Notwithstanding the..., / Albeit arduous,...' },
+        { name: "Mandative Subjunctive", example: 'It is imperative that authorities remain...' },
+        { name: "Correlative Comparative", example: 'The more interconnected platforms become, the greater...' }
+      ];
+
+      const detectedNames = new Set((detectedStructures || []).map(g => g.name));
+      const unfulfilledSuggestions = suggestedPatterns.filter(p => !detectedNames.has(p.name)).slice(0, 3);
+
+      const suggestionsHtml = unfulfilledSuggestions.map(p => `
+        <div style="font-size: 11.5px; color: #cbd5e1; margin-bottom: 4px;">
+          <strong style="color: #93c5fd;">• ${p.name}:</strong> <span style="color: #94a3b8; font-style: italic;">e.g. "${p.example}"</span>
+        </div>
+      `).join('');
+
+      itemsHtml += `
+        <div class="req-item item-missing">
+          <div class="req-item-icon">✕</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Syntactic Complexity (${this.targetLevel} Requirement)</span>
+              <span style="font-size: 11px; color: #fbbf24; font-weight: 700;">${detectedStructuresCount} / ${minRequiredStructures} Met (${structuresNeeded} More Needed)</span>
+            </div>
+            <div class="req-item-subtitle">
+              ${this.targetLevel === 'C2' ? 'C2 Proficiency' : 'C1 Advanced'} standards demand at least ${minRequiredStructures} distinct complex syntactic structures to demonstrate grammatical control (currently ${detectedStructuresCount} detected).
+            </div>
+            <div class="req-missing-chips-box">
+              <div class="req-chips-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Structures Detected So Far:
+              </div>
+              <div class="req-chips-flex" style="margin-bottom: 10px;">
+                ${detectedChipsHtml}
+              </div>
+              <div class="req-chips-label" style="color: #93c5fd; margin-top: 8px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Recommended Structures to Incorporate:
+              </div>
+              <div>
+                ${suggestionsHtml}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      itemsHtml += `
+        <div class="req-item item-met">
+          <div class="req-item-icon">✓</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Syntactic Complexity Satisfied</span>
+              <span style="font-size: 11px; color: #34d399; font-weight: 700;">${detectedStructuresCount} / ${minRequiredStructures} Structures Met</span>
+            </div>
+            <div class="req-item-subtitle">
+              Minimum ${this.targetLevel} syntactic complexity requirement achieved (${detectedStructuresCount} advanced pattern${detectedStructuresCount === 1 ? '' : 's'} detected).
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     this.dom.reqAlertBody.innerHTML = itemsHtml;
 
     // Show modal front and center
@@ -15269,15 +15410,19 @@ class FluentEdgeApp {
     const missingVocab = metrics.vocabStatus.filter(v => !v.used);
     const missingLexis = missingVocab.map(v => ({
       word: v.headword || v.word,
-      pos: v.pos || ''
+      pos: v.pos || '',
+      definition: v.definition || ''
     }));
 
     const isTextEmpty = !text || words.length === 0;
     const isUnderMinWords = !isTextEmpty && words.length < 50;
     const isMissingLexis = missingLexis.length > 0;
+    const detectedStructuresCount = metrics.detectedGrammar.length;
+    const minRequiredStructures = metrics.minRequiredStructures;
+    const isMissingStructures = detectedStructuresCount < minRequiredStructures;
 
     // Front-and-Center Alert when requirements are not met yet
-    if (isTextEmpty || isUnderMinWords || isMissingLexis) {
+    if (isTextEmpty || isUnderMinWords || isMissingLexis || isMissingStructures) {
       this.showRequirementAlert({
         isTextEmpty,
         isUnderMinWords,
@@ -15285,13 +15430,17 @@ class FluentEdgeApp {
         minWords: 50,
         targetWordsUsed: metrics.targetWordsUsed,
         targetWordsTotal: metrics.targetWordsTotal,
-        missingLexis
+        missingLexis,
+        detectedStructures: metrics.detectedGrammar,
+        detectedStructuresCount,
+        minRequiredStructures,
+        isMissingStructures
       });
       return;
     }
 
     // Confirmation before moving forward to evaluation and assessment modal
-    if (!confirm(`Are you ready to submit your essay for evaluation? All ${metrics.targetWordsTotal} compulsory target words have been fulfilled. Your draft will be assessed against the CEFR scales.`)) {
+    if (!confirm(`Are you ready to submit your essay for evaluation? All ${metrics.targetWordsTotal} compulsory target words and ${detectedStructuresCount} complex syntactic structures have been fulfilled. Your draft will be assessed against the CEFR scales.`)) {
       return;
     }
 

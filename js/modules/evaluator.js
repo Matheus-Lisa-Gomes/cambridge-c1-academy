@@ -57,7 +57,7 @@ const SYNTACTIC_PATTERNS = {
   complexConcession: {
     name: "Advanced Concession / Contrast Marker",
     description: "Notwithstanding, Albeit, Inasmuch as, Be that as it may",
-    regex: /\b(notwithstanding\s+the|albeit\s+|inasmuch\s+as|be\s+that\s+as\s+it\s+may|for\s+all\s+that|much\s+as\s+[a-z]+)\b/i,
+    regex: /\b(notwithstanding(\s+[a-z]+)?|albeit\s+|inasmuch\s+as|be\s+that\s+as\s+it\s+may|for\s+all\s+that|much\s+as\s+[a-z]+)\b/i,
     weight: 0.9
   },
   participleClause: {
@@ -75,7 +75,7 @@ const SYNTACTIC_PATTERNS = {
   absoluteClause: {
     name: "Nominative Absolute Clause",
     description: "The deliberation having concluded... / All things considered...",
-    regex: /(^|[.!?]\s+)(the\s+[a-z\s]{2,20}\s+(having\s+been\s+[a-z]+|having\s+[a-z]+(ed|en|t)|concluded|exhausted|settled)|all\s+(things|factors|arguments|options)\s+considered|circumstances\s+permitting)/i,
+    regex: /(^|[.!?]\s+)(the\s+[a-z\s]{2,30}\s+(having\s+(been\s+)?[a-z]+|concluded|exhausted|settled)|all\s+(things|factors|arguments|options)\s+considered|circumstances\s+permitting)/i,
     weight: 1.2
   },
   mixedConditional: {
@@ -189,6 +189,8 @@ export function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = '
   const targetMin = isC2 ? 280 : 220;
   const targetMax = isC2 ? 320 : 260;
   const optimalMax = isC2 ? 340 : 280;
+  const minRequiredStructures = isC2 ? 6 : 4;
+  const structuresMet = detectedGrammar.length >= minRequiredStructures;
 
   return {
     wordCount,
@@ -201,7 +203,9 @@ export function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = '
     targetLevel,
     targetMin,
     targetMax,
-    optimalMax
+    optimalMax,
+    minRequiredStructures,
+    structuresMet
   };
 }
 
@@ -389,16 +393,20 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVoca
   }
 
   // Syntactic complexity
-  const requiredStructs = isC2 ? 3 : 2;
-  if (identifiedStructures.length >= requiredStructs) {
+  const minRequiredStructs = isC2 ? 6 : 4;
+  const structsGateMetC2 = identifiedStructures.length >= 6;
+  const structsGateMetC1 = identifiedStructures.length >= 4;
+  const structsGateMet = isC2 ? structsGateMetC2 : structsGateMetC1;
+
+  if (identifiedStructures.length >= minRequiredStructs) {
     langScore += 1.0;
-    feedbackLang.push(`High grammatical ambition demonstrated: successfully incorporated ${identifiedStructures.length} advanced syntactic structures (${identifiedStructures.map(s => s.name).join(', ')}).`);
-  } else if (identifiedStructures.length >= 1) {
+    feedbackLang.push(`High grammatical ambition demonstrated: successfully incorporated ${identifiedStructures.length} advanced syntactic structures (${identifiedStructures.map(s => s.name).join(', ')}). Fulfills ${targetLevel} requirement (minimum ${minRequiredStructs} required).`);
+  } else if (identifiedStructures.length >= 2) {
     langScore += 0.4;
-    feedbackLang.push(`Used advanced syntax (${identifiedStructures[0].name}). Incorporating ${isC2 ? 'additional inverted conditionals or participle clauses' : 'an inverted conditional or cleft'} is required for C2 mastery.`);
+    feedbackLang.push(`Adequate syntactic variety (${identifiedStructures.length}/${minRequiredStructs} structures used: ${identifiedStructures.map(s => s.name).join(', ')}). ${targetLevel} standard requires at least ${minRequiredStructs} distinct complex structures.`);
   } else {
     langScore -= 0.6;
-    feedbackLang.push(`Syntax relies on basic structures. ${targetLevel} requires varied complex patterns (inversions, clefts, or participle clauses).`);
+    feedbackLang.push(`Syntax relies on basic structures (${identifiedStructures.length}/${minRequiredStructs} detected). ${targetLevel} requires at least ${minRequiredStructs} complex patterns (inversions, clefts, or participle clauses).`);
   }
 
   // Lexical diversity
@@ -423,11 +431,11 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVoca
     ? (usedTargetCount >= Math.min(4, Math.ceil(targetVocabulary.length * 0.4)))
     : true;
 
-  if (normalizedPercentage >= CEFR_DESCRIPTORS.C2.minScore && targetThresholdMetC2 && identifiedStructures.length >= 2) {
+  if (normalizedPercentage >= CEFR_DESCRIPTORS.C2.minScore && targetThresholdMetC2 && structsGateMetC2) {
     cefrResult = CEFR_DESCRIPTORS.C2;
     meetsC1 = true;
     meetsC2 = true;
-  } else if (normalizedPercentage >= CEFR_DESCRIPTORS.C1.minScore && targetThresholdMetC1) {
+  } else if (normalizedPercentage >= CEFR_DESCRIPTORS.C1.minScore && targetThresholdMetC1 && structsGateMetC1) {
     cefrResult = CEFR_DESCRIPTORS.C1;
     meetsC1 = true;
     meetsC2 = false;
@@ -447,8 +455,8 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVoca
     : true;
 
   const meetsThreshold = isC2
-    ? (meetsC2 && normalizedPercentage >= 85 && targetGateMet && identifiedStructures.length >= 2 && wordCount >= 260)
-    : meetsC1;
+    ? (meetsC2 && normalizedPercentage >= 85 && targetGateMet && structsGateMetC2 && wordCount >= 260)
+    : (meetsC1 && normalizedPercentage >= 75 && structsGateMetC1);
 
   return {
     rawTotal: Number(rawTotal.toFixed(1)),
@@ -519,7 +527,7 @@ MANDATORY CRITERIA & CONSTRAINTS:
 ${vocabItems}
 
 3. SOPHISTICATED SYNTACTIC STRUCTURES:
-   Include at least 3 to 5 of the following C1/C2 grammatical structures to satisfy syntactic complexity benchmarks:
+   Include at least ${isC2 ? 6 : 4} of the following C1/C2 grammatical structures to satisfy the obligatory ${targetLevel} syntactic complexity benchmark (minimum ${isC2 ? 6 : 4} required):
    - Negative / Limiting Inversion (e.g. "Seldom has...", "Under no circumstances should...", "Not only is...")
    - Cleft / Focus Structure (e.g. "What remains of paramount concern is...", "It is this systemic flaw that...")
    - Passive Reporting Clause (e.g. "It is widely contended that...", "It is commonly maintained that...")

@@ -31,6 +31,7 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
   - Prepositional / formal relative clauses (*the ramifications of which...*)
   - Inverted concessions with though/as (*Arduous though it may be...*)
   *(Completed: expanded radar to 12 comprehensive C1/C2 patterns with real-time detection, AI prompt generation rules, and evaluator scoring integration)*
+- [x] **Obligatory Minimum Syntactic Structures (4 for C1, 6 for C2)**: Enforce a strict minimum number of complex structures required before evaluation can proceed, dynamically tracking progress in the radar box (`N/4 Structures Required`, `Need X more`, `✓ Minimum Met`), locking the evaluation button until satisfied, and providing recommended patterns and examples inside the requirement alert modal. *(Completed)*
 - [ ] **Grammar & Spelling Linter**: Optional offline/client-side spellchecker or formal register highlighter.
 - [ ] **Block Auto Correction and Copied Texts from all outside sources**: Create mechanism to block any auto correction, and copied text that might be produced from any outside source.
 

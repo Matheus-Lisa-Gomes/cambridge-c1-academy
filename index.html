@@ -65,21 +65,21 @@
 
     <!-- Phase Stepper -->
     <nav class="phase-stepper" aria-label="Training stages">
-      <div class="step-card active" id="stepIndicator1">
+      <div class="step-card active" id="stepIndicator1" role="button" tabindex="0" title="Stage 1: Topic & Advanced Lexis Educational Guide">
         <div class="step-number">1</div>
         <div class="step-info">
-          <h4>Topic & Advanced Lexis</h4>
-          <p id="step1LexisHint">Prompt & Compulsory C1 Vocabulary</p>
+          <h4>Topic &amp; Advanced Lexis</h4>
+          <p id="step1LexisHint">Prompt &amp; Compulsory C1 Vocabulary</p>
         </div>
       </div>
-      <div class="step-card" id="stepIndicator2">
+      <div class="step-card" id="stepIndicator2" role="button" tabindex="0" title="Stage 2: Writing &amp; Evaluation Studio">
         <div class="step-number">2</div>
         <div class="step-info">
-          <h4>Writing & Evaluation</h4>
-          <p id="step2WordCountHint">220-260 Words & Syntactic Complexity</p>
+          <h4>Writing &amp; Evaluation</h4>
+          <p id="step2WordCountHint">220-260 Words &amp; Syntactic Complexity</p>
         </div>
       </div>
-      <div class="step-card" id="stepIndicator3">
+      <div class="step-card" id="stepIndicator3" role="button" tabindex="0" title="Stage 3: Speaking &amp; Pronunciation Practice">
         <div class="step-number" id="step3LockIcon">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -87,24 +87,24 @@
           </svg>
         </div>
         <div class="step-info">
-          <h4>Speaking & Pronunciation</h4>
-          <p>Aloud Reading & Native Cadence</p>
+          <h4>Speaking &amp; Pronunciation</h4>
+          <p>Aloud Reading &amp; Native Cadence</p>
         </div>
       </div>
     </nav>
 
-    <!-- Main Workspace (Phases 1 & 2) -->
-    <main class="main-workspace" id="mainWritingWorkspace">
+    <!-- Main Workspace Container -->
+    <main class="main-workspace stage-flow-workspace" id="mainWritingWorkspace">
 
-      <!-- Left Column: Topic & Compulsory C1 Vocabulary -->
-      <section class="glass-panel" aria-labelledby="topicHeading">
+      <!-- STAGE 1: Educational Stage (Topic & Advanced Lexis) -->
+      <section class="stage-section stage-1-view glass-panel active-stage" id="stage1Panel" aria-labelledby="topicHeading">
         <div class="panel-header">
           <div class="panel-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
-            <h2 id="topicHeading">Essay Task</h2>
+            <h2 id="topicHeading">Stage 1: Topic &amp; Advanced Lexis</h2>
             <span class="topic-counter" id="topicCounter" aria-label="Topic index">
               <span class="topic-counter-current" id="topicCounterCurrent">1</span>
               <span class="topic-counter-sep">/</span>
@@ -129,14 +129,96 @@
           </div>
         </div>
 
-        <!-- Topic Details - Removed from UI but needed for functionality of previous and next buttons-->
+        <!-- Topic Details / Meta -->
         <div class="topic-meta-row">
-          <span class="meta-pill" id="topicCategory">Technology & Ethics</span>
+          <span class="meta-pill" id="topicCategory">Technology &amp; Ethics</span>
           <span class="meta-pill" id="topicType">C1/C2 Academic Essay</span>
           <span class="meta-pill" id="topicTime">45 minutes recommended</span>
         </div>
 
-        <h3 class="topic-title" id="topicTitle">Artificial Intelligence, Moral Agency & Societal Autonomy</h3>
+        <h3 class="topic-title" id="topicTitle">Artificial Intelligence, Moral Agency &amp; Societal Autonomy</h3>
+
+        <!-- Interactive C1 / C2 Educational Requirements Breakdown Card -->
+        <div class="educational-requirements-card" id="stage1ReqsCard">
+          <div class="reqs-card-header">
+            <div class="reqs-header-left">
+              <div class="reqs-badge-row">
+                <span class="reqs-level-indicator" id="reqsLevelIndicator">CEFR C1 STANDARD</span>
+                <span class="reqs-level-tagline" id="reqsLevelTagline">Effective Operational Proficiency (IELTS 7.0–8.0 / Cambridge CAE)</span>
+              </div>
+              <p class="reqs-header-callout" id="reqsHeaderCallout">
+                Official academic benchmark: demonstrate clear, smoothly flowing discourse with sophisticated lexical variety and complex syntactic control.
+              </p>
+            </div>
+            <div class="reqs-header-right">
+              <span class="reqs-mode-tip">Toggle standard above or <kbd class="hotkey-badge">Alt+M</kbd></span>
+            </div>
+          </div>
+
+          <div class="reqs-pillars-grid">
+            <!-- Pillar 1: Word Count & Architecture -->
+            <div class="reqs-pillar-card">
+              <div class="pillar-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </div>
+              <div class="pillar-content">
+                <span class="pillar-title">Word Count &amp; Architecture</span>
+                <div class="pillar-metric" id="reqsWordMetric">220 – 260 words</div>
+                <p class="pillar-desc" id="reqsWordDesc">Concise, balanced synthesis structured across 3–4 coherent paragraphs. Direct thesis formulation, analytical body arguments, and clear concluding deduction.</p>
+              </div>
+            </div>
+
+            <!-- Pillar 2: Compulsory Lexis -->
+            <div class="reqs-pillar-card">
+              <div class="pillar-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+              </div>
+              <div class="pillar-content">
+                <span class="pillar-title">Compulsory Target Lexis</span>
+                <div class="pillar-metric" id="reqsLexisMetric">10 / 10 Obligatory Words</div>
+                <p class="pillar-desc" id="reqsLexisDesc">Incorporate all 10 allocated C1 words (3 verbs, 3 nouns, 2 adj, 2 adv) into natural, unforced collocation. Every item is locked with zero grammatical distortion.</p>
+              </div>
+            </div>
+
+            <!-- Pillar 3: Syntactic Complexity -->
+            <div class="reqs-pillar-card">
+              <div class="pillar-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                </svg>
+              </div>
+              <div class="pillar-content">
+                <span class="pillar-title">Syntactic Complexity</span>
+                <div class="pillar-metric" id="reqsSyntaxMetric">Minimum 4 Structures Required</div>
+                <p class="pillar-desc" id="reqsSyntaxDesc">Incorporate diverse advanced patterns: Negative Inversions, Cleft Sentences, Passive Reporting Clauses, Inverted Conditionals without 'if', and Concession markers.</p>
+              </div>
+            </div>
+
+            <!-- Pillar 4: Register & Passing Mark -->
+            <div class="reqs-pillar-card">
+              <div class="pillar-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <div class="pillar-content">
+                <span class="pillar-title">Register &amp; Passing Mark</span>
+                <div class="pillar-metric" id="reqsPassMetric">≥ 75% Overall Score Required</div>
+                <p class="pillar-desc" id="reqsPassDesc">Strict formal academic register. Objective third-person stance, seamless transitional cohesion, zero informal contractions or colloquial shortcuts.</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Compulsory Vocabulary Pack (3 Verbs, 3 Nouns, 2 Adjectives, 2 Adverbs) -->
         <div class="vocabulary-section">
@@ -161,17 +243,40 @@
             <!-- Dynamically populated 10 vocabulary chips -->
           </div>
         </div>
+
+        <!-- Stage 1 Footer Action: Proceed to Stage 2 -->
+        <div class="stage-footer-action">
+          <button id="proceedToStage2Btn" class="btn btn-primary stage-cta-btn">
+            <span>Proceed to Writing Studio (Stage 2)</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
       </section>
 
-      <!-- Right Column: Writing Studio -->
-      <section class="glass-panel writing-studio" aria-labelledby="writingStudioHeading">
+      <!-- STAGE 2: Writing & Evaluation Studio -->
+      <section class="stage-section stage-2-view glass-panel writing-studio" id="stage2Panel" aria-labelledby="writingStudioHeading" style="display: none;">
         <div class="panel-header">
-          <div class="panel-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2">
-              <path d="M12 20h9"></path>
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-            </svg>
-            <h2 id="writingStudioHeading">Writing Studio</h2>
+          <div class="panel-header-left">
+            <button id="backToStage1Btn" class="btn btn-secondary btn-sm stage-nav-back-btn" title="Back to Stage 1: Topic &amp; Advanced Lexis Guide">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Stage 1: Topic &amp; Lexis</span>
+            </button>
+            <div class="panel-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+              <h2 id="writingStudioHeading">Stage 2: Writing Studio</h2>
+            </div>
+          </div>
+          <div class="panel-topic-preview">
+            <span class="topic-preview-pill" id="writingTopicPill">Artificial Intelligence, Moral Agency &amp; Societal Autonomy</span>
           </div>
           <div class="panel-actions">
             <button id="copyAiPromptBtn" class="btn btn-secondary btn-sm ai-prompt-btn"
@@ -196,6 +301,23 @@
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
               </svg>
             </button>
+          </div>
+        </div>
+
+        <!-- Stage 2 Compact Compulsory Target Lexis Strip -->
+        <div class="stage2-lexis-dock" id="stage2LexisDock">
+          <div class="stage2-lexis-header">
+            <div class="stage2-lexis-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+              <span>Compulsory Target Lexis: <strong id="stage2VocabCountDisplay">0/10</strong> Used</span>
+            </div>
+            <span class="stage2-lexis-hint">All 10 words required to unlock evaluation</span>
+          </div>
+          <div class="stage2-lexis-chips" id="stage2VocabChips">
+            <!-- Populated dynamically with compact word badges -->
           </div>
         </div>
 
@@ -230,7 +352,7 @@
           </div>
         </div>
 
-        <!-- Real-time C1 Syntax & Register Radar -->
+        <!-- Real-time C1/C2 Syntax & Register Radar -->
         <div class="live-radar-box">
           <div class="radar-header">
             <span>C1/C2 Grammar &amp; Syntax Radar</span>
@@ -262,25 +384,29 @@
         </button>
       </section>
 
-    </main>
-
-    <!-- Phase 3: Speaking & Pronunciation Studio (Visible when C1 passed or in practice mode) -->
-    <section class="speaking-studio" id="speakingStudio" aria-labelledby="speakingStudioHeading">
-      <div class="teleprompter-container">
-        <div class="teleprompter-header">
-          <div class="panel-title">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-              <line x1="12" y1="19" x2="12" y2="23"></line>
-              <line x1="8" y1="23" x2="16" y2="23"></line>
-            </svg>
-            <h2 id="speakingStudioHeading">Phase 3: Speaking & Pronunciation Evaluation</h2>
+      <!-- STAGE 3: Speaking & Pronunciation Studio -->
+      <section class="stage-section stage-3-view glass-panel speaking-studio" id="speakingStudio" aria-labelledby="speakingStudioHeading" style="display: none;">
+        <div class="teleprompter-container">
+          <div class="teleprompter-header">
+            <div class="panel-header-left">
+              <button id="returnToWritingBtn" class="btn btn-secondary btn-sm stage-nav-back-btn" style="font-size: 12px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Stage 2: Writing Studio</span>
+              </button>
+              <div class="panel-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" stroke-width="2">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                  <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+                <h2 id="speakingStudioHeading">Stage 3: Speaking &amp; Pronunciation Evaluation</h2>
+              </div>
+            </div>
           </div>
-          <button id="returnToWritingBtn" class="btn btn-secondary" style="font-size: 12px;">
-            ← Return to Essay
-          </button>
-        </div>
 
         <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 16px;">
           Read your written text aloud into your microphone. Our speech recognition engine aligns your spoken words with
@@ -368,6 +494,8 @@
         <!-- Dynamically rendered -->
       </div>
     </section>
+
+    </main>
 
   </div>
 

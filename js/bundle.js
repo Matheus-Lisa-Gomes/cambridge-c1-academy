@@ -14250,6 +14250,7 @@ class FluentEdgeApp {
     this.speechEngine = new SpeechEngine();
     this.lastEvaluationResult = null;
     this.meetsC1Threshold = false;
+    this.currentStage = 1;
 
     this.dom = {};
     this.init();
@@ -14263,6 +14264,8 @@ class FluentEdgeApp {
     this.setTargetLevel(this.targetLevel, true);
     this.loadTopic(0);
     this.renderHistory();
+    this.updateEducationalRequirementsCard();
+    this.setStage(1);
   }
 
   cacheDomElements() {
@@ -14286,9 +14289,31 @@ class FluentEdgeApp {
       step2WordCountHint: document.getElementById('step2WordCountHint'),
       targetWordCountHint: document.getElementById('targetWordCountHint'),
 
-      // Workspaces
+      // Workspaces & Stages
       mainWritingWorkspace: document.getElementById('mainWritingWorkspace'),
+      stage1Panel: document.getElementById('stage1Panel'),
+      stage2Panel: document.getElementById('stage2Panel'),
       speakingStudio: document.getElementById('speakingStudio'),
+      proceedToStage2Btn: document.getElementById('proceedToStage2Btn'),
+      backToStage1Btn: document.getElementById('backToStage1Btn'),
+      writingTopicPill: document.getElementById('writingTopicPill'),
+      stage2VocabDock: document.getElementById('stage2LexisDock'),
+      stage2VocabChips: document.getElementById('stage2VocabChips'),
+      stage2VocabCountDisplay: document.getElementById('stage2VocabCountDisplay'),
+
+      // Educational Requirements Card
+      stage1ReqsCard: document.getElementById('stage1ReqsCard'),
+      reqsLevelIndicator: document.getElementById('reqsLevelIndicator'),
+      reqsLevelTagline: document.getElementById('reqsLevelTagline'),
+      reqsHeaderCallout: document.getElementById('reqsHeaderCallout'),
+      reqsWordMetric: document.getElementById('reqsWordMetric'),
+      reqsWordDesc: document.getElementById('reqsWordDesc'),
+      reqsLexisMetric: document.getElementById('reqsLexisMetric'),
+      reqsLexisDesc: document.getElementById('reqsLexisDesc'),
+      reqsSyntaxMetric: document.getElementById('reqsSyntaxMetric'),
+      reqsSyntaxDesc: document.getElementById('reqsSyntaxDesc'),
+      reqsPassMetric: document.getElementById('reqsPassMetric'),
+      reqsPassDesc: document.getElementById('reqsPassDesc'),
 
       // Topic Card
       topicCounterCurrent: document.getElementById('topicCounterCurrent'),
@@ -14452,6 +14477,34 @@ class FluentEdgeApp {
       }
     });
 
+    // Stepper navigation events
+    if (this.dom.stepIndicator1) {
+      this.dom.stepIndicator1.addEventListener('click', () => this.setStage(1));
+      this.dom.stepIndicator1.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setStage(1); }
+      });
+    }
+    if (this.dom.stepIndicator2) {
+      this.dom.stepIndicator2.addEventListener('click', () => this.setStage(2));
+      this.dom.stepIndicator2.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setStage(2); }
+      });
+    }
+    if (this.dom.stepIndicator3) {
+      this.dom.stepIndicator3.addEventListener('click', () => this.setStage(3));
+      this.dom.stepIndicator3.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setStage(3); }
+      });
+    }
+
+    // Stage transition buttons
+    if (this.dom.proceedToStage2Btn) {
+      this.dom.proceedToStage2Btn.addEventListener('click', () => this.setStage(2));
+    }
+    if (this.dom.backToStage1Btn) {
+      this.dom.backToStage1Btn.addEventListener('click', () => this.setStage(1));
+    }
+
     // AI Essay Prompt Generator events
     if (this.dom.copyAiPromptBtn) {
       this.dom.copyAiPromptBtn.addEventListener('click', () => this.handleQuickCopyAiPrompt());
@@ -14520,6 +14573,34 @@ class FluentEdgeApp {
                         Boolean(reqAlertOpen) ||
                         Boolean(aiPromptOpen);
       const inTextField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+
+      // Alt+1  →  Stage 1 (Topic & Lexis Educational Guide)
+      if (e.altKey && e.key === '1' && !modalOpen) {
+        e.preventDefault();
+        this.setStage(1);
+        return;
+      }
+
+      // Alt+2  →  Stage 2 (Writing & Evaluation Studio)
+      if (e.altKey && e.key === '2' && !modalOpen) {
+        e.preventDefault();
+        this.setStage(2);
+        return;
+      }
+
+      // Alt+3  →  Stage 3 (Speaking Studio)
+      if (e.altKey && e.key === '3' && !modalOpen) {
+        e.preventDefault();
+        this.setStage(3);
+        return;
+      }
+
+      // Enter on Stage 1 (when outside of text inputs/buttons) -> Proceed to Stage 2
+      if (e.key === 'Enter' && this.currentStage === 1 && !inTextField && !modalOpen && !reqAlertOpen) {
+        e.preventDefault();
+        this.setStage(2);
+        return;
+      }
 
       // Alt+P  →  Copy AI Prompt
       if (e.altKey && (e.key === 'p' || e.key === 'P') && !modalOpen) {
@@ -14640,10 +14721,123 @@ class FluentEdgeApp {
         : "(220-260 target)";
     }
 
+    this.updateEducationalRequirementsCard();
+
     if (this.dom.essayInput) {
       this.refreshRandomVocabulary(true);
       this.handleEditorInput();
     }
+  }
+
+  updateEducationalRequirementsCard() {
+    const isC2 = this.targetLevel === 'C2';
+
+    if (this.dom.reqsLevelIndicator) {
+      this.dom.reqsLevelIndicator.textContent = isC2 ? 'CEFR C2 STANDARD' : 'CEFR C1 STANDARD';
+    }
+    if (this.dom.reqsLevelTagline) {
+      this.dom.reqsLevelTagline.textContent = isC2
+        ? 'Mastery Level (Cambridge CPE / IELTS 8.5–9.0 Native-Level Benchmark)'
+        : 'Effective Operational Proficiency (Cambridge CAE / IELTS 7.0–8.0 Benchmark)';
+    }
+    if (this.dom.reqsHeaderCallout) {
+      this.dom.reqsHeaderCallout.textContent = isC2
+        ? 'The pinnacle of linguistic proficiency: effortless spontaneous expression, conceptual nuance, dialectical argumentation, and authoritative academic rhythm.'
+        : 'Official academic benchmark: demonstrate clear, smoothly flowing discourse with sophisticated lexical variety, cohesive transitions, and complex syntactic control.';
+    }
+    if (this.dom.reqsWordMetric) {
+      this.dom.reqsWordMetric.textContent = isC2 ? '280 – 360+ words' : '220 – 260 words';
+    }
+    if (this.dom.reqsWordDesc) {
+      this.dom.reqsWordDesc.textContent = isC2
+        ? 'Extended discursive architecture across 4–5 paragraphs. Complex dialectical framing: thesis, counter-argument refutation, conceptual nuance, and authoritative synthesis.'
+        : 'Concise, balanced synthesis structured across 3–4 coherent paragraphs. Direct thesis formulation, analytical body arguments, and clear concluding deduction.';
+    }
+    if (this.dom.reqsLexisMetric) {
+      this.dom.reqsLexisMetric.textContent = '10 / 10 Obligatory Words';
+    }
+    if (this.dom.reqsLexisDesc) {
+      this.dom.reqsLexisDesc.textContent = isC2
+        ? 'Incorporate all 10 allocated C2 words demonstrating mastery of subtle semantic shades, idiomatic academic collocations, and perfect morphological adaptation.'
+        : 'Incorporate all 10 allocated C1 words (3 verbs, 3 nouns, 2 adj, 2 adv) into natural, unforced collocation. Every item is locked with zero grammatical distortion.';
+    }
+    if (this.dom.reqsSyntaxMetric) {
+      this.dom.reqsSyntaxMetric.textContent = isC2 ? 'Minimum 6 Structures Required' : 'Minimum 4 Structures Required';
+    }
+    if (this.dom.reqsSyntaxDesc) {
+      this.dom.reqsSyntaxDesc.textContent = isC2
+        ? 'Demonstrate elevated syntactic mastery: Mandative Subjunctives, Nominative Absolute Clauses, Mixed Unreal Conditionals, Prepositional Relatives, and Inverted Concessions.'
+        : 'Incorporate diverse advanced patterns: Negative Inversions, Cleft Sentences, Passive Reporting Clauses, Inverted Conditionals without "if", and Concession markers.';
+    }
+    if (this.dom.reqsPassMetric) {
+      this.dom.reqsPassMetric.textContent = isC2 ? '≥ 85% Overall Score Required' : '≥ 75% Overall Score Required';
+    }
+    if (this.dom.reqsPassDesc) {
+      this.dom.reqsPassDesc.textContent = isC2
+        ? 'Authoritative scholarly voice with sophisticated epistemic stance (hedging), elegant parallelism, varied clause cadences, and seamless conceptual coherence.'
+        : 'Strict formal academic register. Objective third-person stance, seamless transitional cohesion, zero informal contractions or colloquial shortcuts.';
+    }
+  }
+
+  setStage(stageNum) {
+    if (stageNum === 3) {
+      const text = this.dom.essayInput ? this.dom.essayInput.value.trim() : "";
+      if (!text) {
+        this.showToast("Please draft your essay in Stage 2 before entering Speaking practice.", "warning");
+        this.setStage(2);
+        return;
+      }
+    }
+
+    this.currentStage = stageNum;
+
+    // Toggle Stage views
+    if (this.dom.stage1Panel) {
+      this.dom.stage1Panel.style.display = stageNum === 1 ? 'block' : 'none';
+      this.dom.stage1Panel.classList.toggle('active-stage', stageNum === 1);
+    }
+    if (this.dom.stage2Panel) {
+      this.dom.stage2Panel.style.display = stageNum === 2 ? 'block' : 'none';
+      this.dom.stage2Panel.classList.toggle('active-stage', stageNum === 2);
+    }
+    if (this.dom.speakingStudio) {
+      this.dom.speakingStudio.style.display = stageNum === 3 ? 'block' : 'none';
+      this.dom.speakingStudio.classList.toggle('active-stage', stageNum === 3);
+    }
+
+    // Update Stepper indicators
+    if (this.dom.stepIndicator1) {
+      this.dom.stepIndicator1.classList.toggle('active', stageNum === 1);
+      this.dom.stepIndicator1.classList.toggle('completed', stageNum > 1);
+    }
+    if (this.dom.stepIndicator2) {
+      this.dom.stepIndicator2.classList.toggle('active', stageNum === 2);
+      this.dom.stepIndicator2.classList.toggle('completed', stageNum > 2);
+    }
+    if (this.dom.stepIndicator3) {
+      this.dom.stepIndicator3.classList.toggle('active', stageNum === 3);
+      if (stageNum === 3 && this.dom.step3LockIcon) {
+        this.dom.step3LockIcon.innerHTML = "3";
+      }
+    }
+
+    // Stage-specific actions
+    if (stageNum === 1) {
+      this.updateEducationalRequirementsCard();
+    } else if (stageNum === 2) {
+      setTimeout(() => {
+        if (this.dom.essayInput) this.dom.essayInput.focus();
+      }, 50);
+      this.handleEditorInput();
+    } else if (stageNum === 3) {
+      const text = this.dom.essayInput ? this.dom.essayInput.value.trim() : "";
+      if (text) {
+        this.speechEngine.setTargetText(text);
+        this.renderTeleprompterTokens(this.speechEngine.targetTokens);
+      }
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   refreshRandomVocabulary(force = false) {
@@ -14672,6 +14866,11 @@ class FluentEdgeApp {
     this.dom.topicType.textContent = this.currentTopic.type;
     this.dom.topicTime.textContent = this.currentTopic.recommendedTime;
     this.dom.topicTitle.textContent = this.currentTopic.title;
+
+    if (this.dom.writingTopicPill) {
+      this.dom.writingTopicPill.textContent = this.currentTopic.title;
+      this.dom.writingTopicPill.title = this.currentTopic.title;
+    }
 
     // Draw 10 random target vocabulary items (3 Verbs, 3 Nouns, 2 Adj, 2 Adv)
     this.refreshRandomVocabulary(true);
@@ -14707,51 +14906,82 @@ class FluentEdgeApp {
       this.activeVocabulary = getRandomVocabularySet(this.targetLevel);
     }
     const text = this.dom.essayInput ? (this.dom.essayInput.value || "") : "";
-    this.dom.vocabGrid.innerHTML = this.activeVocabulary.map((v) => {
-      const usage = checkTargetWordUsage(v, text);
-      const headword = v.headword || v.word;
-      const posClass = `pos-${(v.pos || 'noun').toLowerCase()}`;
-      const definition = v.definition || '';
-      return `
-        <div class="vocab-chip ${usage.used ? 'used' : ''}" data-word="${headword}">
-          <div class="vocab-chip-top">
-            <div class="vocab-word-title">
-              <span class="vocab-word-text">${headword}</span>
-            </div>
-            <div class="vocab-chip-actions">
-              <span class="vocab-used-check">✓</span>
-              <button class="vocab-audio-btn" data-speak="${headword}" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of ${headword}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-              </button>
-            </div>
-          </div>
-          ${definition ? `<div class="vocab-definition">${definition}</div>` : ''}
-          <div class="vocab-pills-row">
-            <span class="vocab-pos-pill ${posClass}">${v.pos}</span>
-            <span class="vocab-cefr-pill">${v.cefr}</span>
-          </div>
-        </div>
-      `;
-    }).join('');
 
-    // Attach individual word TTS audio listeners
-    this.dom.vocabGrid.querySelectorAll('.vocab-audio-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const word = btn.getAttribute('data-speak');
-        this.speechEngine.speakText(word, 0.85);
+    // Stage 1 Vocab Grid
+    if (this.dom.vocabGrid) {
+      this.dom.vocabGrid.innerHTML = this.activeVocabulary.map((v) => {
+        const usage = checkTargetWordUsage(v, text);
+        const headword = v.headword || v.word;
+        const posClass = `pos-${(v.pos || 'noun').toLowerCase()}`;
+        const definition = v.definition || '';
+        return `
+          <div class="vocab-chip ${usage.used ? 'used' : ''}" data-word="${headword}">
+            <div class="vocab-chip-top">
+              <div class="vocab-word-title">
+                <span class="vocab-word-text">${headword}</span>
+              </div>
+              <div class="vocab-chip-actions">
+                <span class="vocab-used-check">✓</span>
+                <button class="vocab-audio-btn" data-speak="${headword}" title="Listen to RP British pronunciation" aria-label="Listen to pronunciation of ${headword}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                </button>
+              </div>
+            </div>
+            ${definition ? `<div class="vocab-definition">${definition}</div>` : ''}
+            <div class="vocab-pills-row">
+              <span class="vocab-pos-pill ${posClass}">${v.pos}</span>
+              <span class="vocab-cefr-pill">${v.cefr}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Attach individual word TTS audio listeners
+      this.dom.vocabGrid.querySelectorAll('.vocab-audio-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const word = btn.getAttribute('data-speak');
+          this.speechEngine.speakText(word, 0.85);
+        });
       });
-    });
+    }
+
+    // Stage 2 Compact Chips Strip
+    if (this.dom.stage2VocabChips) {
+      this.dom.stage2VocabChips.innerHTML = this.activeVocabulary.map((v) => {
+        const usage = checkTargetWordUsage(v, text);
+        const headword = v.headword || v.word;
+        const posClass = `pos-${(v.pos || 'noun').toLowerCase()}`;
+        const definition = v.definition || '';
+        const tooltip = definition ? `${headword} (${v.pos}): ${definition}` : headword;
+        return `
+          <div class="stage2-mini-chip ${usage.used ? 'used' : ''}" data-word="${headword}" data-tooltip="${tooltip}">
+            <span class="stage2-mini-word">${headword}</span>
+            <span class="stage2-mini-pos ${posClass}">${v.pos}</span>
+            <span class="stage2-mini-check" style="${usage.used ? '' : 'display: none;'}">✓</span>
+            <button class="stage2-mini-audio-btn" data-speak="${headword}" title="Listen to pronunciation of ${headword}" aria-label="Listen to pronunciation of ${headword}">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      this.dom.stage2VocabChips.querySelectorAll('.stage2-mini-audio-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const word = btn.getAttribute('data-speak');
+          this.speechEngine.speakText(word, 0.85);
+        });
+      });
+    }
   }
-
-
 
   // ==========================================
   // WRITING STUDIO & REAL-TIME C1 RADAR
   // ==========================================
 
   handleEditorInput() {
-    const text = this.dom.essayInput.value;
+    const text = this.dom.essayInput ? this.dom.essayInput.value : "";
     const metrics = analyzeQuickMetrics(text, this.activeVocabulary, this.targetLevel);
 
     // Live word count
@@ -14784,15 +15014,27 @@ class FluentEdgeApp {
       this.dom.lengthGuidanceBadge.className = "radar-badge";
     }
 
-    // Update target vocabulary chips & counter
+    // Update target vocabulary chips & counter in both Stage 1 and Stage 2
     this.dom.vocabUsedCounter.textContent = `${metrics.targetWordsUsed}/${metrics.targetWordsTotal}`;
+    if (this.dom.stage2VocabCountDisplay) {
+      this.dom.stage2VocabCountDisplay.textContent = `${metrics.targetWordsUsed}/${metrics.targetWordsTotal}`;
+    }
+
     metrics.vocabStatus.forEach(status => {
-      const chip = this.dom.vocabGrid.querySelector(`[data-word="${status.word}"]`);
-      if (chip) {
-        if (status.used) {
-          chip.classList.add('used');
-        } else {
-          chip.classList.remove('used');
+      // Stage 1 chips
+      if (this.dom.vocabGrid) {
+        const chip = this.dom.vocabGrid.querySelector(`[data-word="${status.word}"]`);
+        if (chip) {
+          chip.classList.toggle('used', status.used);
+        }
+      }
+      // Stage 2 compact chips
+      if (this.dom.stage2VocabChips) {
+        const chip2 = this.dom.stage2VocabChips.querySelector(`[data-word="${status.word}"]`);
+        if (chip2) {
+          chip2.classList.toggle('used', status.used);
+          const check = chip2.querySelector('.stage2-mini-check');
+          if (check) check.style.display = status.used ? 'inline-flex' : 'none';
         }
       }
     });
@@ -15145,19 +15387,7 @@ class FluentEdgeApp {
       return;
     }
 
-    this.dom.mainWritingWorkspace.style.display = 'none';
-    this.dom.speakingStudio.style.display = 'block';
-
-    // Highlight step 3
-    this.dom.stepIndicator1.classList.remove('active');
-    this.dom.stepIndicator2.classList.remove('active');
-    this.dom.stepIndicator3.classList.add('active');
-
-    // Initialize speech engine with text
-    this.speechEngine.setTargetText(text);
-
-    // Render Teleprompter tokens
-    this.renderTeleprompterTokens(this.speechEngine.targetTokens);
+    this.setStage(3);
 
     // Reset Speaking metrics
     this.dom.liveSpeakingWpm.textContent = '0';
@@ -15194,10 +15424,7 @@ class FluentEdgeApp {
   returnToWriting() {
     this.speechEngine.stopListening();
     this.speechEngine.stopSpeakingModel();
-    this.dom.speakingStudio.style.display = 'none';
-    this.dom.mainWritingWorkspace.style.display = 'grid';
-    this.dom.stepIndicator3.classList.remove('active');
-    this.dom.stepIndicator2.classList.add('active');
+    this.setStage(2);
   }
 
   async startSpeakingSession() {

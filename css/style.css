@@ -1200,7 +1200,7 @@ body.theme-c2 .stage2-topic-card:hover {
 }
 
 .stage2-topic-meta {
-  display: flex;
+  display: none !important;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
@@ -1210,6 +1210,7 @@ body.theme-c2 .stage2-topic-card:hover {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-left: auto;
 }
 
 .stage2-topic-card .topic-title {

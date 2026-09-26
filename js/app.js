@@ -201,11 +201,6 @@ class FluentEdgeApp {
     // Topic events (Draw New Tree Topic)
     if (this.dom.rerollTopicBtn) {
       this.dom.rerollTopicBtn.addEventListener('click', () => {
-        if (this.hasEssayContent()) {
-          if (!confirm("You have an essay in progress. Drawing a new topic will clear your draft and generate a fresh subject-subtheme tree. Are you sure you want to change topics?")) {
-            return;
-          }
-        }
         this.rerollTopic();
       });
     }
@@ -408,11 +403,6 @@ class FluentEdgeApp {
       // Alt+T  →  Draw New Topic (Randomize tree architecture)
       if (e.altKey && (e.key === 't' || e.key === 'T') && !modalOpen) {
         e.preventDefault();
-        if (this.hasEssayContent()) {
-          if (!confirm("You have an essay in progress. Drawing a new topic will clear your draft and generate a fresh subject-subtheme tree. Are you sure you want to change topics?")) {
-            return;
-          }
-        }
         this.rerollTopic();
         return;
       }

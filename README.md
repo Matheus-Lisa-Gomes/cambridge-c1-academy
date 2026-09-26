@@ -129,20 +129,7 @@ For learners wanting to observe model essays or rapidly test speech integration,
 * Enforces strict raw-text output (no conversational commentary, titles, or bullet points).
 * Includes an interactive inspection modal with interactive copy button.
 
-#### G. Test Mode with Exam Countdown Timer (`Alt+C`)
-To simulate authentic examination conditions (e.g. Cambridge C1 Advanced and C2 Proficiency Writing Paper 1h 30m allocated for two essays = approx. 45 minutes per task):
-* **Directly Attached to Writing Box**: Located immediately above the essay editor (`#stage2TimerBar`) with prominent digital countdown display.
-* **Duration Presets**: Fast switching between **45m** (Cambridge Exam standard), **40m**, **30m**, and **15m** (Speed composition drill).
-* **Auto-Start on Typing**: Typing the first character into the essay editor automatically starts the timer countdown if not already running.
-* **Visual Progress & Alerts**:
-  * Real-time depleting progress track at the bottom of the timer bar.
-  * **Amber Warning ($\le$ 5 min)**: Warning badge and gentle audio notification chime.
-  * **Critical Pulse ($\le$ 1 min)**: High-visibility crimson alert animation.
-* **Zero-Dependency Web Audio API Chimes**: Native browser-synthesized harmonic alert chimes at 5-minute mark and at time expiry (with mute toggle).
-* **Time Expired Completion Modal**: Detailed report upon expiration with options to submit for evaluation or continue in overtime.
-* **Timed Exam History Tracking**: Past assessments record whether an essay was written under timed exam conditions along with the exact time elapsed.
-
-#### H. Practice Assessment Rubric
+#### G. Practice Assessment Rubric
 Submissions are scored on an authentic 20-point CEFR scale (four 5-point categories):
 * **Content (0–5)**: Word count adherence, prompt topic fidelity, and developmental depth.
 * **Communicative Achievement (0–5)**: Scholarly register, academic tone, avoidance of colloquialisms or informal contractions.
@@ -196,7 +183,6 @@ Once an essay achieves a passing score (**Band 4 / C1** or **Band 5 / C2**), Sta
 | `Alt + T` | **Draw New Topic** | Procedurally re-roll Root Subject and Sub-Themes |
 | `Alt + W` | **Start Writing** | Proceed from Stage 1 into Stage 2 Composition |
 | `Alt + P` | **AI Prompt Modal** | Open precision prompt generator modal for ChatGPT/Claude/Gemini |
-| `Alt + C` | **Test Mode Timer** | Toggle timed exam simulation mode & countdown bar |
 | `Alt + E` | **Evaluate Essay** | Run full automated CEFR evaluation on written submission |
 | `Alt + R` | **New Vocabulary** | Roll a fresh 10-word academic lexicon |
 | `Alt + H` | **Evaluation History** | Toggle past assessment reports drawer |

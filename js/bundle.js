@@ -15652,29 +15652,6 @@ class FluentEdgeApp {
     this.hasDrawnTopic = false;
     this.currentTopic = getDefaultStartingTopic(this.targetLevel);
 
-    // Test Mode & Exam Timer state
-    this.testModeEnabled = false;
-    try {
-      this.testModeEnabled = localStorage.getItem('fluentedge_test_mode') === 'true';
-    } catch (e) {}
-    this.testDurationMinutes = 45;
-    try {
-      const savedDuration = parseInt(localStorage.getItem('fluentedge_test_duration'), 10);
-      if (savedDuration && [15, 30, 40, 45].includes(savedDuration)) {
-        this.testDurationMinutes = savedDuration;
-      }
-    } catch (e) {}
-    this.timerRemainingSeconds = this.testDurationMinutes * 60;
-    this.timerTotalSeconds = this.testDurationMinutes * 60;
-    this.timerInterval = null;
-    this.timerIsRunning = false;
-    this.timerSoundMuted = false;
-    try {
-      this.timerSoundMuted = localStorage.getItem('fluentedge_timer_muted') === 'true';
-    } catch (e) {}
-    this.timerWarningPlayed = false;
-    this.timerHasExpired = false;
-
     this.activeVocabulary = [];
     this.speechEngine = new SpeechEngine();
     this.lastEvaluationResult = null;
@@ -15693,7 +15670,6 @@ class FluentEdgeApp {
     this.setTargetLevel(this.targetLevel, true);
     this.setTopicDifficulty(this.topicDifficulty, false);
     this.loadTopic(this.currentTopic);
-    this.initTimer();
     this.renderHistory();
     this.updateEducationalRequirementsCard();
     this.setStage(1);
@@ -15845,40 +15821,7 @@ class FluentEdgeApp {
       aiPromptFocusBadge: document.getElementById('aiPromptFocusBadge'),
       aiPromptVocabChips: document.getElementById('aiPromptVocabChips'),
       aiPromptVocabCount: document.getElementById('aiPromptVocabCount'),
-      aiPromptTextarea: document.getElementById('aiPromptTextarea'),
-
-      // Stage 2: Test Mode & Exam Countdown Timer
-      testModeToggleBtn: document.getElementById('testModeToggleBtn'),
-      testModeStatusBadge: document.getElementById('testModeStatusBadge'),
-      stage2TimerBar: document.getElementById('stage2TimerBar'),
-      timerBarInactive: document.getElementById('timerBarInactive'),
-      timerBarActive: document.getElementById('timerBarActive'),
-      enableTestModeBtn: document.getElementById('enableTestModeBtn'),
-      timerPulseDot: document.getElementById('timerPulseDot'),
-      timerCountdownDisplay: document.getElementById('timerCountdownDisplay'),
-      timerStateTag: document.getElementById('timerStateTag'),
-      timerPresetsRow: document.getElementById('timerPresetsRow'),
-      timerPresetBtns: document.querySelectorAll('.timer-preset-btn'),
-      timerTogglePlayBtn: document.getElementById('timerTogglePlayBtn'),
-      timerPlayIcon: document.getElementById('timerPlayIcon'),
-      timerPlayBtnLabel: document.getElementById('timerPlayBtnLabel'),
-      timerResetBtn: document.getElementById('timerResetBtn'),
-      timerSoundToggleBtn: document.getElementById('timerSoundToggleBtn'),
-      timerSoundIcon: document.getElementById('timerSoundIcon'),
-      timerDismissBtn: document.getElementById('timerDismissBtn'),
-      timerProgressBar: document.getElementById('timerProgressBar'),
-
-      // Time's Up Exam Modal
-      timeUpModalBackdrop: document.getElementById('timeUpModalBackdrop'),
-      timeUpTitle: document.getElementById('timeUpTitle'),
-      timeUpDesc: document.getElementById('timeUpDesc'),
-      timeUpWordCount: document.getElementById('timeUpWordCount'),
-      timeUpParaCount: document.getElementById('timeUpParaCount'),
-      timeUpLevel: document.getElementById('timeUpLevel'),
-      timeUpDuration: document.getElementById('timeUpDuration'),
-      timeUpLexis: document.getElementById('timeUpLexis'),
-      timeUpEvaluateBtn: document.getElementById('timeUpEvaluateBtn'),
-      timeUpContinueBtn: document.getElementById('timeUpContinueBtn')
+      aiPromptTextarea: document.getElementById('aiPromptTextarea')
     };
   }
 
@@ -16049,50 +15992,6 @@ class FluentEdgeApp {
         this.handleQuickCopyAiPrompt(true);
       });
     }
-
-    // Stage 2: Test Mode & Exam Timer events
-    if (this.dom.testModeToggleBtn) {
-      this.dom.testModeToggleBtn.addEventListener('click', () => this.toggleTestMode());
-    }
-    if (this.dom.enableTestModeBtn) {
-      this.dom.enableTestModeBtn.addEventListener('click', () => this.toggleTestMode(true));
-    }
-    if (this.dom.timerDismissBtn) {
-      this.dom.timerDismissBtn.addEventListener('click', () => this.toggleTestMode(false));
-    }
-    if (this.dom.timerTogglePlayBtn) {
-      this.dom.timerTogglePlayBtn.addEventListener('click', () => this.toggleTimerPlay());
-    }
-    if (this.dom.timerResetBtn) {
-      this.dom.timerResetBtn.addEventListener('click', () => this.resetTimer());
-    }
-    if (this.dom.timerSoundToggleBtn) {
-      this.dom.timerSoundToggleBtn.addEventListener('click', () => this.toggleTimerSound());
-    }
-    if (this.dom.timerPresetBtns) {
-      this.dom.timerPresetBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const mins = parseInt(btn.dataset.minutes, 10);
-          if (mins) this.setTimerDuration(mins);
-        });
-      });
-    }
-
-    // Time's Up Exam Modal events
-    if (this.dom.timeUpEvaluateBtn) {
-      this.dom.timeUpEvaluateBtn.addEventListener('click', () => {
-        this.closeTimeUpModal();
-        this.triggerEvaluation();
-      });
-    }
-    if (this.dom.timeUpContinueBtn) {
-      this.dom.timeUpContinueBtn.addEventListener('click', () => this.closeTimeUpModal());
-    }
-    if (this.dom.timeUpModalBackdrop) {
-      this.dom.timeUpModalBackdrop.addEventListener('click', (e) => {
-        if (e.target === this.dom.timeUpModalBackdrop) this.closeTimeUpModal();
-      });
-    }
   }
 
   bindHotkeys() {
@@ -16128,24 +16027,11 @@ class FluentEdgeApp {
         }
       }
 
-      const timeUpOpen = this.dom.timeUpModalBackdrop && (
-        this.dom.timeUpModalBackdrop.classList.contains('open') ||
-        this.dom.timeUpModalBackdrop.style.display === 'flex'
-      );
-
-      // Escape / Enter when Time's Up modal is open
-      if (timeUpOpen && (e.key === 'Escape' || e.key === 'Enter')) {
-        e.preventDefault();
-        this.closeTimeUpModal();
-        return;
-      }
-
       const modalOpen = (this.dom.evalModalBackdrop.classList.contains('visible') ||
                         this.dom.evalModalBackdrop.style.display === 'flex' ||
                         this.dom.evalModalBackdrop.classList.contains('open')) ||
                         Boolean(reqAlertOpen) ||
-                        Boolean(aiPromptOpen) ||
-                        Boolean(timeUpOpen);
+                        Boolean(aiPromptOpen);
       const inTextField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
 
       // Alt+1  →  Stage 1 (Topic & Lexis Educational Guide)
@@ -16180,13 +16066,6 @@ class FluentEdgeApp {
       if (e.altKey && (e.key === 'p' || e.key === 'P') && !modalOpen) {
         e.preventDefault();
         this.handleQuickCopyAiPrompt();
-        return;
-      }
-
-      // Alt+C  →  Toggle Test Mode with Countdown (Exam Simulation)
-      if (e.altKey && (e.key === 'c' || e.key === 'C') && !modalOpen) {
-        e.preventDefault();
-        this.toggleTestMode();
         return;
       }
 
@@ -16630,12 +16509,6 @@ class FluentEdgeApp {
 
   handleEditorInput() {
     const text = this.dom.essayInput ? this.dom.essayInput.value : "";
-
-    // Auto-start exam timer on candidate's first keystroke if Test Mode is enabled and timer is fresh
-    if (this.testModeEnabled && !this.timerIsRunning && this.timerRemainingSeconds === this.timerTotalSeconds && text.trim().length > 0) {
-      this.startTimer();
-    }
-
     const metrics = analyzeQuickMetrics(text, this.activeVocabulary, this.targetLevel);
 
     // Live word and paragraph count
@@ -16856,345 +16729,7 @@ class FluentEdgeApp {
       }
     }
     this.dom.essayInput.value = "";
-    if (this.testModeEnabled) {
-      this.resetTimer();
-    }
     this.handleEditorInput();
-  }
-
-  // ==========================================
-  // STAGE 2: TEST MODE & COUNTDOWN TIMER
-  // ==========================================
-
-  initTimer() {
-    this.updateTestModeUI();
-    this.renderTimerDisplay();
-    this.updateTimerPresetButtons();
-    this.updateTimerSoundIcon();
-  }
-
-  toggleTestMode(forceState = null) {
-    if (forceState !== null) {
-      this.testModeEnabled = Boolean(forceState);
-    } else {
-      this.testModeEnabled = !this.testModeEnabled;
-    }
-
-    try {
-      localStorage.setItem('fluentedge_test_mode', this.testModeEnabled ? 'true' : 'false');
-    } catch (e) {}
-
-    this.updateTestModeUI();
-
-    if (this.testModeEnabled) {
-      this.showToast(`Test Mode Activated (${this.testDurationMinutes}-minute exam countdown)`, 'success');
-      if (this.dom.stage2TimerBar && this.currentStage === 2) {
-        this.dom.stage2TimerBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    } else {
-      this.pauseTimer();
-      this.showToast('Test Mode Deactivated (Untimed Practice)', 'info');
-    }
-  }
-
-  updateTestModeUI() {
-    const isEnabled = this.testModeEnabled;
-
-    if (this.dom.testModeToggleBtn) {
-      this.dom.testModeToggleBtn.classList.toggle('active', isEnabled);
-      this.dom.testModeToggleBtn.setAttribute('aria-pressed', isEnabled ? 'true' : 'false');
-    }
-
-    if (this.dom.testModeStatusBadge) {
-      this.dom.testModeStatusBadge.textContent = isEnabled ? 'ON' : 'OFF';
-      this.dom.testModeStatusBadge.className = `test-mode-status-badge ${isEnabled ? 'on' : 'off'}`;
-    }
-
-    if (this.dom.stage2TimerBar) {
-      this.dom.stage2TimerBar.setAttribute('data-state', isEnabled ? 'active' : 'inactive');
-      this.dom.stage2TimerBar.classList.toggle('active', isEnabled);
-    }
-
-    if (this.dom.timerBarInactive) {
-      this.dom.timerBarInactive.style.display = isEnabled ? 'none' : 'flex';
-    }
-
-    if (this.dom.timerBarActive) {
-      this.dom.timerBarActive.style.display = isEnabled ? 'flex' : 'none';
-    }
-  }
-
-  setTimerDuration(minutes) {
-    if (![15, 30, 40, 45].includes(minutes)) return;
-
-    if (this.timerIsRunning) {
-      if (!confirm(`Timer is currently running. Switch duration to ${minutes} minutes and reset the clock?`)) {
-        return;
-      }
-    }
-
-    this.pauseTimer();
-    this.testDurationMinutes = minutes;
-    this.timerTotalSeconds = minutes * 60;
-    this.timerRemainingSeconds = this.timerTotalSeconds;
-    this.timerWarningPlayed = false;
-    this.timerHasExpired = false;
-
-    try {
-      localStorage.setItem('fluentedge_test_duration', minutes.toString());
-    } catch (e) {}
-
-    this.updateTimerPresetButtons();
-    this.renderTimerDisplay();
-    this.showToast(`Exam timer set to ${minutes} minutes`, 'info');
-  }
-
-  updateTimerPresetButtons() {
-    if (!this.dom.timerPresetBtns) return;
-    this.dom.timerPresetBtns.forEach(btn => {
-      const mins = parseInt(btn.dataset.minutes, 10);
-      btn.classList.toggle('active', mins === this.testDurationMinutes);
-    });
-  }
-
-  toggleTimerPlay() {
-    if (this.timerIsRunning) {
-      this.pauseTimer();
-    } else {
-      this.startTimer();
-    }
-  }
-
-  startTimer() {
-    if (this.timerIsRunning) return;
-    if (this.timerRemainingSeconds <= 0) {
-      this.resetTimer();
-    }
-
-    this.timerIsRunning = true;
-    this.updateTimerPlayButtonState();
-
-    if (this.timerInterval) clearInterval(this.timerInterval);
-    this.timerInterval = setInterval(() => this.tickTimer(), 1000);
-
-    this.renderTimerDisplay();
-  }
-
-  pauseTimer() {
-    if (!this.timerIsRunning) return;
-    this.timerIsRunning = false;
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-      this.timerInterval = null;
-    }
-    this.updateTimerPlayButtonState();
-    this.renderTimerDisplay();
-  }
-
-  resetTimer() {
-    this.pauseTimer();
-    this.timerRemainingSeconds = this.timerTotalSeconds;
-    this.timerWarningPlayed = false;
-    this.timerHasExpired = false;
-    this.renderTimerDisplay();
-  }
-
-  tickTimer() {
-    if (!this.timerIsRunning) return;
-
-    this.timerRemainingSeconds--;
-
-    // 5-minute warning sound & state
-    if (this.timerRemainingSeconds === 300 && !this.timerWarningPlayed) {
-      this.timerWarningPlayed = true;
-      this.playTimerChime('warning');
-      this.showToast("⏱ 5 minutes remaining in your exam session!", 'warning');
-    }
-
-    // Time expired
-    if (this.timerRemainingSeconds <= 0) {
-      this.timerRemainingSeconds = 0;
-      this.pauseTimer();
-      this.timerHasExpired = true;
-      this.playTimerChime('finish');
-      this.renderTimerDisplay();
-      this.openTimeUpModal();
-      return;
-    }
-
-    this.renderTimerDisplay();
-  }
-
-  formatTime(totalSeconds) {
-    const mins = Math.floor(Math.max(0, totalSeconds) / 60);
-    const secs = Math.max(0, totalSeconds) % 60;
-    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-  }
-
-  renderTimerDisplay() {
-    if (this.dom.timerCountdownDisplay) {
-      this.dom.timerCountdownDisplay.textContent = this.formatTime(this.timerRemainingSeconds);
-    }
-
-    // Progress bar fill (from 100% down to 0%)
-    if (this.dom.timerProgressBar) {
-      const pct = this.timerTotalSeconds > 0 ? (this.timerRemainingSeconds / this.timerTotalSeconds) * 100 : 0;
-      this.dom.timerProgressBar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
-    }
-
-    // State classes on stage2TimerBar, pulse dot, and tag
-    const bar = this.dom.stage2TimerBar;
-    const dot = this.dom.timerPulseDot;
-    const tag = this.dom.timerStateTag;
-
-    if (bar) {
-      bar.classList.remove('warning', 'critical');
-      if (this.timerRemainingSeconds <= 60 && this.timerRemainingSeconds > 0) {
-        bar.classList.add('critical');
-      } else if (this.timerRemainingSeconds <= 300 && this.timerRemainingSeconds > 0) {
-        bar.classList.add('warning');
-      }
-    }
-
-    if (dot) {
-      dot.className = 'timer-pulse-dot';
-      if (this.timerHasExpired || this.timerRemainingSeconds <= 0) {
-        dot.classList.add('critical');
-      } else if (this.timerRemainingSeconds <= 60 && this.timerIsRunning) {
-        dot.classList.add('critical');
-      } else if (this.timerRemainingSeconds <= 300 && this.timerIsRunning) {
-        dot.classList.add('warning');
-      } else if (this.timerIsRunning) {
-        dot.classList.add('running');
-      }
-    }
-
-    if (tag) {
-      tag.className = 'timer-state-tag';
-      if (this.timerHasExpired || this.timerRemainingSeconds <= 0) {
-        tag.textContent = 'Expired';
-        tag.classList.add('expired');
-      } else if (this.timerIsRunning) {
-        tag.textContent = 'Running';
-        tag.classList.add('running');
-      } else if (this.timerRemainingSeconds < this.timerTotalSeconds) {
-        tag.textContent = 'Paused';
-        tag.classList.add('paused');
-      } else {
-        tag.textContent = 'Ready';
-        tag.classList.add('ready');
-      }
-    }
-  }
-
-  updateTimerPlayButtonState() {
-    if (!this.dom.timerPlayBtnLabel || !this.dom.timerPlayIcon) return;
-
-    if (this.timerIsRunning) {
-      this.dom.timerPlayBtnLabel.textContent = 'Pause';
-      this.dom.timerPlayIcon.innerHTML = `
-        <rect x="5" y="4" width="4" height="16" rx="1" fill="currentColor"></rect>
-        <rect x="15" y="4" width="4" height="16" rx="1" fill="currentColor"></rect>
-      `;
-    } else {
-      this.dom.timerPlayBtnLabel.textContent = (this.timerRemainingSeconds < this.timerTotalSeconds && this.timerRemainingSeconds > 0) ? 'Resume' : 'Start';
-      this.dom.timerPlayIcon.innerHTML = `
-        <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon>
-      `;
-    }
-  }
-
-  toggleTimerSound() {
-    this.timerSoundMuted = !this.timerSoundMuted;
-    try {
-      localStorage.setItem('fluentedge_timer_muted', this.timerSoundMuted ? 'true' : 'false');
-    } catch (e) {}
-    this.updateTimerSoundIcon();
-    this.showToast(this.timerSoundMuted ? "Timer audio chime muted" : "Timer audio chime enabled", 'info');
-  }
-
-  updateTimerSoundIcon() {
-    if (!this.dom.timerSoundToggleBtn || !this.dom.timerSoundIcon) return;
-    this.dom.timerSoundToggleBtn.classList.toggle('muted', this.timerSoundMuted);
-    if (this.timerSoundMuted) {
-      this.dom.timerSoundIcon.innerHTML = `
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-        <line x1="23" y1="9" x2="17" y2="15"></line>
-        <line x1="17" y1="9" x2="23" y2="15"></line>
-      `;
-      this.dom.timerSoundToggleBtn.title = "Unmute timer alert chime";
-    } else {
-      this.dom.timerSoundIcon.innerHTML = `
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-      `;
-      this.dom.timerSoundToggleBtn.title = "Mute timer alert chime";
-    }
-  }
-
-  playTimerChime(type = 'finish') {
-    if (this.timerSoundMuted) return;
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      if (ctx.state === 'suspended') ctx.resume();
-
-      if (type === 'warning') {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(659.25, ctx.currentTime); // E5
-        gain.gain.setValueAtTime(0.12, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.8);
-      } else {
-        const notes = [587.33, 880]; // D5, A5
-        notes.forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.15);
-          gain.gain.setValueAtTime(0.15, ctx.currentTime + idx * 0.15);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.15 + 1.2);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + idx * 0.15);
-          osc.stop(ctx.currentTime + idx * 0.15 + 1.2);
-        });
-      }
-    } catch (err) {
-      console.warn("Timer Web Audio API chime could not play:", err);
-    }
-  }
-
-  openTimeUpModal() {
-    if (!this.dom.timeUpModalBackdrop) return;
-    const text = this.dom.essayInput ? this.dom.essayInput.value.trim() : '';
-    const words = text ? text.split(/\s+/).filter(Boolean) : [];
-    const metrics = analyzeQuickMetrics(text, this.activeVocabulary, this.targetLevel);
-
-    if (this.dom.timeUpWordCount) this.dom.timeUpWordCount.textContent = `${words.length} words`;
-    if (this.dom.timeUpParaCount) this.dom.timeUpParaCount.textContent = `${metrics.paragraphCount} paragraphs`;
-    if (this.dom.timeUpLevel) this.dom.timeUpLevel.textContent = this.targetLevel === 'C2' ? 'C2 Proficiency' : 'C1 Advanced';
-    if (this.dom.timeUpDuration) this.dom.timeUpDuration.textContent = `${this.testDurationMinutes} minutes`;
-    if (this.dom.timeUpLexis) this.dom.timeUpLexis.textContent = `${metrics.targetWordsUsed}/${metrics.targetWordsTotal} words`;
-
-    this.dom.timeUpModalBackdrop.style.display = 'flex';
-    void this.dom.timeUpModalBackdrop.offsetWidth;
-    this.dom.timeUpModalBackdrop.classList.add('open');
-  }
-
-  closeTimeUpModal() {
-    if (!this.dom.timeUpModalBackdrop) return;
-    this.dom.timeUpModalBackdrop.classList.remove('open');
-    setTimeout(() => {
-      this.dom.timeUpModalBackdrop.style.display = 'none';
-    }, 250);
   }
 
   // ==========================================
@@ -17672,11 +17207,6 @@ class FluentEdgeApp {
       this.dom.gatekeeperActionBtn.textContent = "Practice Speaking Anyway (Override)";
     }
 
-    // Pause timer upon successful evaluation submission
-    if (this.testModeEnabled) {
-      this.pauseTimer();
-    }
-
     // Open Modal
     this.dom.evalModalBackdrop.classList.add('open');
 
@@ -17691,9 +17221,6 @@ class FluentEdgeApp {
       percentage: evalResult.percentage,
       band: evalResult.cefr.band,
       meetsThreshold: evalResult.meetsThreshold,
-      isTimedExam: Boolean(this.testModeEnabled),
-      testDurationMinutes: this.testModeEnabled ? this.testDurationMinutes : null,
-      testTimeElapsed: this.testModeEnabled ? this.formatTime(this.timerTotalSeconds - this.timerRemainingSeconds) : null,
       date: new Date().toISOString()
     });
   }
@@ -17902,7 +17429,7 @@ class FluentEdgeApp {
           <div class="history-item-title">${item.topicTitle}</div>
           <div class="history-item-scores">
             ${item.type === 'writing' 
-              ? `<span>Score: ${item.score}/20 (${item.percentage}%)</span> • <span>${item.band}</span>${item.isTimedExam ? ` • <span style="color: var(--gold-light); font-weight: 600;">⏱ ${item.testDurationMinutes}m Exam (${item.testTimeElapsed} used)</span>` : ''}`
+              ? `<span>Score: ${item.score}/20 (${item.percentage}%)</span> • <span>${item.band}</span>`
               : `<span>Accuracy: ${item.accuracy}%</span> • <span>${item.wpm} WPM</span>`
             }
           </div>

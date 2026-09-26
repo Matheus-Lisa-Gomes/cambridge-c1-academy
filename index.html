@@ -807,20 +807,8 @@
                   <span id="targetParaCountHint" class="metric-target-hint">(3–4 target)</span>
                 </div>
               </div>
-              <div class="editor-toolbar-actions">
-                <div id="lengthGuidanceBadge" class="radar-badge">
-                  Awaiting input
-                </div>
-
-                <button type="button" id="testModeToggleBtn" class="test-mode-toggle-btn" title="Toggle Timed Exam Test Mode (Alt+C)" aria-pressed="false">
-                  <svg class="test-mode-btn-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                  <span>Test Mode:</span>
-                  <strong id="testModeStatusBadge" class="test-mode-status-badge off">OFF</strong>
-                  <kbd class="hotkey-badge">Alt+C</kbd>
-                </button>
+              <div id="lengthGuidanceBadge" class="radar-badge">
+                Awaiting input
               </div>
             </div>
 
@@ -832,90 +820,6 @@
               </div>
               <div class="radar-badges-row" id="radarBadgesRow">
                 <span class="radar-badge-empty">Write complex structures (e.g. Negative Inversion "Seldom has...", Cleft "What remains...", Passive Reporting "It is widely contended...") to activate radar. Minimum 4 required for C1 (6 for C2).</span>
-              </div>
-            </div>
-
-            <!-- Dedicated Test Mode Countdown Bar (Directly Above Writing Box) -->
-            <div class="stage2-timer-bar" id="stage2TimerBar" data-state="inactive">
-              <!-- Inactive State -->
-              <div class="timer-bar-inactive" id="timerBarInactive">
-                <div class="timer-inactive-prompt">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                  <span>Practice under timed examination conditions:</span>
-                  <strong>Cambridge 45-Min Standard Simulation</strong>
-                </div>
-                <button type="button" id="enableTestModeBtn" class="btn btn-secondary btn-sm timer-enable-btn" title="Enable Test Mode with Countdown (Alt+C)">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
-                  <span>Enable Test Mode</span>
-                  <kbd class="hotkey-badge">Alt+C</kbd>
-                </button>
-              </div>
-
-              <!-- Active State -->
-              <div class="timer-bar-active" id="timerBarActive" style="display: none;">
-                <div class="timer-left-group">
-                  <span class="timer-pulse-dot" id="timerPulseDot"></span>
-                  <div class="timer-badge">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <span>EXAM TIMER</span>
-                  </div>
-                  <div class="timer-countdown-display" id="timerCountdownDisplay" aria-live="polite">45:00</div>
-                  <span class="timer-state-tag ready" id="timerStateTag">Ready</span>
-                </div>
-
-                <div class="timer-center-group">
-                  <span class="timer-presets-label">Duration:</span>
-                  <div class="timer-presets-row" id="timerPresetsRow" role="group" aria-label="Duration Presets">
-                    <button type="button" class="timer-preset-btn active" data-minutes="45" title="45 Minutes (Cambridge C1/C2 Standard)">45m</button>
-                    <button type="button" class="timer-preset-btn" data-minutes="40" title="40 Minutes">40m</button>
-                    <button type="button" class="timer-preset-btn" data-minutes="30" title="30 Minutes">30m</button>
-                    <button type="button" class="timer-preset-btn" data-minutes="15" title="15 Minutes">15m</button>
-                  </div>
-                </div>
-
-                <div class="timer-right-group">
-                  <button type="button" id="timerTogglePlayBtn" class="btn btn-primary btn-sm timer-action-btn" title="Start or Pause Timer (Space when focused)">
-                    <svg id="timerPlayIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    <span id="timerPlayBtnLabel">Start</span>
-                  </button>
-
-                  <button type="button" id="timerResetBtn" class="btn btn-secondary btn-sm timer-action-btn" title="Reset timer to chosen duration">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                      <path d="M3 3v5h5"></path>
-                    </svg>
-                    <span>Reset</span>
-                  </button>
-
-                  <button type="button" id="timerSoundToggleBtn" class="btn btn-secondary btn-sm timer-icon-btn" title="Toggle audio chime on expiry" aria-label="Toggle audio chime">
-                    <svg id="timerSoundIcon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-                    </svg>
-                  </button>
-
-                  <button type="button" id="timerDismissBtn" class="btn btn-secondary btn-sm timer-icon-btn" title="Exit Test Mode (Alt+C)" aria-label="Exit Test Mode">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                </div>
-
-                <div class="timer-progress-track">
-                  <div class="timer-progress-bar" id="timerProgressBar" style="width: 100%;"></div>
-                </div>
               </div>
             </div>
 
@@ -1271,48 +1175,6 @@
           </svg>
           <span id="primaryCopyBtnLabel">Copy Prompt to Clipboard</span>
           <kbd class="hotkey-badge">Enter</kbd>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Timed Exam Time's Up Modal -->
-  <div class="modal-backdrop" id="timeUpModalBackdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="timeUpTitle">
-    <div class="modal-card time-up-card">
-      <div class="time-up-icon-wrap">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-      </div>
-      <h3 class="time-up-title" id="timeUpTitle">Exam Time Has Expired!</h3>
-      <p class="time-up-desc" id="timeUpDesc">
-        Your allocated exam countdown has ended. You have composed <strong id="timeUpWordCount" style="color: var(--gold-light);">0 words</strong> across <strong id="timeUpParaCount" style="color: var(--gold-light);">0 paragraphs</strong>.
-      </p>
-      <div class="time-up-details" id="timeUpDetails">
-        <div class="time-up-detail-pill">
-          <span>Target Standard:</span>
-          <strong id="timeUpLevel">C1 Advanced</strong>
-        </div>
-        <div class="time-up-detail-pill">
-          <span>Allocated Time:</span>
-          <strong id="timeUpDuration">45 minutes</strong>
-        </div>
-        <div class="time-up-detail-pill">
-          <span>Compulsory Lexis:</span>
-          <strong id="timeUpLexis">0/10 words</strong>
-        </div>
-      </div>
-      <div class="time-up-actions">
-        <button type="button" id="timeUpEvaluateBtn" class="btn btn-primary" style="padding: 12px 22px;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-          </svg>
-          <span>Evaluate Essay (Ctrl+Enter)</span>
-        </button>
-        <button type="button" id="timeUpContinueBtn" class="btn btn-secondary" style="padding: 12px 18px;">
-          <span>Continue Writing (Overtime)</span>
         </button>
       </div>
     </div>

@@ -139,6 +139,7 @@ const promptC2HasC2Standard = promptC2.includes("CEFR C2 Proficiency (Mastery)")
 const promptHasAllWords = customVocab.every(v => promptC1.includes(v.headword || v.word));
 const promptHasSyntaxRules = promptC1.includes("Negative / Limiting Inversion") && promptC1.includes("Cleft / Focus Structure");
 const promptHasOutputRule = promptC1.includes("Output ONLY the raw essay text");
+const promptHasAdherenceGate = promptC1.includes("OBLIGATORY TOPIC ADHERENCE") && promptC1.includes("Root Subject");
 
 console.log("C1 Prompt contains topic title:", promptC1HasTitle);
 console.log("C1 Prompt contains C1 word range (220-260):", promptC1HasC1Standard);
@@ -146,6 +147,7 @@ console.log("C2 Prompt contains C2 word range (280-320):", promptC2HasC2Standard
 console.log("Prompt embeds all 10 compulsory words:", promptHasAllWords);
 console.log("Prompt includes syntax radar requirements:", promptHasSyntaxRules);
 console.log("Prompt specifies clean raw output:", promptHasOutputRule);
+console.log("Prompt specifies Obligatory Topic Adherence gate:", promptHasAdherenceGate);
 
 console.log("\n=== TEST 8: Tree Topic Architecture (Main Subject + 2 Sub-Themes) ===");
 const randomTreeTopic = generateRandomTreeTopic('C1');
@@ -179,7 +181,7 @@ console.log("AI Prompt embeds Directive:", treePromptIncludesDirective);
 
 const treeTopicTestPassed = treeSubjectsValid && treeSubThemesValid && topicHasTreeProps && treePromptIncludesSubject && treePromptIncludesDirective;
 
-const aiPromptTestPassed = promptC1HasTitle && promptC1HasC1Standard && promptC2HasC2Standard && promptHasAllWords && promptHasSyntaxRules && promptHasOutputRule;
+const aiPromptTestPassed = promptC1HasTitle && promptC1HasC1Standard && promptC2HasC2Standard && promptHasAllWords && promptHasSyntaxRules && promptHasOutputRule && promptHasAdherenceGate;
 
 const lexisGuardPassed = isPartialBlocked && 
                          missingWordsPartial.length === 1 && 

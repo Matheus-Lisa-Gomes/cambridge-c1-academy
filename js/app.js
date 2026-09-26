@@ -183,6 +183,7 @@ class FluentEdgeApp {
       primaryCopyBtnLabel: document.getElementById('primaryCopyBtnLabel'),
       aiPromptLevelBadge: document.getElementById('aiPromptLevelBadge'),
       aiPromptWordTargetBadge: document.getElementById('aiPromptWordTargetBadge'),
+      aiPromptFocusBadge: document.getElementById('aiPromptFocusBadge'),
       aiPromptVocabChips: document.getElementById('aiPromptVocabChips'),
       aiPromptVocabCount: document.getElementById('aiPromptVocabCount'),
       aiPromptTextarea: document.getElementById('aiPromptTextarea')
@@ -1786,6 +1787,23 @@ class FluentEdgeApp {
     }
     if (this.dom.aiPromptWordTargetBadge) {
       this.dom.aiPromptWordTargetBadge.textContent = isC2 ? "280–320 Words Target" : "220–260 Words Target";
+    }
+    if (this.dom.aiPromptFocusBadge) {
+      if (this.currentTopic) {
+        const root = this.currentTopic.rootSubject || (this.currentTopic.mainSubject ? this.currentTopic.mainSubject.name : '') || this.currentTopic.category || '';
+        const s1 = this.currentTopic.subTheme1 ? (this.currentTopic.subTheme1.name || this.currentTopic.subTheme1) : '';
+        const s2 = this.currentTopic.subTheme2 ? (this.currentTopic.subTheme2.name || this.currentTopic.subTheme2) : '';
+        const focusText = (s1 && s2) ? `${root} • ${s1} & ${s2}` : root;
+        if (focusText) {
+          this.dom.aiPromptFocusBadge.textContent = `🎯 ${focusText}`;
+          this.dom.aiPromptFocusBadge.title = `Obligatory Topic Focus: ${focusText}`;
+          this.dom.aiPromptFocusBadge.style.display = 'inline-flex';
+        } else {
+          this.dom.aiPromptFocusBadge.style.display = 'none';
+        }
+      } else {
+        this.dom.aiPromptFocusBadge.style.display = 'none';
+      }
     }
     if (this.dom.aiPromptVocabCount) {
       this.dom.aiPromptVocabCount.textContent = `${this.activeVocabulary.length} items`;

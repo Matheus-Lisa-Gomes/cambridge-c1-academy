@@ -489,69 +489,122 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVoca
 
 /**
  * Generates an optimized prompt for external LLMs (ChatGPT, Claude, Gemini, etc.)
- * to craft an essay adhering to FluentEdge's C1/C2 standards and incorporating
- * all compulsory target lexis items.
+ * to craft an authentic essay strictly conforming to FluentEdge's CEFR C1/C2 standards,
+ * obligatory tree topic adherence (Root Subject + 2 Sub-Themes), all 10 compulsory target lexis,
+ * and minimum syntactic radar complexity.
  */
 export function generateAiEssayPrompt(topic, targetVocabulary = [], targetLevel = 'C1') {
   const isC2 = targetLevel === 'C2';
   const levelStandard = isC2 ? 'CEFR C2 Proficiency (Mastery)' : 'CEFR C1 Advanced';
   const minWords = isC2 ? 280 : 220;
   const maxWords = isC2 ? 320 : 260;
+  const minStructures = isC2 ? 6 : 4;
   const topicTitle = topic ? topic.title : 'Contemporary Issues & Ethics';
   const topicCategory = topic ? topic.category : 'General Academic';
   const topicType = topic ? topic.type : (isC2 ? 'C2 Proficiency Discursive Essay' : 'C1/C2 Academic Essay');
-  const topicDirective = (topic && topic.directive) ? `\n- Prompt Directive: "${topic.directive}"` : '';
-  const treeDetails = (topic && topic.mainSubject)
-    ? `\n- Root Subject: ${topic.mainSubject.name}\n- Sub-Themes: ${topic.subTheme1?.name || ''} & ${topic.subTheme2?.name || ''}`
+  const topicDirective = (topic && topic.directive)
+    ? topic.directive
+    : 'Write an academic essay examining the implications of this subject for contemporary society.';
+
+  const rootSubjectName = topic?.mainSubject?.name || 'Academic Core';
+  const subTheme1Name = topic?.subTheme1?.name || 'Theme 1';
+  const subTheme2Name = topic?.subTheme2?.name || 'Theme 2';
+  const subTheme1Lens = topic?.subTheme1?.lens ? ` (Analytical Lens: "${topic.subTheme1.lens}")` : '';
+  const subTheme2Lens = topic?.subTheme2?.lens ? ` (Analytical Lens: "${topic.subTheme2.lens}")` : '';
+  const tensionInfo = topic?.tension
+    ? `\n- Core Dialectical Tension: "${topic.tension.name}" (${topic.tension.pole1} vs ${topic.tension.pole2})`
+    : '';
+  const scopeInfo = topic?.scope?.label
+    ? `\n- Societal Scope: ${topic.scope.label}${topic.scope.framing ? ` (${topic.scope.framing})` : ''}`
+    : '';
+  const stakeholdersInfo = (topic?.stakeholders && topic.stakeholders.length > 0)
+    ? `\n- Key Stakeholders to Address: ${topic.stakeholders.map(s => s.name).join(', ')}`
+    : '';
+  const complexityInfo = topic?.complexityLabel
+    ? `\n- Complexity Tier: ${topic.complexityLabel}`
+    : '';
+
+  // Specific domain and theme keywords to guarantee topic adherence
+  const subjectKws = (topic?.mainSubject?.keywords && topic.mainSubject.keywords.length > 0)
+    ? `\n    * Domain concepts to weave in: ${topic.mainSubject.keywords.slice(0, 8).join(', ')}`
+    : '';
+  const theme1Kws = (topic?.subTheme1?.keywords && topic.subTheme1.keywords.length > 0)
+    ? `\n    * Sub-theme 1 concepts: ${topic.subTheme1.keywords.slice(0, 6).join(', ')}`
+    : '';
+  const theme2Kws = (topic?.subTheme2?.keywords && topic.subTheme2.keywords.length > 0)
+    ? `\n    * Sub-theme 2 concepts: ${topic.subTheme2.keywords.slice(0, 6).join(', ')}`
     : '';
 
   const vocabItems = targetVocabulary.map((v, i) => {
     const word = v.headword || v.word || '';
     const pos = v.pos ? `[${v.pos}]` : '';
     const def = v.definition ? ` — ${v.definition}` : '';
-    const colloc = v.collocation ? ` (collocation: "${v.collocation}")` : '';
+    const colloc = v.collocation ? ` (recommended collocation: "${v.collocation}")` : '';
     return `${i + 1}. ${word} ${pos}${def}${colloc}`;
   }).join('\n');
 
   return `Write an academic essay at the ${levelStandard} standard in response to the following topic:
 
-ESSAY TOPIC:
+ESSAY TOPIC & TREE ARCHITECTURE:
 - Title: "${topicTitle}"
-- Category: ${topicCategory}
-- Genre: ${topicType}${topicDirective}${treeDetails}
+- Category: ${topicCategory}${complexityInfo}
+- Genre: ${topicType}
+- Prompt Directive: "${topicDirective}"
+- Root Subject: ${rootSubjectName}
+- Sub-Theme 1: ${subTheme1Name}${subTheme1Lens}
+- Sub-Theme 2: ${subTheme2Name}${subTheme2Lens}${tensionInfo}${scopeInfo}${stakeholdersInfo}
 
-MANDATORY CRITERIA & CONSTRAINTS:
+MANDATORY ASSESSMENT CRITERIA & CONSTRAINTS:
 
-1. STRICT LENGTH TARGET:
+1. OBLIGATORY TOPIC ADHERENCE & THEMATIC FOCUS (CRITICAL GATEKEEPER):
+   - The essay MUST directly and substantially focus upon the Root Subject (${rootSubjectName}) and synthesize BOTH Sub-Themes (${subTheme1Name} & ${subTheme2Name}) to answer the Prompt Directive.
+   - Address the dialectical tension${topic?.tension ? ` (${topic.tension.pole1} vs ${topic.tension.pole2})` : ''} within the defined scope.
+   - To satisfy the automated topic adherence validator, ensure your essay actively incorporates:
+     • Root Subject (${rootSubjectName}): at least 2 distinct domain terms/concepts${subjectKws}
+     • Sub-Theme 1 (${subTheme1Name}): thematic engagement${theme1Kws}
+     • Sub-Theme 2 (${subTheme2Name}): thematic engagement${theme2Kws}
+
+2. STRICT LENGTH TARGET:
    - The essay MUST be strictly between ${minWords} and ${maxWords} words.
-   - Do not write fewer than ${minWords} words, and do not exceed ${maxWords} words.
+   - Do not write fewer than ${minWords} words (fails minimum CEFR threshold), and do not exceed ${maxWords} words (penalized for verbosity/circumlocution). Count every word precisely.
 
-2. COMPULSORY TARGET LEXIS (10/10 REQUIRED):
-   Incorporate ALL 10 of the following target vocabulary words into the essay. Each word must be used accurately in its exact form or a natural grammatical inflection (e.g., conjugated verb, plural noun, participial form):
+3. COMPULSORY TARGET LEXIS (10/10 REQUIRED — NO OMISSIONS):
+   Incorporate ALL 10 of the following target vocabulary words into the essay. Each word must be naturally integrated into the academic argument in its exact base form or an authentic grammatical inflection (e.g., conjugated verb forms, plural nouns, comparative adjectives):
 ${vocabItems}
 
-3. SOPHISTICATED SYNTACTIC STRUCTURES:
-   Include at least ${isC2 ? 6 : 4} of the following C1/C2 grammatical structures to satisfy the obligatory ${targetLevel} syntactic complexity benchmark (minimum ${isC2 ? 6 : 4} required):
-   - Negative / Limiting Inversion (e.g. "Seldom has...", "Under no circumstances should...", "Not only is...")
-   - Cleft / Focus Structure (e.g. "What remains of paramount concern is...", "It is this systemic flaw that...")
-   - Passive Reporting Clause (e.g. "It is widely contended that...", "It is commonly maintained that...")
-   - Inverted Conditional without 'If' (e.g. "Were authorities to intervene...", "Had society recognized...")
-   - Advanced Concession / Contrast Marker (e.g. "Notwithstanding the...", "Albeit challenging,...", "Inasmuch as...")
-   - Fronted Participle Clause (e.g. "Having considered the ramifications,...", "Confronted with mounting evidence,...")
-   - Mandative Subjunctive (e.g. "It is imperative that authorities be transparent...", "vital that society remain vigilant...")
-   - Nominative Absolute Clause (e.g. "The conference having concluded, delegates departed...", "All things considered,...")
-   - Mixed Unreal Conditional (e.g. "Had regulators intervened a decade ago, contemporary democracy would not now be vulnerable...")
-   - Complex Prepositional / Formal Relative (e.g. "the ramifications of which...", "by virtue of which...", "the extent to which...")
-   - Correlative / Proportional Comparative (e.g. "The more interconnected platforms become, the greater the potential risk...")
-   - Inverted Concession with Though / As (e.g. "Arduous though it may be,...", "Compelling as the argument seems,...")
+4. SOPHISTICATED SYNTACTIC STRUCTURES (MINIMUM ${minStructures} REQUIRED):
+   Include at least ${minStructures} distinct C1/C2 grammatical structures from the list below to satisfy the obligatory ${targetLevel} syntactic complexity radar. Use the specific syntactic formulas provided so the automated analyzer detects them:
+   - Negative / Limiting Inversion (e.g. "Seldom has [subject]...", "Under no circumstances should [subject]...", "Not only did [subject]...")
+   - Cleft / Focus Structure (e.g. "What remains of paramount concern is...", "It is this systemic deficiency that...")
+   - Passive Reporting Clause (e.g. "It is widely contended that...", "It is commonly maintained that...", "It is held that...")
+   - Inverted Conditional without 'If' (e.g. "Were governments to act...", "Had authorities intervened earlier...", "Should evidence emerge...")
+   - Advanced Concession / Contrast Marker (e.g. "Notwithstanding the apparent benefits,...", "Albeit arduous,...", "Inasmuch as...")
+   - Fronted Participle Clause (e.g. "Having evaluated the empirical evidence,...", "Confronted with systemic challenges,...")
+   - Mandative Subjunctive (e.g. "It is imperative that authorities remain vigilant...", "vital that oversight be maintained...")
+   - Nominative Absolute Clause (e.g. "The regulatory deliberation having concluded, delegates issued...", "All factors considered,...")
+   - Mixed Unreal Conditional (e.g. "Had regulators intervened a decade ago, contemporary society would not now be vulnerable...")
+   - Complex Prepositional / Formal Relative (e.g. "a dilemma the ramifications of which extend globally...", "the extent to which...")
+   - Correlative / Proportional Comparative (e.g. "The more interconnected platforms become, the greater the potential systemic risk...")
+   - Inverted Concession with Though / As (e.g. "Arduous though statutory reform may be,...", "Compelling as the premise appears,...")
 
-4. FORMAL REGISTER & TONE:
-   - Maintain a formal, analytical academic register.
-   - DO NOT use informal contractions (write "do not", "cannot", "will not", "it is" — avoid "don't", "can't", "won't", "it's").
-   - DO NOT use colloquialisms or informal phrasing (avoid "a lot of", "kids", "things", "stuff").
+5. FORMAL ACADEMIC REGISTER (SCALE 2):
+   - Maintain a formal, analytical academic register throughout.
+   - ABSOLUTELY NO informal contractions (write "do not", "cannot", "will not", "it is" — avoid "don't", "can't", "won't", "it's", "doesn't").
+   - ABSOLUTELY NO colloquialisms or vague informal phrases (avoid "a lot of", "kids", "things", "stuff", "guys").
+   - Employ sophisticated cohesive transition linkers (e.g. "furthermore", "consequently", "nevertheless", "conversely", "predominantly", "inasmuch as").
 
-5. PARAGRAPH STRUCTURE:
-   - Structure the essay into 3 to 4 distinct, cohesive paragraphs: an introduction with a clear thesis, 2 balanced and critical analytical body paragraphs, and a conclusive synthesis.
+6. DISCURSIVE PARAGRAPH ARCHITECTURE:
+   ${isC2
+     ? `Structure into 4 distinct, cohesive paragraphs adhering to C2 discursive standards:
+   - Paragraph 1: Nuanced introduction contextualizing the prompt's problematized premise with an analytical thesis.
+   - Paragraph 2: Comprehensive critical evaluation of the primary argument, systemic mechanisms, and stakeholder interests.
+   - Paragraph 3: Counter-perspective or complicating dimension addressing the core tension.
+   - Paragraph 4: Decisive evaluative synthesis resolving the dilemma with forward-looking closure.`
+     : `Structure into 3 to 4 well-balanced paragraphs adhering to C1 academic essay standards:
+   - Paragraph 1: Introduction establishing topic context, scope, and clear thesis stance.
+   - Paragraph 2: Analytical development of the primary sub-theme with concrete justification.
+   - Paragraph 3: Examination of the secondary sub-theme and opposing perspective/tension.
+   - Paragraph 4: Concluding synthesis reinforcing the thesis position.`}
 
 OUTPUT INSTRUCTION:
 Output ONLY the raw essay text. Do not include a title, heading, introduction, word count notes, commentary, or markdown quotes. Begin immediately with the first sentence of the essay.`;

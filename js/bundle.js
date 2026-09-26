@@ -15628,15 +15628,12 @@ class FluentEdgeApp {
     this.handleEditorInput();
   }
 
-  rerollTopic(silent = false) {
+  rerollTopic() {
     const currentSubjectId = this.currentTopic?.mainSubject?.id || null;
     const newTopic = generateRandomTreeTopic(this.targetLevel, currentSubjectId);
     this.currentTopic = newTopic;
     if (this.dom.essayInput) this.dom.essayInput.value = "";
     this.loadTopic(newTopic);
-    if (!silent) {
-      this.showToast(`New topic drawn: ${newTopic.mainSubject?.shortName || newTopic.mainSubject?.name}`, "info");
-    }
   }
 
   renderVocabularyChips() {

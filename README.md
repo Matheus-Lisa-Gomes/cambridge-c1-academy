@@ -142,10 +142,22 @@ Submissions are scored on an authentic 20-point CEFR scale (four 5-point categor
 
 Once an essay achieves a passing score (**Band 4 / C1** or **Band 5 / C2**), Stage 3 unlocks automatically:
 
+* **Neural Speech Engine (Kokoro TTS)**:
+  * Powered by Kokoro-82M ONNX model running entirely in the browser via WebAssembly (WASM).
+  * High-fidelity, natural, human-like neural intonation and phonological precision.
+  * **Multi-Voice & Accent Selector (4 Distinct Options)**:
+    * **🇬🇧 UK English (British RP)**:
+      * ♀ **Female**: `Emma` (`bf_emma`)
+      * ♂ **Male**: `George` (`bm_george`)
+    * **🇺🇸 USA English (General American)**:
+      * ♀ **Female**: `Sarah` (`af_sarah`)
+      * ♂ **Male**: `Adam` (`am_adam`)
+  * **Header Flag Bar**: Placed prominently directly beneath the application header, featuring 2 national flag cards divided into Female and Male buttons for instantaneous switching.
+  * **Real-time Voice Preview**: Test any selected voice with an immediate phonological sample.
+  * **Seamless Dual-Engine Fallback**: Operates with browser SpeechSynthesis when offline or running under strict local `file://` sandboxes, ensuring 100% audio uptime.
 * **Synchronized Teleprompter**: Displays the written essay in large, high-legibility typography designed for oral presentation, with word-by-word tracking.
-* **Native RP Model Audio**: Browser-native SpeechSynthesis plays the full essay or individual sentences with British English inflection, rhythm, and intonation.
 * **Live Speech Recognition (Web Speech API)**:
-  * Microphone stream processes speech in real time.
+  * Microphone stream processes speech in real time with recognition language automatically synchronized to the selected accent (`en-GB` or `en-US`).
   * Word-level phonetic matching highlights spoken words in **Green** (accurate), **Amber** (minor phonetic variation), or **Red** (omitted/unclear).
 * **HTML5 Audio Visualizer**: Live waveform oscilloscope rendered on a 60fps canvas displaying microphone input dynamics.
 * **Speaking Performance Report**:

@@ -35,6 +35,7 @@ class FluentEdgeApp {
     this.bindEvents();
     this.bindHotkeys();
     this.setupSpeechEngineCallbacks();
+    this.initVoiceSelection();
     this.setTargetLevel(this.targetLevel, true);
     this.setTopicDifficulty(this.topicDifficulty, false);
     this.loadTopic(this.currentTopic);
@@ -54,6 +55,14 @@ class FluentEdgeApp {
       brandCrest: document.getElementById('brandCrest'),
       modeC1Btn: document.getElementById('modeC1Btn'),
       modeC2Btn: document.getElementById('modeC2Btn'),
+
+      // Voice & Accent Header Controls
+      headerVoiceBar: document.getElementById('headerVoiceBar'),
+      voiceFlagCards: document.querySelectorAll('.voice-flag-card'),
+      voiceGenderBtns: document.querySelectorAll('.voice-gender-btn'),
+      engineStatusDot: document.getElementById('engineStatusDot'),
+      engineStatusText: document.getElementById('engineStatusText'),
+      previewVoiceBtn: document.getElementById('previewVoiceBtn'),
 
       // Stepper
       stepIndicator1: document.getElementById('stepIndicator1'),
@@ -214,6 +223,23 @@ class FluentEdgeApp {
     const cefrSwitch = document.querySelector('.cefr-toggle-switch');
     if (cefrSwitch) {
       cefrSwitch.addEventListener('click', toggleStandard);
+    }
+
+    // Kokoro TTS Voice Selection Buttons
+    if (this.dom.voiceGenderBtns) {
+      this.dom.voiceGenderBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const voiceId = btn.getAttribute('data-voice');
+          this.selectVoice(voiceId);
+        });
+      });
+    }
+
+    // Voice Preview Button
+    if (this.dom.previewVoiceBtn) {
+      this.dom.previewVoiceBtn.addEventListener('click', () => {
+        this.previewCurrentVoice();
+      });
     }
 
     // Topic events (Draw New Tree Topic)
@@ -488,6 +514,77 @@ class FluentEdgeApp {
 
     this.speechEngine.onError = (message) => {
     };
+
+    this.speechEngine.onEngineStatusChange = ({ state, message }) => {
+      if (this.dom.engineStatusText) {
+        this.dom.engineStatusText.textContent = message;
+      }
+      if (this.dom.engineStatusDot) {
+        this.dom.engineStatusDot.className = `engine-status-dot status-${state}`;
+      }
+    };
+
+    this.speechEngine.onVoiceChange = ({ voiceId }) => {
+      this.updateVoiceUI(voiceId);
+    };
+  }
+
+  initVoiceSelection() {
+    let savedVoice = 'bf_emma';
+    try {
+      savedVoice = localStorage.getItem('fluentedge_selected_voice') || 'bf_emma';
+    } catch (e) {}
+    this.speechEngine.setVoice(savedVoice);
+    this.updateVoiceUI(savedVoice);
+    // Background load Kokoro Neural TTS model
+    this.speechEngine.initKokoro().catch(err => {
+      console.warn("Kokoro TTS background initialization note:", err);
+    });
+  }
+
+  selectVoice(voiceId) {
+    if (!voiceId) return;
+    this.speechEngine.setVoice(voiceId);
+    try {
+      localStorage.setItem('fluentedge_selected_voice', voiceId);
+    } catch (e) {}
+    this.updateVoiceUI(voiceId);
+  }
+
+  updateVoiceUI(voiceId) {
+    if (!this.dom.voiceGenderBtns) return;
+    let selectedAccent = 'uk';
+    this.dom.voiceGenderBtns.forEach(btn => {
+      const isActive = btn.getAttribute('data-voice') === voiceId;
+      btn.classList.toggle('active', isActive);
+      if (isActive) {
+        selectedAccent = btn.getAttribute('data-accent') || 'uk';
+      }
+    });
+
+    if (this.dom.voiceFlagCards) {
+      this.dom.voiceFlagCards.forEach(card => {
+        const isCardActive = card.getAttribute('data-accent') === selectedAccent;
+        card.classList.toggle('active', isCardActive);
+      });
+    }
+  }
+
+  previewCurrentVoice() {
+    const isUK = this.speechEngine.currentAccent === 'uk';
+    const previewText = isUK 
+      ? "Eloquent cadence and phonological precision in British English." 
+      : "Advanced rhetoric and articulation in American English.";
+    
+    if (this.dom.previewVoiceBtn) {
+      this.dom.previewVoiceBtn.style.opacity = '0.6';
+      this.speechEngine.speakText(previewText, 0.95, () => {
+        if (this.dom.previewVoiceBtn) this.dom.previewVoiceBtn.style.opacity = '1';
+      });
+      setTimeout(() => {
+        if (this.dom.previewVoiceBtn) this.dom.previewVoiceBtn.style.opacity = '1';
+      }, 3500);
+    }
   }
 
   setTargetLevel(level, force = false) {

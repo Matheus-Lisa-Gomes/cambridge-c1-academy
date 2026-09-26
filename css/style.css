@@ -113,7 +113,7 @@ body.theme-c2 {
   border: 1px solid var(--border-gold);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  margin-bottom: 28px;
+  margin-bottom: 12px;
 }
 
 .brand-section {
@@ -383,6 +383,290 @@ body.stage-1-active #historyDrawerBtn {
   background: rgba(223, 177, 91, 0.15);
   color: var(--gold-primary);
   border: 1px solid var(--border-gold);
+}
+
+/* ==========================================================================
+   Accent & Neural Voice Model Selector Bar (Kokoro TTS)
+   ========================================================================== */
+.header-voice-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 20px;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header-voice-bar:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.voice-bar-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.voice-bar-icon {
+  color: var(--gold-primary);
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+body.theme-c2 .voice-bar-icon {
+  color: var(--gold-light);
+}
+
+.voice-flags-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* Individual Flag Button Card (Divided into Male & Female) */
+.voice-flag-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 6px 4px 12px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.voice-flag-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.voice-flag-card.active {
+  border-color: var(--border-gold);
+  background: rgba(223, 177, 91, 0.06);
+  box-shadow: 0 0 16px rgba(223, 177, 91, 0.12);
+}
+
+body.theme-c2 .voice-flag-card.active {
+  border-color: var(--border-gold);
+  background: rgba(168, 85, 247, 0.07);
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.15);
+}
+
+.flag-badge-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  user-select: none;
+}
+
+.flag-emblem {
+  font-size: 19px;
+  line-height: 1;
+  display: inline-block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+
+.flag-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Divided Male & Female Sub-buttons */
+.voice-gender-split {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(10, 14, 26, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.voice-gender-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.voice-gender-btn .gender-sym {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+.voice-gender-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.voice-gender-btn.active {
+  background: var(--gold-gradient);
+  color: #0d1527;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 10px rgba(223, 177, 91, 0.35);
+}
+
+.voice-gender-btn.active .gender-sym {
+  opacity: 1;
+}
+
+body.theme-c2 .voice-gender-btn.active {
+  background: var(--gold-gradient);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 10px rgba(168, 85, 247, 0.4);
+}
+
+/* Engine Status Tag & Preview Button */
+.voice-engine-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.engine-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.engine-status-dot.status-ready {
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.engine-status-dot.status-initializing {
+  background: #f59e0b;
+  box-shadow: 0 0 8px #f59e0b;
+  animation: pulse-dot 1.2s infinite ease-in-out;
+}
+
+.engine-status-dot.status-synthesizing {
+  background: #a855f7;
+  box-shadow: 0 0 10px #a855f7;
+  animation: pulse-dot 0.8s infinite ease-in-out;
+}
+
+.engine-status-dot.status-fallback {
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+.engine-status-text {
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.btn-voice-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--gold-primary);
+  background: rgba(223, 177, 91, 0.12);
+  border: 1px solid rgba(223, 177, 91, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 2px;
+  transition: all 0.2s ease;
+}
+
+.btn-voice-preview:hover {
+  background: var(--gold-primary);
+  color: #0d1527;
+  box-shadow: 0 0 8px rgba(223, 177, 91, 0.4);
+}
+
+body.theme-c2 .btn-voice-preview {
+  color: var(--gold-light);
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.35);
+}
+
+body.theme-c2 .btn-voice-preview:hover {
+  background: #a855f7;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.45);
+}
+
+/* Responsive voice bar */
+@media (max-width: 900px) {
+  .header-voice-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .voice-flags-group {
+    justify-content: center;
+  }
+  .voice-engine-tag {
+    align-self: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .voice-flag-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 8px 10px;
+  }
+  .voice-gender-split {
+    width: 100%;
+    justify-content: center;
+  }
+  .voice-gender-btn {
+    flex: 1;
+    justify-content: center;
+  }
 }
 
 /* Phase Indicators */

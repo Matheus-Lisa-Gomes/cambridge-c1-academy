@@ -24,11 +24,23 @@ export class SpeechEngine {
     this.spokenTranscripts = [];
     this.currentWordIndex = 0;
 
+    // Kokoro Neural TTS & Multi-Voice Engine State
+    this.currentVoiceId = 'bf_emma'; // Default: UK English Female (Emma)
+    this.currentAccent = 'uk';       // 'uk' | 'us'
+    this.currentGender = 'female';   // 'female' | 'male'
+    this.kokoro = null;
+    this.kokoroLoading = false;
+    this.isKokoroReady = false;
+    this.currentAudio = null;
+    this.audioCache = new Map();
+
     // Callbacks
     this.onWordUpdate = null;
     this.onStateChange = null;
     this.onMetricsUpdate = null;
     this.onError = null;
+    this.onEngineStatusChange = null;
+    this.onVoiceChange = null;
 
     this.initRecognition();
   }
@@ -361,9 +373,168 @@ export class SpeechEngine {
   }
 
   /**
-   * Play Native British (RP) English Model Audio using SpeechSynthesis
+   * Set voice selection and adapt recognition language and accent/gender profile
+   * Supported: 'bf_emma' (UK Female), 'bm_george' (UK Male), 'af_sarah' (US Female), 'am_adam' (US Male)
    */
-  speakText(text, rate = 0.95, onEndCallback = null) {
+  setVoice(voiceId) {
+    if (!voiceId) return;
+    this.currentVoiceId = voiceId;
+
+    if (voiceId.startsWith('bf_')) {
+      this.currentAccent = 'uk';
+      this.currentGender = 'female';
+      if (this.recognition) this.recognition.lang = 'en-GB';
+    } else if (voiceId.startsWith('bm_')) {
+      this.currentAccent = 'uk';
+      this.currentGender = 'male';
+      if (this.recognition) this.recognition.lang = 'en-GB';
+    } else if (voiceId.startsWith('af_')) {
+      this.currentAccent = 'us';
+      this.currentGender = 'female';
+      if (this.recognition) this.recognition.lang = 'en-US';
+    } else if (voiceId.startsWith('am_')) {
+      this.currentAccent = 'us';
+      this.currentGender = 'male';
+      if (this.recognition) this.recognition.lang = 'en-US';
+    }
+
+    if (this.onVoiceChange) {
+      this.onVoiceChange({
+        voiceId: this.currentVoiceId,
+        accent: this.currentAccent,
+        gender: this.currentGender
+      });
+    }
+  }
+
+  updateEngineStatus(state, message) {
+    if (this.onEngineStatusChange) {
+      this.onEngineStatusChange({ state, message });
+    }
+  }
+
+  /**
+   * Initialize Kokoro TTS neural model asynchronously
+   */
+  async initKokoro() {
+    if (this.kokoroLoading || this.kokoro) return;
+    this.kokoroLoading = true;
+    this.updateEngineStatus('initializing', 'Kokoro: Loading...');
+
+    try {
+      let KokoroTTS = window.KokoroTTS;
+      if (!KokoroTTS) {
+        try {
+          const mod = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm');
+          KokoroTTS = mod.KokoroTTS;
+          window.KokoroTTS = KokoroTTS;
+        } catch (e1) {
+          try {
+            const mod = await import('https://esm.sh/kokoro-js@1.2.1');
+            KokoroTTS = mod.KokoroTTS;
+            window.KokoroTTS = KokoroTTS;
+          } catch (e2) {
+            console.warn("Could not import KokoroTTS module from CDNs:", e2);
+          }
+        }
+      }
+
+      if (KokoroTTS) {
+        this.updateEngineStatus('initializing', 'Fetching weights...');
+        this.kokoro = await KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', {
+          dtype: 'q8',
+          device: 'wasm'
+        });
+        this.isKokoroReady = true;
+        this.updateEngineStatus('ready', 'Kokoro Neural');
+        console.log('Kokoro TTS initialized successfully with voices: UK (Emma, George) & USA (Sarah, Adam).');
+      } else {
+        throw new Error('KokoroTTS module could not be retrieved.');
+      }
+    } catch (err) {
+      console.warn('Kokoro neural model unavailable (file:// protocol or offline). Falling back to browser speech synthesis:', err);
+      this.isKokoroReady = false;
+      this.kokoro = null;
+      this.updateEngineStatus('fallback', 'Native Speech');
+    } finally {
+      this.kokoroLoading = false;
+    }
+  }
+
+  /**
+   * Play Model Audio using Kokoro Neural TTS (with SpeechSynthesis fallback)
+   */
+  async speakText(text, rate = 0.95, onEndCallback = null) {
+    this.stopSpeakingModel();
+
+    // 1. Attempt Kokoro Neural TTS if ready
+    if (this.isKokoroReady && this.kokoro) {
+      try {
+        this.isSpeakingModel = true;
+        if (this.onStateChange) this.onStateChange({ status: 'model_speaking' });
+        this.updateEngineStatus('synthesizing', 'Synthesizing...');
+
+        // Check in-memory audio cache for fast replay
+        const cacheKey = `${this.currentVoiceId}_${rate.toFixed(2)}_${text}`;
+        let audioBlob = this.audioCache.get(cacheKey);
+
+        if (!audioBlob) {
+          const result = await this.kokoro.generate(text, {
+            voice: this.currentVoiceId,
+            speed: rate
+          });
+          audioBlob = result.toBlob();
+          // Maintain cache size
+          if (this.audioCache.size > 50) {
+            const firstKey = this.audioCache.keys().next().value;
+            this.audioCache.delete(firstKey);
+          }
+          this.audioCache.set(cacheKey, audioBlob);
+        }
+
+        // If stopped during generation, do not play
+        if (!this.isSpeakingModel) {
+          this.updateEngineStatus('ready', 'Kokoro Neural');
+          return;
+        }
+
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        this.currentAudio = audio;
+
+        audio.onended = () => {
+          this.isSpeakingModel = false;
+          URL.revokeObjectURL(audioUrl);
+          this.currentAudio = null;
+          this.updateEngineStatus('ready', 'Kokoro Neural');
+          if (onEndCallback) onEndCallback();
+          if (this.onStateChange) this.onStateChange({ status: 'idle' });
+        };
+
+        audio.onerror = (e) => {
+          console.warn("Kokoro audio playback failed, falling back to speech synthesis:", e);
+          URL.revokeObjectURL(audioUrl);
+          this.currentAudio = null;
+          this.updateEngineStatus('ready', 'Kokoro Neural');
+          this.speakTextBrowserFallback(text, rate, onEndCallback);
+        };
+
+        await audio.play();
+        return;
+      } catch (err) {
+        console.warn("Kokoro generation error, falling back to browser synthesis:", err);
+        this.updateEngineStatus('ready', 'Kokoro Neural');
+      }
+    }
+
+    // 2. Fallback to SpeechSynthesis
+    this.speakTextBrowserFallback(text, rate, onEndCallback);
+  }
+
+  /**
+   * Native Browser SpeechSynthesis Fallback matching Accent and Gender
+   */
+  speakTextBrowserFallback(text, rate = 0.95, onEndCallback = null) {
     if (!this.synth) {
       if (this.onError) this.onError("Speech synthesis is not supported in this browser.");
       return;
@@ -372,18 +543,39 @@ export class SpeechEngine {
     this.stopSpeakingModel();
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = rate; // Fluent standard pacing
+    utterance.rate = rate;
     utterance.pitch = 1.0;
 
-    // Search for high quality British English voices
     const voices = this.synth.getVoices();
-    const britishVoice = voices.find(v => 
-      (v.lang === 'en-GB' || v.lang === 'en_GB') && 
-      (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('British') || v.name.includes('Daniel') || v.name.includes('George'))
-    ) || voices.find(v => v.lang === 'en-GB' || v.lang === 'en_GB') || voices.find(v => v.lang.startsWith('en'));
+    const isUK = this.currentAccent === 'uk';
+    const isMale = this.currentGender === 'male';
 
-    if (britishVoice) {
-      utterance.voice = britishVoice;
+    let selectedVoice = null;
+
+    if (isUK) {
+      const ukVoices = voices.filter(v => v.lang === 'en-GB' || v.lang === 'en_GB' || v.lang.startsWith('en-GB'));
+      if (isMale) {
+        selectedVoice = ukVoices.find(v => /male|george|daniel|oliver|ryan|arthur/i.test(v.name)) || ukVoices[1] || ukVoices[0];
+      } else {
+        selectedVoice = ukVoices.find(v => /female|victoria|alice|hazel|susan|libby|sonia|emma/i.test(v.name)) || ukVoices[0];
+      }
+      if (!selectedVoice) selectedVoice = ukVoices[0];
+    } else {
+      const usVoices = voices.filter(v => v.lang === 'en-US' || v.lang === 'en_US' || v.lang.startsWith('en-US'));
+      if (isMale) {
+        selectedVoice = usVoices.find(v => /male|david|guy|christopher|mark|eric|alex|adam/i.test(v.name)) || usVoices[1] || usVoices[0];
+      } else {
+        selectedVoice = usVoices.find(v => /female|samantha|zira|jenny|aria|ava|sara|sarah/i.test(v.name)) || usVoices[0];
+      }
+      if (!selectedVoice) selectedVoice = usVoices[0];
+    }
+
+    if (!selectedVoice) {
+      selectedVoice = voices.find(v => v.lang && v.lang.startsWith('en'));
+    }
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
     }
 
     utterance.onstart = () => {
@@ -407,10 +599,19 @@ export class SpeechEngine {
   }
 
   stopSpeakingModel() {
-    if (this.synth && (this.synth.speaking || this.synth.pending)) {
-      this.synth.cancel();
-      this.isSpeakingModel = false;
+    if (this.currentAudio) {
+      try {
+        this.currentAudio.pause();
+        this.currentAudio.currentTime = 0;
+      } catch (e) {}
+      this.currentAudio = null;
     }
+    if (this.synth && (this.synth.speaking || this.synth.pending)) {
+      try {
+        this.synth.cancel();
+      } catch (e) {}
+    }
+    this.isSpeakingModel = false;
   }
 
   /**

@@ -17,7 +17,6 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
   - **Universal Sub-Themes (2 Randomized)**: Drawn from an extensible pool of 18 universally combinable themes (`SUB_THEMES`) such as Morality, Ethics, Society, Social Media, Addiction, Governance, Equity, Autonomy, and more.
   - **Combinatorial Prompt Synthesis**: Dynamically generates authentic Cambridge C1/C2 titles, prompt directives, and CEFR metadata (>3,800 unique topic combinations).
   - **Stage 2 Topic Card Overhaul**: Enhanced `<div class="stage2-topic-card">` with Root Subject & Sub-theme badges, structured writing directive callout, note confirming linguistic scoring is based on compulsory lexis and syntax (giving free argumentative stance), and 1-click **"Draw New Topic" (Alt+T)** reroll button alongside history navigation. *(Completed)*
-- [ ] **Test Mode with Countdown**: Create a test mode for the user to practice writing essays under timed conditions. Timer must be placed close to the writing box. 
 - [x] **AI Generated Essay Prompt Button**: Create a button that give a AI prompt copy so that the user generate the text with all the compulsory target lexis words in any LLM of his choice, in order to go straight to the reading part if they don't want to write the essay. *(Completed: added 1-click 'AI Prompt' button (Alt+P), preview modal with 10 compulsory lexis mini-chips & syntax radar rules, clipboard copy feedback, and shortcut inside the Requirement Alert modal)*
 
 ---
@@ -36,14 +35,13 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
   - Inverted concessions with though/as (*Arduous though it may be...*)
   *(Completed: expanded radar to 12 comprehensive C1/C2 patterns with real-time detection, AI prompt generation rules, and evaluator scoring integration)*
 - [x] **Obligatory Minimum Syntactic Structures (4 for C1, 6 for C2)**: Enforce a strict minimum number of complex structures required before evaluation can proceed, dynamically tracking progress in the radar box (`N/4 Structures Required`, `Need X more`, `✓ Minimum Met`), locking the evaluation button until satisfied, and providing recommended patterns and examples inside the requirement alert modal. *(Completed)*
-- [ ] **Grammar & Spelling Linter**: Optional offline/client-side spellchecker or formal register highlighter.
-- [ ] **Block Auto Correction**: Create mechanism to block any auto correction that might be produced from any source, including LLMs. The only indication should be the indication of misspellings.
+
 
 ---
 
 ## 3. Speaking Studio & Audio Engine
 
-- [ ] **Kokoro TTS**: Use Kokoro TTS for generating the audio of the model response. It is more natural and human-like. Source = https://github.com/xenova/kokoro-web
+- [x] **Kokoro TTS (In-Browser Neural Engine)**: Use Kokoro TTS for generating natural, human-like neural audio for model pronunciation. Integrated Kokoro-82M ONNX model with multi-accent support: British English (🇬🇧 UK) and American English (🇺🇸 USA), with both Male (George, Adam) and Female (Emma, Sarah) voices, 4-button header selector bar, instant preview, memory caching, and seamless browser synthesis fallback for offline/`file://` environments. *(Completed)*
 - [ ] **RP Model Audio Speed Adjustment**: Playback rate selector ($0.8\times$, $1.0\times$, $1.2\times$) for the native British English model reading.
 - [ ] **Audio Recording Playback**: Allow candidates to listen back to their recorded audio alongside the phonetic transcription to pinpoint pronunciation nuances.
 - [ ] **Microphone Input Level Meter**: Add visual gain/clipping indicators to help candidates adjust mic distance before speaking.

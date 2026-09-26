@@ -63,6 +63,68 @@
       </div>
     </header>
 
+    <!-- Accent & Neural Voice Model Selector (Kokoro TTS) -->
+    <section class="header-voice-bar" id="headerVoiceBar" aria-label="Accent and Voice Model Selection">
+      <div class="voice-bar-label">
+        <svg class="voice-bar-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+        <span class="voice-label-text">Model Voice:</span>
+      </div>
+
+      <div class="voice-flags-group">
+        <!-- 🇬🇧 UK English Flag Button Group -->
+        <div class="voice-flag-card active" id="flagCardUK" data-accent="uk">
+          <div class="flag-badge-btn" title="British English (Received Pronunciation / Oxford Cadence)">
+            <span class="flag-emblem" aria-hidden="true">🇬🇧</span>
+            <span class="flag-title">UK English</span>
+          </div>
+          <div class="voice-gender-split" role="group" aria-label="UK English Voice Selection">
+            <button type="button" class="voice-gender-btn active" id="voiceBtnUkFemale" data-voice="bf_emma" data-accent="uk" data-gender="female" aria-label="UK Female Voice (Emma)" title="British English - Female (Emma)">
+              <span class="gender-sym">♀</span>
+              <span class="gender-name">Female</span>
+            </button>
+            <button type="button" class="voice-gender-btn" id="voiceBtnUkMale" data-voice="bm_george" data-accent="uk" data-gender="male" aria-label="UK Male Voice (George)" title="British English - Male (George)">
+              <span class="gender-sym">♂</span>
+              <span class="gender-name">Male</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 🇺🇸 USA English Flag Button Group -->
+        <div class="voice-flag-card" id="flagCardUS" data-accent="us">
+          <div class="flag-badge-btn" title="American English (General American Cadence)">
+            <span class="flag-emblem" aria-hidden="true">🇺🇸</span>
+            <span class="flag-title">USA English</span>
+          </div>
+          <div class="voice-gender-split" role="group" aria-label="USA English Voice Selection">
+            <button type="button" class="voice-gender-btn" id="voiceBtnUsFemale" data-voice="af_sarah" data-accent="us" data-gender="female" aria-label="USA Female Voice (Sarah)" title="American English - Female (Sarah)">
+              <span class="gender-sym">♀</span>
+              <span class="gender-name">Female</span>
+            </button>
+            <button type="button" class="voice-gender-btn" id="voiceBtnUsMale" data-voice="am_adam" data-accent="us" data-gender="male" aria-label="USA Male Voice (Adam)" title="American English - Male (Adam)">
+              <span class="gender-sym">♂</span>
+              <span class="gender-name">Male</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Engine Status & Quick Preview -->
+      <div class="voice-engine-tag" id="voiceEngineTag" title="Kokoro Neural TTS / Browser Synthesis Status">
+        <span class="engine-status-dot" id="engineStatusDot"></span>
+        <span class="engine-status-text" id="engineStatusText">Kokoro Neural</span>
+        <button type="button" class="btn-voice-preview" id="previewVoiceBtn" title="Test Voice Preview" aria-label="Listen to Voice Preview">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span>Preview</span>
+        </button>
+      </div>
+    </section>
+
     <!-- Phase Stepper -->
     <nav class="phase-stepper" aria-label="Training stages">
       <div class="step-card active" id="stepIndicator1" role="button" tabindex="0" title="Stage 1: Training Guide &amp; Evaluation Criteria">

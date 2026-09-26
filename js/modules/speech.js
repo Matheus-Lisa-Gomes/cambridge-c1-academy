@@ -420,14 +420,8 @@ export class SpeechEngine {
       });
     }
 
-    // Immediately trigger background warmup for newly chosen voice
-    if (this.isKokoroReady && this.kokoro) {
-      this.warmupVoice(voiceId).then(() => {
-        if (this.vocabPrecacheList && this.vocabPrecacheList.length) {
-          this.precacheVocabulary(this.vocabPrecacheList, voiceId);
-        }
-      });
-    }
+    // Prefetch voice binary asynchronously in background network thread (0% CPU)
+    this.prefetchVoice(this.currentVoiceId);
   }
 
   updateEngineStatus(state, message) {
@@ -454,70 +448,23 @@ export class SpeechEngine {
   }
 
   /**
-   * Pre-warm a voice in the background to eliminate the cold-start first-click lag
+   * Pre-fetch voice embedding binary in the background via HTTP cache.
+   * Uses browser native fetch to download the 522 KB embedding file into browser HTTP cache
+   * with 0% main-thread CPU usage, ensuring zero UI lag.
    */
-  async warmupVoice(voiceId) {
-    if (!this.isKokoroReady || !this.kokoro) return;
-    if (this.warmedVoices.has(voiceId)) return;
-
-    try {
-      this.warmedVoices.add(voiceId);
-      // Run quick 1-token dot synthesis to load voice tensor into memory and compile WASM graph
-      await this.kokoro.generate(".", { voice: voiceId, speed: 1.0 });
-      console.log(`[Kokoro TTS] Voice "${voiceId}" pre-warmed successfully.`);
-    } catch (err) {
-      console.warn(`[Kokoro TTS] Warmup notice for "${voiceId}":`, err);
-    }
+  prefetchVoice(voiceId) {
+    if (!voiceId || this.warmedVoices.has(voiceId)) return;
+    this.warmedVoices.add(voiceId);
+    const url = `https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX/resolve/main/voices/${voiceId}.bin`;
+    fetch(url, { mode: 'cors', cache: 'force-cache' }).catch(() => {});
   }
 
   /**
-   * Pre-cache active vocabulary words in the background for 0ms instant click playback
+   * Vocabulary precache stub - background WASM inference disabled to prevent UI lag.
+   * Words are synthesized on-demand with 0ms in-memory cache upon first listen.
    */
   async precacheVocabulary(words, voiceId = null) {
-    if (!words || !words.length) return;
-    this.vocabPrecacheList = [...words];
-    const targetVoice = voiceId || this.currentVoiceId;
-
-    if (!this.isKokoroReady || !this.kokoro || this.engineMode !== 'neural') return;
-    if (this.isPrecaching) return;
-
-    this.isPrecaching = true;
-
-    try {
-      // Ensure voice is warm before synthesizing vocabulary
-      await this.warmupVoice(targetVoice);
-
-      for (const word of words) {
-        if (!word) continue;
-        const cleanWord = word.toLowerCase().trim();
-        const cacheKey = `${targetVoice}_0.85_${cleanWord}`;
-
-        // If already cached or voice switched, skip or break
-        if (this.audioCache.has(cacheKey)) continue;
-        if (this.currentVoiceId !== targetVoice) break;
-
-        // If candidate is listening to speech, pause precache
-        while (this.isSpeakingModel) {
-          await new Promise(r => setTimeout(r, 200));
-        }
-
-        try {
-          const result = await this.kokoro.generate(cleanWord, {
-            voice: targetVoice,
-            speed: 0.85
-          });
-          const blob = result.toBlob();
-          this.audioCache.set(cacheKey, blob);
-        } catch (e) {
-          // continue
-        }
-
-        // 80ms breather between words to ensure completely unhindered main thread
-        await new Promise(r => setTimeout(r, 80));
-      }
-    } finally {
-      this.isPrecaching = false;
-    }
+    return Promise.resolve();
   }
 
   /**
@@ -561,22 +508,11 @@ export class SpeechEngine {
         );
         console.log('Kokoro TTS initialized successfully with voices: UK (Isabella, Fable) & USA (Heart, Michael).');
 
-        // Pre-warm initial voice immediately
-        await this.warmupVoice(this.currentVoiceId);
-
-        // Pre-cache active vocabulary if available
-        if (this.vocabPrecacheList && this.vocabPrecacheList.length) {
-          this.precacheVocabulary(this.vocabPrecacheList, this.currentVoiceId);
+        // Background HTTP prefetch of voice binaries (0% CPU, sits in browser HTTP cache)
+        const allVoices = ['bf_isabella', 'bm_fable', 'af_heart', 'am_michael'];
+        for (const v of allVoices) {
+          this.prefetchVoice(v);
         }
-
-        // Background pre-warm the remaining 3 voices so voice switches are also cold-start free
-        const remainingVoices = ['bf_isabella', 'bm_fable', 'af_heart', 'am_michael'].filter(v => v !== this.currentVoiceId);
-        setTimeout(async () => {
-          for (const vId of remainingVoices) {
-            await this.warmupVoice(vId);
-            await new Promise(r => setTimeout(r, 200));
-          }
-        }, 1200);
       } else {
         throw new Error('KokoroTTS module could not be retrieved.');
       }
@@ -591,70 +527,15 @@ export class SpeechEngine {
   }
 
   /**
-   * Apply real-time acoustic shaping:
-   * - Female: Silky, feminine, mellow presence with softened sibilance
-   * - Male: Calm, deep chest resonance (175 Hz) with sub-bass rumble cutoff (85 Hz)
+   * Apply cadence adjustment:
+   * - Female: Mellow, relaxed cadence (0.97x)
+   * - Male: Calm, grounded cadence (0.94x)
    */
   applyAcousticFilter(audioElement, isMale) {
+    if (!audioElement) return;
     try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-
-      if (!this.effectsAudioContext || this.effectsAudioContext.state === 'closed') {
-        this.effectsAudioContext = new AudioCtx();
-      } else if (this.effectsAudioContext.state === 'suspended') {
-        this.effectsAudioContext.resume().catch(() => {});
-      }
-
-      const source = this.effectsAudioContext.createMediaElementSource(audioElement);
-
-      if (isMale) {
-        // Calm & Deep (without being too bassy)
-        const hp = this.effectsAudioContext.createBiquadFilter();
-        hp.type = 'highpass';
-        hp.frequency.value = 85; // Cuts sub-85Hz muddy rumble
-
-        const warmPeak = this.effectsAudioContext.createBiquadFilter();
-        warmPeak.type = 'peaking';
-        warmPeak.frequency.value = 175; // Warm, calm masculine fundamental
-        warmPeak.Q.value = 1.0;
-        warmPeak.gain.value = 2.6;
-
-        const calmSmooth = this.effectsAudioContext.createBiquadFilter();
-        calmSmooth.type = 'peaking';
-        calmSmooth.frequency.value = 3200; // Softens aggressive upper-mids
-        calmSmooth.Q.value = 1.2;
-        calmSmooth.gain.value = -1.8;
-
-        source.connect(hp);
-        hp.connect(warmPeak);
-        warmPeak.connect(calmSmooth);
-        calmSmooth.connect(this.effectsAudioContext.destination);
-      } else {
-        // Feminine & Mellow
-        const hp = this.effectsAudioContext.createBiquadFilter();
-        hp.type = 'highpass';
-        hp.frequency.value = 130; // Clean low-end
-
-        const mellowFilter = this.effectsAudioContext.createBiquadFilter();
-        mellowFilter.type = 'peaking';
-        mellowFilter.frequency.value = 2800; // Softens sharp presence
-        mellowFilter.Q.value = 1.3;
-        mellowFilter.gain.value = -1.8;
-
-        const airFilter = this.effectsAudioContext.createBiquadFilter();
-        airFilter.type = 'highshelf';
-        airFilter.frequency.value = 5800; // Velvety feminine sheen
-        airFilter.gain.value = 2.0;
-
-        source.connect(hp);
-        hp.connect(mellowFilter);
-        mellowFilter.connect(airFilter);
-        airFilter.connect(this.effectsAudioContext.destination);
-      }
-    } catch (e) {
-      // Graceful pass-through to element default output
-    }
+      audioElement.playbackRate = isMale ? 0.94 : 0.97;
+    } catch (e) {}
   }
 
   /**

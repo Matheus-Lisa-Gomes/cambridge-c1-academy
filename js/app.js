@@ -564,9 +564,6 @@ class FluentEdgeApp {
       localStorage.setItem('fluentedge_selected_voice', voiceId);
     } catch (e) {}
     this.updateVoiceUI(voiceId);
-    if (this.activeVocabulary && this.activeVocabulary.length) {
-      this.speechEngine.precacheVocabulary(this.activeVocabulary.map(v => v.headword || v.word), voiceId);
-    }
   }
 
   updateVoiceUI(voiceId) {
@@ -995,11 +992,6 @@ class FluentEdgeApp {
           );
         });
       });
-    }
-
-    // Trigger background pre-caching of the active 10 vocabulary words for 0ms instant click
-    if (this.activeVocabulary && this.activeVocabulary.length) {
-      this.speechEngine.precacheVocabulary(this.activeVocabulary.map(v => v.headword || v.word));
     }
   }
 

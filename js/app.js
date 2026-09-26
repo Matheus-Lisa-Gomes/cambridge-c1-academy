@@ -242,6 +242,17 @@ class FluentEdgeApp {
       });
     }
 
+    // Voice Engine Mode Toggle (Neural vs Fast Native)
+    const voiceEngineTag = document.getElementById('voiceEngineTag');
+    if (voiceEngineTag) {
+      voiceEngineTag.addEventListener('click', (e) => {
+        if (e.target.closest('#previewVoiceBtn')) return;
+        const newMode = this.speechEngine.toggleEngineMode();
+        const modeLabel = newMode === 'neural' ? 'Kokoro Neural' : 'Fast Native (0ms)';
+        this.showToast(`Speech Engine: ${modeLabel}`, 'info');
+      });
+    }
+
     // Topic events (Draw New Tree Topic)
     if (this.dom.rerollTopicBtn) {
       this.dom.rerollTopicBtn.addEventListener('click', () => {
@@ -549,6 +560,9 @@ class FluentEdgeApp {
       localStorage.setItem('fluentedge_selected_voice', voiceId);
     } catch (e) {}
     this.updateVoiceUI(voiceId);
+    if (this.activeVocabulary && this.activeVocabulary.length) {
+      this.speechEngine.precacheVocabulary(this.activeVocabulary.map(v => v.headword || v.word), voiceId);
+    }
   }
 
   updateVoiceUI(voiceId) {
@@ -928,12 +942,18 @@ class FluentEdgeApp {
         `;
       }).join('');
 
-      // Attach individual word TTS audio listeners
+      // Attach individual word TTS audio listeners with instant visual feedback & caching
       this.dom.vocabGrid.querySelectorAll('.vocab-audio-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const word = btn.getAttribute('data-speak');
-          this.speechEngine.speakText(word, 0.85);
+          btn.classList.add('loading');
+          this.speechEngine.speakText(
+            word,
+            0.85,
+            () => { btn.classList.remove('loading', 'playing'); },
+            () => { btn.classList.remove('loading'); btn.classList.add('playing'); }
+          );
         });
       });
     }
@@ -962,9 +982,20 @@ class FluentEdgeApp {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const word = btn.getAttribute('data-speak');
-          this.speechEngine.speakText(word, 0.85);
+          btn.classList.add('loading');
+          this.speechEngine.speakText(
+            word,
+            0.85,
+            () => { btn.classList.remove('loading', 'playing'); },
+            () => { btn.classList.remove('loading'); btn.classList.add('playing'); }
+          );
         });
       });
+    }
+
+    // Trigger background pre-caching of the active 10 vocabulary words for 0ms instant click
+    if (this.activeVocabulary && this.activeVocabulary.length) {
+      this.speechEngine.precacheVocabulary(this.activeVocabulary.map(v => v.headword || v.word));
     }
   }
 

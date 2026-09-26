@@ -28,11 +28,18 @@ export class SpeechEngine {
     this.currentVoiceId = 'bf_emma'; // Default: UK English Female (Emma)
     this.currentAccent = 'uk';       // 'uk' | 'us'
     this.currentGender = 'female';   // 'female' | 'male'
+    this.engineMode = 'neural';      // 'neural' | 'native'
+    try {
+      this.engineMode = localStorage.getItem('fluentedge_engine_mode') || 'neural';
+    } catch(e) {}
     this.kokoro = null;
     this.kokoroLoading = false;
     this.isKokoroReady = false;
     this.currentAudio = null;
     this.audioCache = new Map();
+    this.warmedVoices = new Set();
+    this.isPrecaching = false;
+    this.vocabPrecacheList = [];
 
     // Callbacks
     this.onWordUpdate = null;
@@ -405,11 +412,104 @@ export class SpeechEngine {
         gender: this.currentGender
       });
     }
+
+    // Immediately trigger background warmup for newly chosen voice
+    if (this.isKokoroReady && this.kokoro) {
+      this.warmupVoice(voiceId).then(() => {
+        if (this.vocabPrecacheList && this.vocabPrecacheList.length) {
+          this.precacheVocabulary(this.vocabPrecacheList, voiceId);
+        }
+      });
+    }
   }
 
   updateEngineStatus(state, message) {
     if (this.onEngineStatusChange) {
       this.onEngineStatusChange({ state, message });
+    }
+  }
+
+  /**
+   * Toggle between Kokoro Neural and Fast Native Speech
+   */
+  toggleEngineMode() {
+    this.engineMode = this.engineMode === 'neural' ? 'native' : 'neural';
+    try {
+      localStorage.setItem('fluentedge_engine_mode', this.engineMode);
+    } catch(e) {}
+
+    const isNeural = this.engineMode === 'neural';
+    this.updateEngineStatus(
+      isNeural ? (this.isKokoroReady ? 'ready' : 'fallback') : 'fallback',
+      isNeural ? (this.isKokoroReady ? 'Kokoro Neural' : 'Loading Neural...') : 'Fast Native (0ms)'
+    );
+    return this.engineMode;
+  }
+
+  /**
+   * Pre-warm a voice in the background to eliminate the cold-start first-click lag
+   */
+  async warmupVoice(voiceId) {
+    if (!this.isKokoroReady || !this.kokoro) return;
+    if (this.warmedVoices.has(voiceId)) return;
+
+    try {
+      this.warmedVoices.add(voiceId);
+      // Run quick 1-token dot synthesis to load voice tensor into memory and compile WASM graph
+      await this.kokoro.generate(".", { voice: voiceId, speed: 1.0 });
+      console.log(`[Kokoro TTS] Voice "${voiceId}" pre-warmed successfully.`);
+    } catch (err) {
+      console.warn(`[Kokoro TTS] Warmup notice for "${voiceId}":`, err);
+    }
+  }
+
+  /**
+   * Pre-cache active vocabulary words in the background for 0ms instant click playback
+   */
+  async precacheVocabulary(words, voiceId = null) {
+    if (!words || !words.length) return;
+    this.vocabPrecacheList = [...words];
+    const targetVoice = voiceId || this.currentVoiceId;
+
+    if (!this.isKokoroReady || !this.kokoro || this.engineMode !== 'neural') return;
+    if (this.isPrecaching) return;
+
+    this.isPrecaching = true;
+
+    try {
+      // Ensure voice is warm before synthesizing vocabulary
+      await this.warmupVoice(targetVoice);
+
+      for (const word of words) {
+        if (!word) continue;
+        const cleanWord = word.toLowerCase().trim();
+        const cacheKey = `${targetVoice}_0.85_${cleanWord}`;
+
+        // If already cached or voice switched, skip or break
+        if (this.audioCache.has(cacheKey)) continue;
+        if (this.currentVoiceId !== targetVoice) break;
+
+        // If candidate is listening to speech, pause precache
+        while (this.isSpeakingModel) {
+          await new Promise(r => setTimeout(r, 200));
+        }
+
+        try {
+          const result = await this.kokoro.generate(cleanWord, {
+            voice: targetVoice,
+            speed: 0.85
+          });
+          const blob = result.toBlob();
+          this.audioCache.set(cacheKey, blob);
+        } catch (e) {
+          // continue
+        }
+
+        // 80ms breather between words to ensure completely unhindered main thread
+        await new Promise(r => setTimeout(r, 80));
+      }
+    } finally {
+      this.isPrecaching = false;
     }
   }
 
@@ -446,8 +546,30 @@ export class SpeechEngine {
           device: 'wasm'
         });
         this.isKokoroReady = true;
-        this.updateEngineStatus('ready', 'Kokoro Neural');
+
+        const isNeural = this.engineMode === 'neural';
+        this.updateEngineStatus(
+          isNeural ? 'ready' : 'fallback',
+          isNeural ? 'Kokoro Neural' : 'Fast Native (0ms)'
+        );
         console.log('Kokoro TTS initialized successfully with voices: UK (Emma, George) & USA (Sarah, Adam).');
+
+        // Pre-warm initial voice immediately
+        await this.warmupVoice(this.currentVoiceId);
+
+        // Pre-cache active vocabulary if available
+        if (this.vocabPrecacheList && this.vocabPrecacheList.length) {
+          this.precacheVocabulary(this.vocabPrecacheList, this.currentVoiceId);
+        }
+
+        // Background pre-warm the remaining 3 voices so voice switches are also cold-start free
+        const remainingVoices = ['bf_emma', 'bm_george', 'af_sarah', 'am_adam'].filter(v => v !== this.currentVoiceId);
+        setTimeout(async () => {
+          for (const vId of remainingVoices) {
+            await this.warmupVoice(vId);
+            await new Promise(r => setTimeout(r, 200));
+          }
+        }, 1200);
       } else {
         throw new Error('KokoroTTS module could not be retrieved.');
       }
@@ -462,35 +584,73 @@ export class SpeechEngine {
   }
 
   /**
-   * Play Model Audio using Kokoro Neural TTS (with SpeechSynthesis fallback)
+   * Play Model Audio using Kokoro Neural TTS (with SpeechSynthesis fallback and instant audioCache)
    */
-  async speakText(text, rate = 0.95, onEndCallback = null) {
+  async speakText(text, rate = 0.95, onEndCallback = null, onStartCallback = null) {
     this.stopSpeakingModel();
+
+    if (!text || !text.trim()) return;
+    const cleanText = text.toLowerCase().trim();
+    const cacheKey = `${this.currentVoiceId}_${rate.toFixed(2)}_${cleanText}`;
+
+    // Fast-path: Check in-memory audio cache for 0ms instant playback
+    const cachedBlob = this.audioCache.get(cacheKey);
+    if (cachedBlob) {
+      this.isSpeakingModel = true;
+      if (onStartCallback) onStartCallback();
+      if (this.onStateChange) this.onStateChange({ status: 'model_speaking' });
+
+      const audioUrl = URL.createObjectURL(cachedBlob);
+      const audio = new Audio(audioUrl);
+      this.currentAudio = audio;
+
+      audio.onended = () => {
+        this.isSpeakingModel = false;
+        URL.revokeObjectURL(audioUrl);
+        this.currentAudio = null;
+        if (onEndCallback) onEndCallback();
+        if (this.onStateChange) this.onStateChange({ status: 'idle' });
+      };
+
+      audio.onerror = () => {
+        URL.revokeObjectURL(audioUrl);
+        this.currentAudio = null;
+        this.speakTextBrowserFallback(text, rate, onEndCallback, onStartCallback);
+      };
+
+      await audio.play().catch(e => {
+        console.warn("Audio play error, using fallback:", e);
+        this.speakTextBrowserFallback(text, rate, onEndCallback, onStartCallback);
+      });
+      return;
+    }
+
+    // If candidate opted for Fast Native, skip Kokoro synthesis
+    if (this.engineMode === 'native') {
+      this.speakTextBrowserFallback(text, rate, onEndCallback, onStartCallback);
+      return;
+    }
 
     // 1. Attempt Kokoro Neural TTS if ready
     if (this.isKokoroReady && this.kokoro) {
       try {
         this.isSpeakingModel = true;
+        if (onStartCallback) onStartCallback();
         if (this.onStateChange) this.onStateChange({ status: 'model_speaking' });
         this.updateEngineStatus('synthesizing', 'Synthesizing...');
 
-        // Check in-memory audio cache for fast replay
-        const cacheKey = `${this.currentVoiceId}_${rate.toFixed(2)}_${text}`;
-        let audioBlob = this.audioCache.get(cacheKey);
+        const result = await this.kokoro.generate(cleanText, {
+          voice: this.currentVoiceId,
+          speed: rate
+        });
+        const audioBlob = result.toBlob();
 
-        if (!audioBlob) {
-          const result = await this.kokoro.generate(text, {
-            voice: this.currentVoiceId,
-            speed: rate
-          });
-          audioBlob = result.toBlob();
-          // Maintain cache size
-          if (this.audioCache.size > 50) {
-            const firstKey = this.audioCache.keys().next().value;
-            this.audioCache.delete(firstKey);
-          }
-          this.audioCache.set(cacheKey, audioBlob);
+        // Maintain LRU cache
+        if (this.audioCache.size > 80) {
+          const firstKey = this.audioCache.keys().next().value;
+          this.audioCache.delete(firstKey);
         }
+        this.audioCache.set(cacheKey, audioBlob);
 
         // If stopped during generation, do not play
         if (!this.isSpeakingModel) {
@@ -516,7 +676,7 @@ export class SpeechEngine {
           URL.revokeObjectURL(audioUrl);
           this.currentAudio = null;
           this.updateEngineStatus('ready', 'Kokoro Neural');
-          this.speakTextBrowserFallback(text, rate, onEndCallback);
+          this.speakTextBrowserFallback(text, rate, onEndCallback, onStartCallback);
         };
 
         await audio.play();
@@ -528,13 +688,13 @@ export class SpeechEngine {
     }
 
     // 2. Fallback to SpeechSynthesis
-    this.speakTextBrowserFallback(text, rate, onEndCallback);
+    this.speakTextBrowserFallback(text, rate, onEndCallback, onStartCallback);
   }
 
   /**
    * Native Browser SpeechSynthesis Fallback matching Accent and Gender
    */
-  speakTextBrowserFallback(text, rate = 0.95, onEndCallback = null) {
+  speakTextBrowserFallback(text, rate = 0.95, onEndCallback = null, onStartCallback = null) {
     if (!this.synth) {
       if (this.onError) this.onError("Speech synthesis is not supported in this browser.");
       return;
@@ -580,6 +740,7 @@ export class SpeechEngine {
 
     utterance.onstart = () => {
       this.isSpeakingModel = true;
+      if (onStartCallback) onStartCallback();
       if (this.onStateChange) this.onStateChange({ status: 'model_speaking' });
     };
 

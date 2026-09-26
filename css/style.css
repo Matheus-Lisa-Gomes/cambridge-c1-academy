@@ -559,6 +559,18 @@ body.theme-c2 .voice-gender-btn.active {
   color: var(--text-muted);
   white-space: nowrap;
   user-select: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.voice-engine-tag:hover {
+  border-color: var(--border-gold);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.voice-engine-tag:active {
+  transform: scale(0.97);
 }
 
 .engine-status-dot {
@@ -635,6 +647,36 @@ body.theme-c2 .btn-voice-preview:hover {
   background: #a855f7;
   color: #ffffff;
   box-shadow: 0 0 8px rgba(168, 85, 247, 0.45);
+}
+
+/* Audio Button Loading & Playing Animation States */
+.vocab-audio-btn, .stage2-mini-audio-btn {
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vocab-audio-btn.loading, .stage2-mini-audio-btn.loading {
+  opacity: 0.85;
+  animation: pulse-audio-btn 0.6s infinite alternate ease-in-out;
+  color: var(--gold-primary) !important;
+  border-color: var(--border-gold) !important;
+}
+
+.vocab-audio-btn.playing, .stage2-mini-audio-btn.playing {
+  color: #0d1527 !important;
+  background: var(--gold-gradient) !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 10px rgba(223, 177, 91, 0.6);
+  transform: scale(1.12);
+}
+
+body.theme-c2 .vocab-audio-btn.playing, body.theme-c2 .stage2-mini-audio-btn.playing {
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.65);
+}
+
+@keyframes pulse-audio-btn {
+  0% { transform: scale(0.96); opacity: 0.65; }
+  100% { transform: scale(1.12); opacity: 1; }
 }
 
 /* Responsive voice bar */

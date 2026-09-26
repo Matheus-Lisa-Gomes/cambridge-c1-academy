@@ -14612,9 +14612,15 @@ function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = 'C1') {
   const isC2 = targetLevel === 'C2';
   const targetMin = isC2 ? 280 : 220;
   const targetMax = isC2 ? 320 : 260;
-  const optimalMax = isC2 ? 340 : 280;
+  const leniency = 5;
+  const allowedMinWords = targetMin - leniency; // 215 for C1, 275 for C2
+  const allowedMaxWords = targetMax + leniency; // 265 for C1, 325 for C2
+  const minParagraphs = isC2 ? 4 : 3;
+  const maxParagraphs = isC2 ? 5 : 4;
   const minRequiredStructures = isC2 ? 6 : 4;
   const structuresMet = detectedGrammar.length >= minRequiredStructures;
+  const wordsMet = wordCount >= allowedMinWords && wordCount <= allowedMaxWords;
+  const paragraphsMet = paragraphs.length >= minParagraphs && paragraphs.length <= maxParagraphs;
 
   return {
     wordCount,
@@ -14627,7 +14633,12 @@ function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = 'C1') {
     targetLevel,
     targetMin,
     targetMax,
-    optimalMax,
+    allowedMinWords,
+    allowedMaxWords,
+    minParagraphs,
+    maxParagraphs,
+    wordsMet,
+    paragraphsMet,
     minRequiredStructures,
     structuresMet
   };
@@ -14715,47 +14726,57 @@ function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVocabulary 
   let contentScore = 5.0;
   const feedbackContent = [];
 
+  const allowedMinWords = isC2 ? 275 : 215;
+  const allowedMaxWords = isC2 ? 325 : 265;
+  const minParagraphs = isC2 ? 4 : 3;
+  const maxParagraphs = isC2 ? 5 : 4;
+
+  const wordsGateMet = wordCount >= allowedMinWords && wordCount <= allowedMaxWords;
+  const paragraphsGateMet = paragraphs.length >= minParagraphs && paragraphs.length <= maxParagraphs;
+
   if (isC2) {
-    // C2 Target: 280-320 words
-    if (wordCount < 240) {
-      contentScore -= 2.0;
-      feedbackContent.push(`Essay length (${wordCount} words) is critically below C2 Proficiency requirement (280-320 words). Complex discourse demands thorough multi-angle elaboration.`);
-    } else if (wordCount < 280) {
-      contentScore -= 0.8;
-      feedbackContent.push(`Below the 280-word C2 threshold (${wordCount} words). Synthesize both prompt dimensions with deeper analytical nuance.`);
-    } else if (wordCount > 380) {
-      contentScore -= 0.5;
-      feedbackContent.push(`Essay is overly verbose (${wordCount} words). C2 examiners penalize circumlocution and lack of concision.`);
+    // C2 Target: 280-320 words (±5 leniency: 275-325 words)
+    if (wordCount < allowedMinWords) {
+      const penalty = wordCount < 240 ? 2.5 : 1.5;
+      contentScore -= penalty;
+      feedbackContent.push(`Essay length (${wordCount} words) is below the obligatory C2 range of 275–325 words (280–320 ± 5 leniency). C2 discourse demands thorough multi-angle elaboration.`);
+    } else if (wordCount > allowedMaxWords) {
+      contentScore -= 1.5;
+      feedbackContent.push(`Essay length (${wordCount} words) exceeds the obligatory C2 maximum of 325 words (280–320 ± 5 leniency). Advanced academic writing strictly penalizes circumlocution and lack of concision.`);
     } else {
-      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C2 Proficiency standards.`);
+      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to obligatory C2 standards (275–325 words).`);
     }
 
-    if (paragraphs.length < 4) {
-      contentScore -= 0.8;
-      feedbackContent.push("C2 discursive essays require a sophisticated 4-stage architecture (Introduction, Opposing Arguments, Synthesis/Evaluation, and Conclusion).");
+    if (paragraphs.length < minParagraphs) {
+      contentScore -= 1.2;
+      feedbackContent.push(`Essay contains only ${paragraphs.length} paragraph(s). C2 Proficiency obligatorily requires at least 4 paragraphs (discursive architecture: Introduction, 2 Opposing/Analytical Arguments, and Synthesis).`);
+    } else if (paragraphs.length > maxParagraphs) {
+      contentScore -= 1.0;
+      feedbackContent.push(`Essay contains ${paragraphs.length} paragraphs, exceeding the C2 maximum of 5 paragraphs. Consolidate your arguments into 4–5 paragraphs.`);
     } else {
-      feedbackContent.push(`Flawless essay architecture with ${paragraphs.length} balanced paragraphs.`);
+      feedbackContent.push(`Flawless essay architecture with ${paragraphs.length} balanced paragraphs adhering to C2 requirements (4–5 paragraphs).`);
     }
   } else {
-    // C1 Target: 220-260 words
-    if (wordCount < 180) {
-      contentScore -= 2.0;
-      feedbackContent.push(`Essay length (${wordCount} words) is critically below C1 recommendation (220-260 words). Insufficient development of arguments.`);
-    } else if (wordCount < 220) {
-      contentScore -= 0.8;
-      feedbackContent.push(`Slightly under the 220-word threshold (${wordCount} words). Expand on your analytical justifications.`);
-    } else if (wordCount > 340) {
-      contentScore -= 0.5;
-      feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic writing standards penalize lack of conciseness and redundancy.`);
+    // C1 Target: 220-260 words (±5 leniency: 215-265 words)
+    if (wordCount < allowedMinWords) {
+      const penalty = wordCount < 180 ? 2.5 : 1.5;
+      contentScore -= penalty;
+      feedbackContent.push(`Essay length (${wordCount} words) is below the obligatory C1 range of 215–265 words (220–260 ± 5 leniency). Insufficient development of analytical arguments.`);
+    } else if (wordCount > allowedMaxWords) {
+      contentScore -= 1.5;
+      feedbackContent.push(`Essay length (${wordCount} words) exceeds the obligatory C1 maximum of 265 words (220–260 ± 5 leniency). Advanced writing demands concise synthesis.`);
     } else {
-      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C1 guidelines.`);
+      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to obligatory C1 standards (215–265 words).`);
     }
 
-    if (paragraphs.length < 3) {
+    if (paragraphs.length < minParagraphs) {
+      contentScore -= 1.2;
+      feedbackContent.push(`Essay contains only ${paragraphs.length} paragraph(s). C1 Advanced obligatorily requires at least 3 paragraphs (clear separation into Introduction, Body Arguments, and Conclusion).`);
+    } else if (paragraphs.length > maxParagraphs) {
       contentScore -= 1.0;
-      feedbackContent.push("Needs clear separation into Introduction, Body Arguments (covering both prompt points), and Conclusion.");
+      feedbackContent.push(`Essay contains ${paragraphs.length} paragraphs, exceeding the C1 maximum of 4 paragraphs. Consolidate your discourse into 3–4 cohesive paragraphs.`);
     } else {
-      feedbackContent.push(`Strong essay architecture with ${paragraphs.length} structured paragraphs.`);
+      feedbackContent.push(`Strong essay architecture with ${paragraphs.length} structured paragraphs adhering to C1 requirements (3–4 paragraphs).`);
     }
   }
   contentScore = Math.max(1, Math.min(5, contentScore));
@@ -14879,8 +14900,8 @@ function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVocabulary 
     : true;
 
   const meetsThreshold = isC2
-    ? (meetsC2 && normalizedPercentage >= 85 && targetGateMet && structsGateMetC2 && wordCount >= 260)
-    : (meetsC1 && normalizedPercentage >= 75 && structsGateMetC1);
+    ? (meetsC2 && normalizedPercentage >= 85 && targetGateMet && structsGateMetC2 && wordsGateMet && paragraphsGateMet)
+    : (meetsC1 && normalizedPercentage >= 75 && structsGateMetC1 && wordsGateMet && paragraphsGateMet);
 
   return {
     rawTotal: Number(rawTotal.toFixed(1)),
@@ -14906,7 +14927,13 @@ function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVocabulary 
       totalTargetCount: targetVocabulary.length,
       targetUsageResults,
       identifiedStructures,
-      informalMatches
+      informalMatches,
+      wordsGateMet,
+      paragraphsGateMet,
+      allowedMinWords,
+      allowedMaxWords,
+      minParagraphs,
+      maxParagraphs
     }
   };
 }
@@ -14989,8 +15016,8 @@ MANDATORY ASSESSMENT CRITERIA & CONSTRAINTS:
      • Sub-Theme 2 (${subTheme2Name}): thematic engagement${theme2Kws}
 
 2. STRICT LENGTH TARGET:
-   - The essay MUST be strictly between ${minWords} and ${maxWords} words.
-   - Do not write fewer than ${minWords} words (fails minimum CEFR threshold), and do not exceed ${maxWords} words (penalized for verbosity/circumlocution). Count every word precisely.
+   - The essay MUST be strictly between ${minWords} and ${maxWords} words (strictly enforced with ±5 words leniency: ${isC2 ? '275 to 325' : '215 to 265'} words allowed; essays outside this range are rejected).
+   - Do not write fewer than ${isC2 ? 275 : 215} words (fails minimum CEFR threshold), and do not exceed ${isC2 ? 325 : 265} words (penalized for verbosity/circumlocution). Count every word precisely.
 
 3. COMPULSORY TARGET LEXIS (10/10 REQUIRED — NO OMISSIONS):
    Incorporate ALL 10 of the following target vocabulary words into the essay. Each word must be naturally integrated into the academic argument in its exact base form or an authentic grammatical inflection (e.g., conjugated verb forms, plural nouns, comparative adjectives):
@@ -15019,16 +15046,17 @@ ${vocabItems}
 
 6. DISCURSIVE PARAGRAPH ARCHITECTURE:
    ${isC2
-     ? `Structure into 4 distinct, cohesive paragraphs adhering to C2 discursive standards:
+     ? `Structure strictly into 4 to 5 distinct, cohesive paragraphs adhering to C2 discursive standards (minimum 4, maximum 5 paragraphs — 1 paragraph more demanding than C1):
    - Paragraph 1: Nuanced introduction contextualizing the prompt's problematized premise with an analytical thesis.
    - Paragraph 2: Comprehensive critical evaluation of the primary argument, systemic mechanisms, and stakeholder interests.
    - Paragraph 3: Counter-perspective or complicating dimension addressing the core tension.
-   - Paragraph 4: Decisive evaluative synthesis resolving the dilemma with forward-looking closure.`
-     : `Structure into 3 to 4 well-balanced paragraphs adhering to C1 academic essay standards:
+   - Paragraph 4: Decisive evaluative synthesis resolving the dilemma with forward-looking closure.
+   - Optional Paragraph 5 (if 5 paragraphs): Extended synthesis or separate stakeholder implication analysis.`
+     : `Structure strictly into 3 to 4 well-balanced paragraphs adhering to C1 academic essay standards (minimum 3, maximum 4 paragraphs):
    - Paragraph 1: Introduction establishing topic context, scope, and clear thesis stance.
    - Paragraph 2: Analytical development of the primary sub-theme with concrete justification.
    - Paragraph 3: Examination of the secondary sub-theme and opposing perspective/tension.
-   - Paragraph 4: Concluding synthesis reinforcing the thesis position.`}
+   - Paragraph 4 (or integrated into Para 3): Concluding synthesis reinforcing the thesis position.`}
 
 OUTPUT INSTRUCTION:
 Output ONLY the raw essay text. Do not include a title, heading, introduction, word count notes, commentary, or markdown quotes. Begin immediately with the first sentence of the essay.`;
@@ -15701,6 +15729,8 @@ class FluentEdgeApp {
       essayInput: document.getElementById('essayInput'),
       liveWordCount: document.getElementById('liveWordCount'),
       liveParaCount: document.getElementById('liveParaCount'),
+      targetWordCountHint: document.getElementById('targetWordCountHint'),
+      targetParaCountHint: document.getElementById('targetParaCountHint'),
       lengthGuidanceBadge: document.getElementById('lengthGuidanceBadge'),
       radarBadgesRow: document.getElementById('radarBadgesRow'),
       radarCountDisplay: document.getElementById('radarCountDisplay'),
@@ -16157,12 +16187,18 @@ class FluentEdgeApp {
         : 'Academic writing standard: demonstrate clear, smoothly flowing discourse with sophisticated lexical variety, cohesive transitions, and complex syntactic control.';
     }
     if (this.dom.reqsWordMetric) {
-      this.dom.reqsWordMetric.textContent = isC2 ? '280 – 360+ words' : '220 – 260 words';
+      this.dom.reqsWordMetric.textContent = isC2 ? '280 – 320 words (±5 leniency [275–325])' : '220 – 260 words (±5 leniency [215–265])';
     }
     if (this.dom.reqsWordDesc) {
       this.dom.reqsWordDesc.textContent = isC2
-        ? 'Extended discursive architecture across 4–5 paragraphs. Complex dialectical framing: thesis, counter-argument refutation, conceptual nuance, and authoritative synthesis.'
-        : 'Concise, balanced synthesis structured across 3–4 coherent paragraphs. Direct thesis formulation, analytical body arguments, and clear concluding deduction.';
+        ? 'Obligatory 4–5 paragraphs (1 paragraph more demanding than C1). Complex dialectical framing: thesis, counter-argument refutation, conceptual nuance, and authoritative synthesis.'
+        : 'Obligatory 3–4 paragraphs. Concise, balanced synthesis structured across clear paragraphs: direct thesis formulation, analytical body arguments, and clear concluding deduction.';
+    }
+    if (this.dom.targetWordCountHint) {
+      this.dom.targetWordCountHint.textContent = isC2 ? '(280–320 ±5 target)' : '(220–260 ±5 target)';
+    }
+    if (this.dom.targetParaCountHint) {
+      this.dom.targetParaCountHint.textContent = isC2 ? '(4–5 target)' : '(3–4 target)';
     }
     if (this.dom.reqsLexisMetric) {
       this.dom.reqsLexisMetric.textContent = '10 / 10 Obligatory Words';
@@ -16453,30 +16489,44 @@ class FluentEdgeApp {
     const text = this.dom.essayInput ? this.dom.essayInput.value : "";
     const metrics = analyzeQuickMetrics(text, this.activeVocabulary, this.targetLevel);
 
-    // Live word count
+    // Live word and paragraph count
     this.dom.liveWordCount.textContent = metrics.wordCount;
     this.dom.liveParaCount.textContent = metrics.paragraphCount;
 
-    // Word count color indicator
+    // Word count & paragraph color indicators
     this.dom.liveWordCount.className = "metric-live-val";
+    this.dom.liveParaCount.className = "metric-live-val";
     const isC2 = this.targetLevel === 'C2';
-    const minTarget = isC2 ? 280 : 220;
-    const maxTarget = isC2 ? 320 : 260;
-    const maxOptimal = isC2 ? 340 : 280;
 
-    if (metrics.wordCount >= minTarget && metrics.wordCount <= maxOptimal) {
+    if (metrics.wordsMet) {
       this.dom.liveWordCount.classList.add("optimal");
-      this.dom.lengthGuidanceBadge.textContent = isC2
-        ? `Optimal C2 Length (${minTarget}-${maxTarget})`
-        : `Optimal C1 Length (${minTarget}-${maxTarget})`;
+    } else if (metrics.wordCount > 0) {
+      this.dom.liveWordCount.classList.add("warning");
+    }
+
+    if (metrics.paragraphsMet) {
+      this.dom.liveParaCount.classList.add("optimal");
+    } else if (metrics.paragraphCount > 0) {
+      this.dom.liveParaCount.classList.add("warning");
+    }
+
+    // Length and paragraph guidance badge
+    if (metrics.wordsMet && metrics.paragraphsMet) {
+      this.dom.lengthGuidanceBadge.textContent = `✓ Length & Structure Met (${metrics.wordCount} words, ${metrics.paragraphCount} paras)`;
       this.dom.lengthGuidanceBadge.className = "radar-badge active";
-    } else if (metrics.wordCount > 0 && metrics.wordCount < minTarget) {
-      this.dom.liveWordCount.classList.add("warning");
-      this.dom.lengthGuidanceBadge.textContent = `Need ${minTarget - metrics.wordCount} more words (${this.targetLevel} target: ${minTarget}-${maxTarget})`;
+    } else if (metrics.wordCount > 0 && !metrics.wordsMet) {
+      if (metrics.wordCount < metrics.allowedMinWords) {
+        this.dom.lengthGuidanceBadge.textContent = `Need ${metrics.allowedMinWords - metrics.wordCount} more words (${metrics.allowedMinWords}–${metrics.allowedMaxWords} allowed)`;
+      } else {
+        this.dom.lengthGuidanceBadge.textContent = `Word limit exceeded (${metrics.wordCount} / ${metrics.allowedMaxWords} words max)`;
+      }
       this.dom.lengthGuidanceBadge.className = "radar-badge";
-    } else if (metrics.wordCount > maxOptimal) {
-      this.dom.liveWordCount.classList.add("warning");
-      this.dom.lengthGuidanceBadge.textContent = `Exceeding ${this.targetLevel} target (be concise)`;
+    } else if (metrics.paragraphCount > 0 && !metrics.paragraphsMet) {
+      if (metrics.paragraphCount < metrics.minParagraphs) {
+        this.dom.lengthGuidanceBadge.textContent = `Need ${metrics.minParagraphs - metrics.paragraphCount} more paragraph(s) (${metrics.minParagraphs}–${metrics.maxParagraphs} allowed)`;
+      } else {
+        this.dom.lengthGuidanceBadge.textContent = `Paragraph limit exceeded (${metrics.paragraphCount} / ${metrics.maxParagraphs} paras max)`;
+      }
       this.dom.lengthGuidanceBadge.className = "radar-badge";
     } else {
       this.dom.lengthGuidanceBadge.textContent = "Awaiting input";
@@ -16576,18 +16626,20 @@ class FluentEdgeApp {
       }
     }
 
-    // Update Evaluate Essay Button state based on compulsory lexis, syntax, AND topic adherence
+    // Update Evaluate Essay Button state based on compulsory lexis, syntax, topic adherence, words, AND paragraphs
     const allLexisFulfilled = metrics.targetWordsTotal > 0 && metrics.targetWordsUsed >= metrics.targetWordsTotal;
     const allSyntaxFulfilled = structuresMet;
     const allTopicFulfilled = topicAdherence.passes;
-    const allReady = allLexisFulfilled && allSyntaxFulfilled && allTopicFulfilled;
+    const allWordsFulfilled = metrics.wordsMet;
+    const allParasFulfilled = metrics.paragraphsMet;
+    const allReady = allLexisFulfilled && allSyntaxFulfilled && allTopicFulfilled && allWordsFulfilled && allParasFulfilled;
 
     if (this.dom.evaluateEssayBtn) {
       if (allReady) {
         this.dom.evaluateEssayBtn.classList.remove('btn-locked-lexis');
         this.dom.evaluateEssayBtn.classList.add('btn-lexis-ready');
         this.dom.evaluateEssayBtn.setAttribute('aria-disabled', 'false');
-        this.dom.evaluateEssayBtn.title = `All requirements fulfilled! Compulsory lexis, syntactic complexity, and topic adherence satisfied. Click or press Ctrl+Enter to evaluate.`;
+        this.dom.evaluateEssayBtn.title = `All requirements fulfilled! Compulsory lexis, syntactic complexity, topic adherence, word count (${metrics.wordCount}), and paragraph structure (${metrics.paragraphCount}) satisfied. Click or press Ctrl+Enter to evaluate.`;
         this.dom.evaluateEssayBtn.innerHTML = `
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -16602,13 +16654,15 @@ class FluentEdgeApp {
         this.dom.evaluateEssayBtn.setAttribute('aria-disabled', 'true');
 
         const parts = [];
+        if (!allWordsFulfilled) parts.push(`${metrics.wordCount}/${metrics.allowedMinWords}-${metrics.allowedMaxWords}w`);
+        if (!allParasFulfilled) parts.push(`${metrics.paragraphCount}/${metrics.minParagraphs}-${metrics.maxParagraphs}p`);
         if (!allLexisFulfilled) parts.push(`${metrics.targetWordsUsed}/${metrics.targetWordsTotal} Lexis`);
         if (!allSyntaxFulfilled) parts.push(`${detectedStructuresCount}/${minRequiredStructures} Syntax`);
-        if (!allTopicFulfilled) parts.push('Topic Focus Needed');
+        if (!allTopicFulfilled) parts.push('Topic Focus');
 
         const statusSummary = parts.join(' • ') || 'Requirements Incomplete';
 
-        this.dom.evaluateEssayBtn.title = `Incorporate compulsory target words, complex syntax, and address the obligatory topic focus to unlock evaluation.`;
+        this.dom.evaluateEssayBtn.title = `Complete all obligatory gates (words: ${metrics.allowedMinWords}–${metrics.allowedMaxWords}, paragraphs: ${metrics.minParagraphs}–${metrics.maxParagraphs}, compulsory lexis, syntax radar, topic focus) to unlock evaluation.`;
         this.dom.evaluateEssayBtn.innerHTML = `
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -16662,9 +16716,18 @@ class FluentEdgeApp {
 
   showRequirementAlert({
     isTextEmpty,
-    isUnderMinWords,
+    isWordsInvalid,
+    isParasInvalid,
     wordCount,
-    minWords,
+    paragraphCount,
+    targetMin = 220,
+    targetMax = 260,
+    allowedMinWords = 215,
+    allowedMaxWords = 265,
+    minParagraphs = 3,
+    maxParagraphs = 4,
+    wordsMet = false,
+    paragraphsMet = false,
     targetWordsUsed,
     targetWordsTotal,
     missingLexis,
@@ -16680,7 +16743,7 @@ class FluentEdgeApp {
 
     let itemsHtml = '';
 
-    // 1. Word Count Requirement Item
+    // 1. Obligatory Word Count Requirement Item (with ±5 leniency)
     if (isTextEmpty) {
       itemsHtml += `
         <div class="req-item item-missing">
@@ -16696,18 +16759,34 @@ class FluentEdgeApp {
           </div>
         </div>
       `;
-    } else if (isUnderMinWords) {
-      const wordsNeeded = minWords - wordCount;
+    } else if (wordCount < allowedMinWords) {
+      const wordsNeeded = allowedMinWords - wordCount;
       itemsHtml += `
         <div class="req-item item-missing">
           <div class="req-item-icon">✕</div>
           <div class="req-item-content">
             <div class="req-item-title">
-              <span>Minimum Length Required</span>
-              <span style="font-size: 11px; color: #f87171; font-weight: 700;">${wordCount} / ${minWords} Words</span>
+              <span>Obligatory Word Count (Under Minimum)</span>
+              <span style="font-size: 11px; color: #f87171; font-weight: 700;">${wordCount} / ${allowedMinWords} Words Minimum</span>
             </div>
             <div class="req-item-subtitle">
-              Your draft contains ${wordCount} words. A minimum of ${minWords} words is required for rigorous CEFR assessment (needs ${wordsNeeded} more word${wordsNeeded === 1 ? '' : 's'}).
+              Your draft contains ${wordCount} words. The obligatory ${this.targetLevel} standard is ${targetMin}–${targetMax} words with ±5 words leniency (${allowedMinWords}–${allowedMaxWords} words allowed). You need ${wordsNeeded} more word${wordsNeeded === 1 ? '' : 's'}.
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (wordCount > allowedMaxWords) {
+      const wordsExcess = wordCount - allowedMaxWords;
+      itemsHtml += `
+        <div class="req-item item-missing">
+          <div class="req-item-icon">✕</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Obligatory Word Count (Exceeds Maximum)</span>
+              <span style="font-size: 11px; color: #f87171; font-weight: 700;">${wordCount} / ${allowedMaxWords} Words Maximum</span>
+            </div>
+            <div class="req-item-subtitle">
+              Your draft contains ${wordCount} words, exceeding the obligatory ${this.targetLevel} ceiling of ${allowedMaxWords} words (${targetMin}–${targetMax} words with ±5 leniency). Please condense your essay by ${wordsExcess} word${wordsExcess === 1 ? '' : 's'}.
             </div>
           </div>
         </div>
@@ -16718,11 +16797,61 @@ class FluentEdgeApp {
           <div class="req-item-icon">✓</div>
           <div class="req-item-content">
             <div class="req-item-title">
-              <span>Length Requirement Satisfied</span>
-              <span style="font-size: 11px; color: #34d399; font-weight: 700;">${wordCount} Words</span>
+              <span>Obligatory Word Count Satisfied</span>
+              <span style="font-size: 11px; color: #34d399; font-weight: 700;">${wordCount} Words (${allowedMinWords}–${allowedMaxWords} Range)</span>
             </div>
             <div class="req-item-subtitle">
-              Draft satisfies the minimum length requirement (${minWords}+ words).
+              Draft satisfies the obligatory ${this.targetLevel} length requirement (${targetMin}–${targetMax} target with ±5 leniency).
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // 2. Obligatory Paragraph Architecture Requirement Item
+    if (paragraphCount < minParagraphs) {
+      const parasNeeded = minParagraphs - paragraphCount;
+      itemsHtml += `
+        <div class="req-item item-missing">
+          <div class="req-item-icon">✕</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Paragraph Architecture (Under Minimum)</span>
+              <span style="font-size: 11px; color: #f87171; font-weight: 700;">${paragraphCount} / ${minParagraphs} Paragraphs Minimum</span>
+            </div>
+            <div class="req-item-subtitle">
+              Your essay has ${paragraphCount} paragraph(s). ${this.targetLevel === 'C2' ? 'C2 Proficiency requires strictly 4 to 5 paragraphs (1 paragraph more demanding than C1: Introduction, 2 Opposing/Analytical Arguments, and Synthesis).' : 'C1 Advanced requires strictly 3 to 4 paragraphs (Introduction, Body Paragraphs, and Conclusion).'} You need at least ${parasNeeded} more paragraph${parasNeeded === 1 ? '' : 's'}. Separate paragraphs with a blank line.
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (paragraphCount > maxParagraphs) {
+      const parasExcess = paragraphCount - maxParagraphs;
+      itemsHtml += `
+        <div class="req-item item-missing">
+          <div class="req-item-icon">✕</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Paragraph Architecture (Exceeds Maximum)</span>
+              <span style="font-size: 11px; color: #f87171; font-weight: 700;">${paragraphCount} / ${maxParagraphs} Paragraphs Maximum</span>
+            </div>
+            <div class="req-item-subtitle">
+              Your essay has ${paragraphCount} paragraphs, exceeding the obligatory maximum of ${maxParagraphs} paragraphs for ${this.targetLevel}. Avoid excessive structural fragmentation; consolidate your discourse into ${minParagraphs}–${maxParagraphs} cohesive paragraphs.
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      itemsHtml += `
+        <div class="req-item item-met">
+          <div class="req-item-icon">✓</div>
+          <div class="req-item-content">
+            <div class="req-item-title">
+              <span>Paragraph Architecture Satisfied</span>
+              <span style="font-size: 11px; color: #34d399; font-weight: 700;">${paragraphCount} Paragraphs (${minParagraphs}–${maxParagraphs} Required)</span>
+            </div>
+            <div class="req-item-subtitle">
+              Draft satisfies the obligatory ${this.targetLevel} paragraph architecture (${minParagraphs}–${maxParagraphs} paragraphs).
             </div>
           </div>
         </div>
@@ -16963,7 +17092,8 @@ class FluentEdgeApp {
     }));
 
     const isTextEmpty = !text || words.length === 0;
-    const isUnderMinWords = !isTextEmpty && words.length < 50;
+    const isWordsInvalid = !isTextEmpty && !metrics.wordsMet;
+    const isParasInvalid = !isTextEmpty && !metrics.paragraphsMet;
     const isMissingLexis = missingLexis.length > 0;
     const detectedStructuresCount = metrics.detectedGrammar.length;
     const minRequiredStructures = metrics.minRequiredStructures;
@@ -16973,12 +17103,21 @@ class FluentEdgeApp {
     const isTopicMissing = !isTextEmpty && !adherence.passes;
 
     // Front-and-Center Alert when requirements are not met yet
-    if (isTextEmpty || isUnderMinWords || isMissingLexis || isMissingStructures || isTopicMissing) {
+    if (isTextEmpty || isWordsInvalid || isParasInvalid || isMissingLexis || isMissingStructures || isTopicMissing) {
       this.showRequirementAlert({
         isTextEmpty,
-        isUnderMinWords,
+        isWordsInvalid,
+        isParasInvalid,
         wordCount: words.length,
-        minWords: 50,
+        paragraphCount: metrics.paragraphCount,
+        targetMin: metrics.targetMin,
+        targetMax: metrics.targetMax,
+        allowedMinWords: metrics.allowedMinWords,
+        allowedMaxWords: metrics.allowedMaxWords,
+        minParagraphs: metrics.minParagraphs,
+        maxParagraphs: metrics.maxParagraphs,
+        wordsMet: metrics.wordsMet,
+        paragraphsMet: metrics.paragraphsMet,
         targetWordsUsed: metrics.targetWordsUsed,
         targetWordsTotal: metrics.targetWordsTotal,
         missingLexis,
@@ -16992,7 +17131,7 @@ class FluentEdgeApp {
     }
 
     // Confirmation before moving forward to evaluation and assessment modal
-    if (!confirm(`Are you ready to submit your essay for evaluation? All ${metrics.targetWordsTotal} compulsory target words, ${detectedStructuresCount} complex syntactic structures, and the obligatory topic focus have been fulfilled. Your draft will be assessed against the CEFR scales.`)) {
+    if (!confirm(`Are you ready to submit your essay for evaluation? All ${metrics.targetWordsTotal} compulsory target words, ${detectedStructuresCount} complex syntactic structures, the obligatory topic focus, word count (${words.length} words in ${metrics.allowedMinWords}–${metrics.allowedMaxWords}), and paragraph structure (${metrics.paragraphCount} in ${metrics.minParagraphs}–${metrics.maxParagraphs}) have been fulfilled. Your draft will be assessed against the CEFR scales.`)) {
       return;
     }
 

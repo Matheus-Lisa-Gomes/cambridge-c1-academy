@@ -188,9 +188,15 @@ export function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = '
   const isC2 = targetLevel === 'C2';
   const targetMin = isC2 ? 280 : 220;
   const targetMax = isC2 ? 320 : 260;
-  const optimalMax = isC2 ? 340 : 280;
+  const leniency = 5;
+  const allowedMinWords = targetMin - leniency; // 215 for C1, 275 for C2
+  const allowedMaxWords = targetMax + leniency; // 265 for C1, 325 for C2
+  const minParagraphs = isC2 ? 4 : 3;
+  const maxParagraphs = isC2 ? 5 : 4;
   const minRequiredStructures = isC2 ? 6 : 4;
   const structuresMet = detectedGrammar.length >= minRequiredStructures;
+  const wordsMet = wordCount >= allowedMinWords && wordCount <= allowedMaxWords;
+  const paragraphsMet = paragraphs.length >= minParagraphs && paragraphs.length <= maxParagraphs;
 
   return {
     wordCount,
@@ -203,7 +209,12 @@ export function analyzeQuickMetrics(text, targetVocabulary = [], targetLevel = '
     targetLevel,
     targetMin,
     targetMax,
-    optimalMax,
+    allowedMinWords,
+    allowedMaxWords,
+    minParagraphs,
+    maxParagraphs,
+    wordsMet,
+    paragraphsMet,
     minRequiredStructures,
     structuresMet
   };
@@ -291,47 +302,57 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVoca
   let contentScore = 5.0;
   const feedbackContent = [];
 
+  const allowedMinWords = isC2 ? 275 : 215;
+  const allowedMaxWords = isC2 ? 325 : 265;
+  const minParagraphs = isC2 ? 4 : 3;
+  const maxParagraphs = isC2 ? 5 : 4;
+
+  const wordsGateMet = wordCount >= allowedMinWords && wordCount <= allowedMaxWords;
+  const paragraphsGateMet = paragraphs.length >= minParagraphs && paragraphs.length <= maxParagraphs;
+
   if (isC2) {
-    // C2 Target: 280-320 words
-    if (wordCount < 240) {
-      contentScore -= 2.0;
-      feedbackContent.push(`Essay length (${wordCount} words) is critically below C2 Proficiency requirement (280-320 words). Complex discourse demands thorough multi-angle elaboration.`);
-    } else if (wordCount < 280) {
-      contentScore -= 0.8;
-      feedbackContent.push(`Below the 280-word C2 threshold (${wordCount} words). Synthesize both prompt dimensions with deeper analytical nuance.`);
-    } else if (wordCount > 380) {
-      contentScore -= 0.5;
-      feedbackContent.push(`Essay is overly verbose (${wordCount} words). C2 examiners penalize circumlocution and lack of concision.`);
+    // C2 Target: 280-320 words (±5 leniency: 275-325 words)
+    if (wordCount < allowedMinWords) {
+      const penalty = wordCount < 240 ? 2.5 : 1.5;
+      contentScore -= penalty;
+      feedbackContent.push(`Essay length (${wordCount} words) is below the obligatory C2 range of 275–325 words (280–320 ± 5 leniency). C2 discourse demands thorough multi-angle elaboration.`);
+    } else if (wordCount > allowedMaxWords) {
+      contentScore -= 1.5;
+      feedbackContent.push(`Essay length (${wordCount} words) exceeds the obligatory C2 maximum of 325 words (280–320 ± 5 leniency). Advanced academic writing strictly penalizes circumlocution and lack of concision.`);
     } else {
-      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C2 Proficiency standards.`);
+      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to obligatory C2 standards (275–325 words).`);
     }
 
-    if (paragraphs.length < 4) {
-      contentScore -= 0.8;
-      feedbackContent.push("C2 discursive essays require a sophisticated 4-stage architecture (Introduction, Opposing Arguments, Synthesis/Evaluation, and Conclusion).");
+    if (paragraphs.length < minParagraphs) {
+      contentScore -= 1.2;
+      feedbackContent.push(`Essay contains only ${paragraphs.length} paragraph(s). C2 Proficiency obligatorily requires at least 4 paragraphs (discursive architecture: Introduction, 2 Opposing/Analytical Arguments, and Synthesis).`);
+    } else if (paragraphs.length > maxParagraphs) {
+      contentScore -= 1.0;
+      feedbackContent.push(`Essay contains ${paragraphs.length} paragraphs, exceeding the C2 maximum of 5 paragraphs. Consolidate your arguments into 4–5 paragraphs.`);
     } else {
-      feedbackContent.push(`Flawless essay architecture with ${paragraphs.length} balanced paragraphs.`);
+      feedbackContent.push(`Flawless essay architecture with ${paragraphs.length} balanced paragraphs adhering to C2 requirements (4–5 paragraphs).`);
     }
   } else {
-    // C1 Target: 220-260 words
-    if (wordCount < 180) {
-      contentScore -= 2.0;
-      feedbackContent.push(`Essay length (${wordCount} words) is critically below C1 recommendation (220-260 words). Insufficient development of arguments.`);
-    } else if (wordCount < 220) {
-      contentScore -= 0.8;
-      feedbackContent.push(`Slightly under the 220-word threshold (${wordCount} words). Expand on your analytical justifications.`);
-    } else if (wordCount > 340) {
-      contentScore -= 0.5;
-      feedbackContent.push(`Essay is verbose (${wordCount} words). Advanced academic writing standards penalize lack of conciseness and redundancy.`);
+    // C1 Target: 220-260 words (±5 leniency: 215-265 words)
+    if (wordCount < allowedMinWords) {
+      const penalty = wordCount < 180 ? 2.5 : 1.5;
+      contentScore -= penalty;
+      feedbackContent.push(`Essay length (${wordCount} words) is below the obligatory C1 range of 215–265 words (220–260 ± 5 leniency). Insufficient development of analytical arguments.`);
+    } else if (wordCount > allowedMaxWords) {
+      contentScore -= 1.5;
+      feedbackContent.push(`Essay length (${wordCount} words) exceeds the obligatory C1 maximum of 265 words (220–260 ± 5 leniency). Advanced writing demands concise synthesis.`);
     } else {
-      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to C1 guidelines.`);
+      feedbackContent.push(`Optimal word length (${wordCount} words) adhering strictly to obligatory C1 standards (215–265 words).`);
     }
 
-    if (paragraphs.length < 3) {
+    if (paragraphs.length < minParagraphs) {
+      contentScore -= 1.2;
+      feedbackContent.push(`Essay contains only ${paragraphs.length} paragraph(s). C1 Advanced obligatorily requires at least 3 paragraphs (clear separation into Introduction, Body Arguments, and Conclusion).`);
+    } else if (paragraphs.length > maxParagraphs) {
       contentScore -= 1.0;
-      feedbackContent.push("Needs clear separation into Introduction, Body Arguments (covering both prompt points), and Conclusion.");
+      feedbackContent.push(`Essay contains ${paragraphs.length} paragraphs, exceeding the C1 maximum of 4 paragraphs. Consolidate your discourse into 3–4 cohesive paragraphs.`);
     } else {
-      feedbackContent.push(`Strong essay architecture with ${paragraphs.length} structured paragraphs.`);
+      feedbackContent.push(`Strong essay architecture with ${paragraphs.length} structured paragraphs adhering to C1 requirements (3–4 paragraphs).`);
     }
   }
   contentScore = Math.max(1, Math.min(5, contentScore));
@@ -455,8 +476,8 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVoca
     : true;
 
   const meetsThreshold = isC2
-    ? (meetsC2 && normalizedPercentage >= 85 && targetGateMet && structsGateMetC2 && wordCount >= 260)
-    : (meetsC1 && normalizedPercentage >= 75 && structsGateMetC1);
+    ? (meetsC2 && normalizedPercentage >= 85 && targetGateMet && structsGateMetC2 && wordsGateMet && paragraphsGateMet)
+    : (meetsC1 && normalizedPercentage >= 75 && structsGateMetC1 && wordsGateMet && paragraphsGateMet);
 
   return {
     rawTotal: Number(rawTotal.toFixed(1)),
@@ -482,7 +503,13 @@ export function evaluateEssay(text, currentTopic, targetLevel = 'C1', activeVoca
       totalTargetCount: targetVocabulary.length,
       targetUsageResults,
       identifiedStructures,
-      informalMatches
+      informalMatches,
+      wordsGateMet,
+      paragraphsGateMet,
+      allowedMinWords,
+      allowedMaxWords,
+      minParagraphs,
+      maxParagraphs
     }
   };
 }
@@ -565,8 +592,8 @@ MANDATORY ASSESSMENT CRITERIA & CONSTRAINTS:
      • Sub-Theme 2 (${subTheme2Name}): thematic engagement${theme2Kws}
 
 2. STRICT LENGTH TARGET:
-   - The essay MUST be strictly between ${minWords} and ${maxWords} words.
-   - Do not write fewer than ${minWords} words (fails minimum CEFR threshold), and do not exceed ${maxWords} words (penalized for verbosity/circumlocution). Count every word precisely.
+   - The essay MUST be strictly between ${minWords} and ${maxWords} words (strictly enforced with ±5 words leniency: ${isC2 ? '275 to 325' : '215 to 265'} words allowed; essays outside this range are rejected).
+   - Do not write fewer than ${isC2 ? 275 : 215} words (fails minimum CEFR threshold), and do not exceed ${isC2 ? 325 : 265} words (penalized for verbosity/circumlocution). Count every word precisely.
 
 3. COMPULSORY TARGET LEXIS (10/10 REQUIRED — NO OMISSIONS):
    Incorporate ALL 10 of the following target vocabulary words into the essay. Each word must be naturally integrated into the academic argument in its exact base form or an authentic grammatical inflection (e.g., conjugated verb forms, plural nouns, comparative adjectives):
@@ -595,16 +622,17 @@ ${vocabItems}
 
 6. DISCURSIVE PARAGRAPH ARCHITECTURE:
    ${isC2
-     ? `Structure into 4 distinct, cohesive paragraphs adhering to C2 discursive standards:
+     ? `Structure strictly into 4 to 5 distinct, cohesive paragraphs adhering to C2 discursive standards (minimum 4, maximum 5 paragraphs — 1 paragraph more demanding than C1):
    - Paragraph 1: Nuanced introduction contextualizing the prompt's problematized premise with an analytical thesis.
    - Paragraph 2: Comprehensive critical evaluation of the primary argument, systemic mechanisms, and stakeholder interests.
    - Paragraph 3: Counter-perspective or complicating dimension addressing the core tension.
-   - Paragraph 4: Decisive evaluative synthesis resolving the dilemma with forward-looking closure.`
-     : `Structure into 3 to 4 well-balanced paragraphs adhering to C1 academic essay standards:
+   - Paragraph 4: Decisive evaluative synthesis resolving the dilemma with forward-looking closure.
+   - Optional Paragraph 5 (if 5 paragraphs): Extended synthesis or separate stakeholder implication analysis.`
+     : `Structure strictly into 3 to 4 well-balanced paragraphs adhering to C1 academic essay standards (minimum 3, maximum 4 paragraphs):
    - Paragraph 1: Introduction establishing topic context, scope, and clear thesis stance.
    - Paragraph 2: Analytical development of the primary sub-theme with concrete justification.
    - Paragraph 3: Examination of the secondary sub-theme and opposing perspective/tension.
-   - Paragraph 4: Concluding synthesis reinforcing the thesis position.`}
+   - Paragraph 4 (or integrated into Para 3): Concluding synthesis reinforcing the thesis position.`}
 
 OUTPUT INSTRUCTION:
 Output ONLY the raw essay text. Do not include a title, heading, introduction, word count notes, commentary, or markdown quotes. Begin immediately with the first sentence of the essay.`;

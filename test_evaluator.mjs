@@ -6,8 +6,11 @@ const topicAI = TOPICS[0]; // AI topic (C1/C2)
 const topicC2 = TOPICS.find(t => t.id === 'epistemic-authority-truth') || TOPICS[10];
 
 console.log("=== TEST 1: Authentic C1 Model Essay in C1 Mode ===");
-const aiExcerpt = "Seldom has human ingenuity produced an instrument as transformative yet contentious as autonomous machine intelligence. While the ubiquitous integration of algorithmic computing promises unprecedented economic productivity, what remains of paramount concern is the inexorable dilution of human moral agency. It is widely contended that without stringent legislative benchmarks to delineate accountability, society risks delegating critical ethical adjudications to probabilistic models devoid of conscience.";
-const c1ModelEssay = aiExcerpt + " Were governments to fail to establish statutory oversight, irreparable societal harm would ensue. Furthermore, robust regulatory frameworks are imperative to mitigate systemic risks and clearly delineate boundaries between algorithmic assistance and unmitigated autonomy. Without such safeguards, the ubiquitous integration of smart tools will serve as a catalyst for disconcerting socio-economic upheaval, accelerating an inexorable transformation of human labor.";
+const c1ModelEssay = `Seldom has human ingenuity produced an instrument as transformative yet contentious as autonomous machine intelligence. While the ubiquitous integration of algorithmic computing promises unprecedented economic productivity, what remains of paramount concern is the inexorable dilution of human moral agency across critical decision-making sectors. Inasmuch as automated tools become deeply embedded within legal, financial, and educational institutions, civic stability and public trust inevitably hinge upon transparent, accountable, and democratically audited governance.
+
+It is widely contended that without stringent legislative benchmarks to delineate institutional accountability, contemporary society risks delegating vital ethical adjudications to probabilistic systems devoid of human conscience. Were governments to fail to establish statutory oversight, irreparable societal harm and systemic disenfranchisement would inevitably ensue. Furthermore, robust regulatory frameworks are imperative to mitigate algorithmic bias and firmly establish boundaries between human authority and automated execution. Without such safeguards, commercial incentives and private monopolies will continue to prioritize unchecked optimization over collective well-being, social equity, and equitable access for vulnerable populations.
+
+Notwithstanding the substantial financial and computational dividends promised by digital automation, technological acceleration must never supersede fundamental democratic values. It is imperative that global regulatory bodies enforce binding compliance protocols before autonomous architectures become irreversibly entrenched across modern infrastructure. Ultimately, only through proactive statutory oversight, continuous ethical vigilance, and inclusive civic engagement can modern democratic societies successfully harness machine intelligence while permanently preserving human dignity and fundamental civil liberties.`;
 
 const evalPassC1 = evaluateEssay(c1ModelEssay, topicAI, 'C1');
 console.log("Score:", evalPassC1.rawTotal, "/ 20");
@@ -34,7 +37,7 @@ What is of paramount importance is the alarming mechanism through which algorith
 
 Furthermore, it is widely contended that the weaponization of artificial intelligence exacerbates this predicament by facilitating the automated fabrication of compelling yet deceitful narratives. It is not merely that false claims circulate rapidly; rather, the sheer volume of synthetic discourse renders discernment arduous for even the most discerning citizens. When the boundaries between authentic documentation and algorithmic fabrication are blurred, democratic deliberation is reduced to a battle of affective tribalism rather than rational persuasion.
 
-Notwithstanding legitimate critiques regarding historical elitism within academic spheres, peer-reviewed consensus established a vital epistemic anchor for public policy. Under no circumstances can a deliberative democracy endure when the fundamental criteria for factual truth are dismantled into subjective opinion. Were societies to accept this chaotic trajectory as irreversible, participatory self-governance would collapse. Rigorous algorithmic accountability and institutional revival must therefore be pursued with uncompromising determination.`;
+Notwithstanding legitimate critiques regarding historical elitism within academic spheres, peer-reviewed consensus established a vital epistemic anchor for public policy. Under no circumstances can a deliberative democracy endure when the fundamental criteria for factual truth are dismantled into subjective opinion. Were societies to accept this chaotic trajectory as irreversible, participatory self-governance would collapse. Rigorous algorithmic accountability, verifiable empirical standards, and institutional revival must therefore be pursued with uncompromising determination by international leaders.`;
 const evalPassC2 = evaluateEssay(c2ModelEssay, topicC2, 'C2');
 console.log("Word count:", evalPassC2.metrics.wordCount);
 console.log("Score:", evalPassC2.rawTotal, "/ 20");
@@ -225,6 +228,55 @@ const difficultyFilterTestPassed = easyFilterTopic.complexity === 1 &&
                                    hardFilterTopic.complexity === 3 &&
                                    [1, 2, 3].includes(allFilterTopic.complexity);
 
+console.log("\n=== TEST 11: Obligatory Word Count (±5 Leniency) & Paragraph Count Gating ===");
+// Word count boundaries:
+// C1 allowed: 215 to 265 words (220-260 ± 5)
+// C1 paragraphs allowed: 3 to 4 paragraphs
+// C2 allowed: 275 to 325 words (280-320 ± 5)
+// C2 paragraphs allowed: 4 to 5 paragraphs (1 paragraph more demanding than C1)
+
+console.log("C1 Model Essay Words:", evalPassC1.metrics.wordCount, "(Allowed: 215-265) | Words Gate Met:", evalPassC1.metrics.wordsGateMet);
+console.log("C1 Model Essay Paras:", evalPassC1.metrics.paragraphsCount, "(Allowed: 3-4) | Paras Gate Met:", evalPassC1.metrics.paragraphsGateMet);
+console.log("C2 Model Essay Words:", evalPassC2.metrics.wordCount, "(Allowed: 275-325) | Words Gate Met:", evalPassC2.metrics.wordsGateMet);
+console.log("C2 Model Essay Paras:", evalPassC2.metrics.paragraphsCount, "(Allowed: 4-5) | Paras Gate Met:", evalPassC2.metrics.paragraphsGateMet);
+
+// Verify that essays violating word boundaries fail threshold
+// 1. Under minimum C1 (150 words)
+const shortC1Text = c1ModelEssay.split(/\s+/).slice(0, 150).join(" ");
+const evalShortC1 = evaluateEssay(shortC1Text, topicAI, 'C1');
+console.log("Short C1 Essay (150 words) Fails Threshold:", !evalShortC1.meetsThreshold, "(Expected: true)");
+
+// 2. Over maximum C1 (>265 words)
+const longC1Text = c1ModelEssay + " Furthermore, the unmitigated proliferation of autonomous systems across global commercial sectors inevitably triggers widespread socio-economic turbulence and dislocation, eroding foundational institutional trust and disenfranchising marginalized workforces throughout contemporary industrial economies worldwide. Consequently, international regulatory commissions and national policy makers must intervene promptly to avert irreversible structural damage and societal fragmentation.";
+const evalLongC1 = evaluateEssay(longC1Text, topicAI, 'C1');
+console.log("Long C1 Essay Words:", evalLongC1.metrics.wordCount, "| wordsGateMet:", evalLongC1.metrics.wordsGateMet);
+console.log("Long C1 Essay (>265 words) Fails Threshold:", !evalLongC1.meetsThreshold, "(Expected: true)");
+
+// 3. Paragraph count violation for C1: 1 paragraph (below 3)
+const singleParaC1Text = c1ModelEssay.replace(/\n\s*\n/g, " ");
+const evalSingleParaC1 = evaluateEssay(singleParaC1Text, topicAI, 'C1');
+console.log("Single Paragraph C1 Essay Fails Threshold:", !evalSingleParaC1.meetsThreshold, "(Expected: true)");
+
+// 4. Paragraph count violation for C1: 5 paragraphs (above 4)
+const fiveParaC1Text = c1ModelEssay.split(/\n\s*\n/).map(p => p.split(". ").join(".\n\n")).join("\n\n");
+const evalFiveParaC1 = evaluateEssay(fiveParaC1Text, topicAI, 'C1');
+console.log("Five Paragraph C1 Essay (>4 paras) Fails Threshold:", !evalFiveParaC1.meetsThreshold, "(Expected: true)");
+
+// 5. C2 3 paragraphs (below 4)
+const threeParaC2Text = c2ModelEssay.split(/\n\s*\n/).slice(0, 3).join("\n\n");
+const evalThreeParaC2 = evaluateEssay(threeParaC2Text, topicC2, 'C2');
+console.log("3 Paragraph C2 Essay (<4 paras) Fails Threshold:", !evalThreeParaC2.meetsThreshold, "(Expected: true)");
+
+const wordParaGateTestPassed = evalPassC1.metrics.wordsGateMet &&
+                               evalPassC1.metrics.paragraphsGateMet &&
+                               evalPassC2.metrics.wordsGateMet &&
+                               evalPassC2.metrics.paragraphsGateMet &&
+                               !evalShortC1.meetsThreshold &&
+                               !evalLongC1.meetsThreshold &&
+                               !evalSingleParaC1.meetsThreshold &&
+                               !evalFiveParaC1.meetsThreshold &&
+                               !evalThreeParaC2.meetsThreshold;
+
 const allPassed = evalPassC1.meetsThreshold && 
                   !evalFailB1.meetsThreshold && 
                   evalPassC2.meetsThreshold && 
@@ -235,10 +287,11 @@ const allPassed = evalPassC1.meetsThreshold &&
                   aiPromptTestPassed &&
                   treeTopicTestPassed &&
                   topicAdherenceTestPassed &&
-                  difficultyFilterTestPassed;
+                  difficultyFilterTestPassed &&
+                  wordParaGateTestPassed;
 
 if (allPassed) {
-  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard, AI Prompt Generator, Tree Topic Architecture, Obligatory Topic Adherence Guard & Topic Difficulty Tier Filter accurately configured! <<<");
+  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard, AI Prompt Generator, Tree Topic Architecture, Obligatory Topic Adherence Guard, Topic Difficulty Tier Filter & Obligatory Word/Paragraph Gates accurately configured! <<<");
 } else {
   console.error("\n>>> TEST FAILED! <<<", {
     evalPassC1: evalPassC1.meetsThreshold,
@@ -249,7 +302,8 @@ if (allPassed) {
     targetWordsUsed: quickMetrics.targetWordsUsed,
     lexisGuardPassed,
     aiPromptTestPassed,
-    treeTopicTestPassed
+    treeTopicTestPassed,
+    wordParaGateTestPassed
   });
   process.exit(1);
 }

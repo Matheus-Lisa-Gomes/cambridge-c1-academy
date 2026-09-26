@@ -207,6 +207,22 @@ const topicAdherenceTestPassed = adherenceC1Pass.passes &&
                                  !adherenceOffTopic.passes &&
                                  adherenceC2Pass.passes;
 
+console.log("\n=== TEST 10: Topic Difficulty Tier Filter (Easy, Medium, Hard, All) ===");
+const easyFilterTopic = generateRandomTreeTopic('C1', null, Math.random, 1);
+const medFilterTopic = generateRandomTreeTopic('C1', null, Math.random, 2);
+const hardFilterTopic = generateRandomTreeTopic('C1', null, Math.random, 3);
+const allFilterTopic = generateRandomTreeTopic('C1', null, Math.random, 'all');
+
+console.log("Easy Tier Topic Subject:", easyFilterTopic.mainSubject.name, "| Complexity:", easyFilterTopic.complexity, "(Expected: 1)");
+console.log("Medium Tier Topic Subject:", medFilterTopic.mainSubject.name, "| Complexity:", medFilterTopic.complexity, "(Expected: 2)");
+console.log("Hard Tier Topic Subject:", hardFilterTopic.mainSubject.name, "| Complexity:", hardFilterTopic.complexity, "(Expected: 3)");
+console.log("All Tiers Topic Subject:", allFilterTopic.mainSubject.name, "| Complexity:", allFilterTopic.complexity, "(Expected: 1, 2, or 3)");
+
+const difficultyFilterTestPassed = easyFilterTopic.complexity === 1 &&
+                                   medFilterTopic.complexity === 2 &&
+                                   hardFilterTopic.complexity === 3 &&
+                                   [1, 2, 3].includes(allFilterTopic.complexity);
+
 const allPassed = evalPassC1.meetsThreshold && 
                   !evalFailB1.meetsThreshold && 
                   evalPassC2.meetsThreshold && 
@@ -216,10 +232,11 @@ const allPassed = evalPassC1.meetsThreshold &&
                   lexisGuardPassed &&
                   aiPromptTestPassed &&
                   treeTopicTestPassed &&
-                  topicAdherenceTestPassed;
+                  topicAdherenceTestPassed &&
+                  difficultyFilterTestPassed;
 
 if (allPassed) {
-  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard, AI Prompt Generator, Tree Topic Architecture & Obligatory Topic Adherence Guard accurately configured! <<<");
+  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard, AI Prompt Generator, Tree Topic Architecture, Obligatory Topic Adherence Guard & Topic Difficulty Tier Filter accurately configured! <<<");
 } else {
   console.error("\n>>> TEST FAILED! <<<", {
     evalPassC1: evalPassC1.meetsThreshold,

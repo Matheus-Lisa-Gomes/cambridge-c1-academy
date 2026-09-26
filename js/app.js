@@ -13,7 +13,11 @@ class FluentEdgeApp {
     try {
       this.targetLevel = localStorage.getItem('fluentedge_target_level') || 'C1';
     } catch (e) {}
-    this.currentTopic = generateRandomTreeTopic(this.targetLevel);
+    this.topicDifficulty = 'all';
+    try {
+      this.topicDifficulty = localStorage.getItem('fluentedge_topic_difficulty') || 'all';
+    } catch (e) {}
+    this.currentTopic = generateRandomTreeTopic(this.targetLevel, null, Math.random, this.topicDifficulty);
 
     this.activeVocabulary = [];
     this.speechEngine = new SpeechEngine();
@@ -31,6 +35,7 @@ class FluentEdgeApp {
     this.bindHotkeys();
     this.setupSpeechEngineCallbacks();
     this.setTargetLevel(this.targetLevel, true);
+    this.setTopicDifficulty(this.topicDifficulty, false);
     this.loadTopic(this.currentTopic);
     this.renderHistory();
     this.updateEducationalRequirementsCard();
@@ -86,6 +91,12 @@ class FluentEdgeApp {
 
       // Topic Card & Tree Architecture
       rerollTopicBtn: document.getElementById('rerollTopicBtn'),
+      topicDifficultySelector: document.getElementById('topicDifficultySelector'),
+      topicDifficultyBtn: document.getElementById('topicDifficultyBtn'),
+      topicDifficultyValue: document.getElementById('topicDifficultyValue'),
+      topicDifficultyDropdown: document.getElementById('topicDifficultyDropdown'),
+      diffIndicatorDot: document.getElementById('diffIndicatorDot'),
+      topicComplexityBadge: document.getElementById('topicComplexityBadge'),
       topicCategory: document.getElementById('topicCategory'),
       topicType: document.getElementById('topicType'),
       topicTime: document.getElementById('topicTime'),
@@ -205,6 +216,33 @@ class FluentEdgeApp {
     if (this.dom.rerollTopicBtn) {
       this.dom.rerollTopicBtn.addEventListener('click', () => {
         this.rerollTopic();
+      });
+    }
+
+    // Topic Difficulty Selector & Dropdown
+    if (this.dom.topicDifficultyBtn && this.dom.topicDifficultySelector) {
+      this.dom.topicDifficultyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = this.dom.topicDifficultySelector.classList.toggle('open');
+        this.dom.topicDifficultyBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      if (this.dom.topicDifficultyDropdown) {
+        this.dom.topicDifficultyDropdown.addEventListener('click', (e) => {
+          const option = e.target.closest('.difficulty-option');
+          if (!option) return;
+          const selectedDiff = option.dataset.difficulty;
+          this.setTopicDifficulty(selectedDiff, true);
+          this.dom.topicDifficultySelector.classList.remove('open');
+          this.dom.topicDifficultyBtn.setAttribute('aria-expanded', 'false');
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (!this.dom.topicDifficultySelector.contains(e.target)) {
+          this.dom.topicDifficultySelector.classList.remove('open');
+          this.dom.topicDifficultyBtn.setAttribute('aria-expanded', 'false');
+        }
       });
     }
     if (this.dom.rerollVocabBtn) {
@@ -652,7 +690,7 @@ class FluentEdgeApp {
     if (topic && typeof topic === 'object') {
       this.currentTopic = topic;
     } else if (!this.currentTopic) {
-      this.currentTopic = generateRandomTreeTopic(this.targetLevel);
+      this.currentTopic = generateRandomTreeTopic(this.targetLevel, null, Math.random, this.topicDifficulty);
     }
     const current = this.currentTopic;
 
@@ -660,6 +698,15 @@ class FluentEdgeApp {
     if (this.dom.topicType) this.dom.topicType.textContent = current.type;
     if (this.dom.topicTime) this.dom.topicTime.textContent = current.recommendedTime;
     if (this.dom.topicTitle) this.dom.topicTitle.textContent = current.title;
+
+    // Topic Complexity Tier Badge
+    if (this.dom.topicComplexityBadge) {
+      const compLabel = current.complexityLabel || (current.complexity === 1 ? 'Easy' : (current.complexity === 2 ? 'Medium' : 'Hard'));
+      const compClass = current.complexity === 1 ? 'tier-easy' : (current.complexity === 2 ? 'tier-medium' : 'tier-hard');
+      this.dom.topicComplexityBadge.textContent = compLabel;
+      this.dom.topicComplexityBadge.className = `topic-complexity-badge ${compClass}`;
+      this.dom.topicComplexityBadge.title = `Topic Complexity: ${compLabel} Tier`;
+    }
 
     // Tree nodes: Root Subject, Sub-theme 1, Sub-theme 2
     if (this.dom.topicMainSubjectText) {
@@ -690,9 +737,48 @@ class FluentEdgeApp {
     this.handleEditorInput();
   }
 
+  setTopicDifficulty(difficulty, reroll = true) {
+    this.topicDifficulty = difficulty || 'all';
+    try {
+      localStorage.setItem('fluentedge_topic_difficulty', this.topicDifficulty);
+    } catch (e) {}
+
+    const labels = {
+      'all': 'All',
+      '1': 'Easy',
+      '2': 'Medium',
+      '3': 'Hard'
+    };
+    const dotClasses = {
+      'all': 'dot-all',
+      '1': 'dot-easy',
+      '2': 'dot-medium',
+      '3': 'dot-hard'
+    };
+
+    if (this.dom.topicDifficultyValue) {
+      this.dom.topicDifficultyValue.textContent = labels[this.topicDifficulty] || 'All';
+    }
+    if (this.dom.diffIndicatorDot) {
+      this.dom.diffIndicatorDot.className = `diff-indicator-dot ${dotClasses[this.topicDifficulty] || 'dot-all'}`;
+    }
+    if (this.dom.topicDifficultyDropdown) {
+      const options = this.dom.topicDifficultyDropdown.querySelectorAll('.difficulty-option');
+      options.forEach(opt => {
+        const isActive = opt.dataset.difficulty === this.topicDifficulty;
+        opt.classList.toggle('active', isActive);
+        opt.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+    }
+
+    if (reroll) {
+      this.rerollTopic();
+    }
+  }
+
   rerollTopic() {
     const currentSubjectId = this.currentTopic?.mainSubject?.id || null;
-    const newTopic = generateRandomTreeTopic(this.targetLevel, currentSubjectId);
+    const newTopic = generateRandomTreeTopic(this.targetLevel, currentSubjectId, Math.random, this.topicDifficulty);
     this.currentTopic = newTopic;
     if (this.dom.essayInput) this.dom.essayInput.value = "";
     this.loadTopic(newTopic);

@@ -14199,6 +14199,8 @@ function generateTopicFromTree(subject, primaryTheme, secondaryTheme, targetLeve
     mainSubject: sub,
     subTheme1: th1,
     subTheme2: th2,
+    complexity: sub.complexity || 2,
+    complexityLabel: sub.complexity === 1 ? 'Easy' : (sub.complexity === 2 ? 'Medium' : 'Hard'),
     category: sub.domain || 'Contemporary Academic Discourse',
     type: profile.type,
     cefrTarget: profile.cefrTarget,
@@ -14224,18 +14226,27 @@ function generateTopicFromTree(subject, primaryTheme, secondaryTheme, targetLeve
 // =============================================================================
 // 13. FULLY RANDOMIZED TREE TOPIC
 // =============================================================================
-function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng) {
+function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng, difficultyTier) {
   targetLevel      = targetLevel || 'C1';
   excludeSubjectId = excludeSubjectId || null;
   rng              = rng || Math.random;
 
-  var profile = DIFFICULTY_PROFILES[targetLevel] || DIFFICULTY_PROFILES.C1;
-  var preferredComplexities = profile.preferredComplexities || [1, 2, 3];
+  var tier = null;
+  if (difficultyTier === 1 || difficultyTier === '1' || difficultyTier === 'easy') tier = 1;
+  else if (difficultyTier === 2 || difficultyTier === '2' || difficultyTier === 'medium') tier = 2;
+  else if (difficultyTier === 3 || difficultyTier === '3' || difficultyTier === 'hard') tier = 3;
 
-  // Step 1: pick subject (prefer complexity appropriate for level, exclude last)
+  var profile = DIFFICULTY_PROFILES[targetLevel] || DIFFICULTY_PROFILES.C1;
+  var preferredComplexities = tier ? [tier] : (profile.preferredComplexities || [1, 2, 3]);
+
+  // Step 1: pick subject (prefer selected tier or complexity appropriate for level, exclude last)
   var eligibleSubjects = MAIN_SUBJECTS.filter(function(s) {
-    return s.id !== excludeSubjectId;
+    var notExcluded = s.id !== excludeSubjectId;
+    return tier ? (notExcluded && s.complexity === tier) : notExcluded;
   });
+  if (eligibleSubjects.length === 0) {
+    eligibleSubjects = MAIN_SUBJECTS.filter(function(s) { return s.id !== excludeSubjectId; });
+  }
   var subject = _weightedPick(
     eligibleSubjects,
     function(s) { return preferredComplexities.includes(s.complexity) ? 2 : 1; },
@@ -14245,8 +14256,14 @@ function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng) {
   // Step 2: pick primary theme (cooldown-aware, compatible)
   var compatibleThemeIds = subject.compatibleThemes;
   var eligibleThemes = SUB_THEMES.filter(function(t) {
-    return compatibleThemeIds.includes(t.id) && !_isOnCooldown(subject.id, t.id);
+    var match = compatibleThemeIds.includes(t.id) && !_isOnCooldown(subject.id, t.id);
+    return tier ? (match && t.complexity === tier) : match;
   });
+  if (eligibleThemes.length === 0) {
+    eligibleThemes = SUB_THEMES.filter(function(t) {
+      return compatibleThemeIds.includes(t.id) && !_isOnCooldown(subject.id, t.id);
+    });
+  }
   if (eligibleThemes.length === 0) {
     eligibleThemes = SUB_THEMES.filter(function(t) { return compatibleThemeIds.includes(t.id); });
   }
@@ -14266,8 +14283,14 @@ function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng) {
 
   // Step 3: secondary theme
   var secondaryCandidates = SUB_THEMES.filter(function(t) {
-    return t.id !== primaryTheme.id && compatibleThemeIds.includes(t.id);
+    var match = t.id !== primaryTheme.id && compatibleThemeIds.includes(t.id);
+    return tier ? (match && t.complexity === tier) : match;
   });
+  if (secondaryCandidates.length === 0) {
+    secondaryCandidates = SUB_THEMES.filter(function(t) {
+      return t.id !== primaryTheme.id && compatibleThemeIds.includes(t.id);
+    });
+  }
   var secondaryTheme = secondaryCandidates.length > 0
     ? _pick(secondaryCandidates, rng)
     : _pick(SUB_THEMES.filter(function(t) { return t.id !== primaryTheme.id; }), rng);
@@ -15522,7 +15545,11 @@ class FluentEdgeApp {
     try {
       this.targetLevel = localStorage.getItem('fluentedge_target_level') || 'C1';
     } catch (e) {}
-    this.currentTopic = generateRandomTreeTopic(this.targetLevel);
+    this.topicDifficulty = 'all';
+    try {
+      this.topicDifficulty = localStorage.getItem('fluentedge_topic_difficulty') || 'all';
+    } catch (e) {}
+    this.currentTopic = generateRandomTreeTopic(this.targetLevel, null, Math.random, this.topicDifficulty);
 
     this.activeVocabulary = [];
     this.speechEngine = new SpeechEngine();
@@ -15540,6 +15567,7 @@ class FluentEdgeApp {
     this.bindHotkeys();
     this.setupSpeechEngineCallbacks();
     this.setTargetLevel(this.targetLevel, true);
+    this.setTopicDifficulty(this.topicDifficulty, false);
     this.loadTopic(this.currentTopic);
     this.renderHistory();
     this.updateEducationalRequirementsCard();
@@ -15595,6 +15623,12 @@ class FluentEdgeApp {
 
       // Topic Card & Tree Architecture
       rerollTopicBtn: document.getElementById('rerollTopicBtn'),
+      topicDifficultySelector: document.getElementById('topicDifficultySelector'),
+      topicDifficultyBtn: document.getElementById('topicDifficultyBtn'),
+      topicDifficultyValue: document.getElementById('topicDifficultyValue'),
+      topicDifficultyDropdown: document.getElementById('topicDifficultyDropdown'),
+      diffIndicatorDot: document.getElementById('diffIndicatorDot'),
+      topicComplexityBadge: document.getElementById('topicComplexityBadge'),
       topicCategory: document.getElementById('topicCategory'),
       topicType: document.getElementById('topicType'),
       topicTime: document.getElementById('topicTime'),
@@ -15714,6 +15748,33 @@ class FluentEdgeApp {
     if (this.dom.rerollTopicBtn) {
       this.dom.rerollTopicBtn.addEventListener('click', () => {
         this.rerollTopic();
+      });
+    }
+
+    // Topic Difficulty Selector & Dropdown
+    if (this.dom.topicDifficultyBtn && this.dom.topicDifficultySelector) {
+      this.dom.topicDifficultyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = this.dom.topicDifficultySelector.classList.toggle('open');
+        this.dom.topicDifficultyBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      if (this.dom.topicDifficultyDropdown) {
+        this.dom.topicDifficultyDropdown.addEventListener('click', (e) => {
+          const option = e.target.closest('.difficulty-option');
+          if (!option) return;
+          const selectedDiff = option.dataset.difficulty;
+          this.setTopicDifficulty(selectedDiff, true);
+          this.dom.topicDifficultySelector.classList.remove('open');
+          this.dom.topicDifficultyBtn.setAttribute('aria-expanded', 'false');
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (!this.dom.topicDifficultySelector.contains(e.target)) {
+          this.dom.topicDifficultySelector.classList.remove('open');
+          this.dom.topicDifficultyBtn.setAttribute('aria-expanded', 'false');
+        }
       });
     }
     if (this.dom.rerollVocabBtn) {
@@ -16161,7 +16222,7 @@ class FluentEdgeApp {
     if (topic && typeof topic === 'object') {
       this.currentTopic = topic;
     } else if (!this.currentTopic) {
-      this.currentTopic = generateRandomTreeTopic(this.targetLevel);
+      this.currentTopic = generateRandomTreeTopic(this.targetLevel, null, Math.random, this.topicDifficulty);
     }
     const current = this.currentTopic;
 
@@ -16169,6 +16230,15 @@ class FluentEdgeApp {
     if (this.dom.topicType) this.dom.topicType.textContent = current.type;
     if (this.dom.topicTime) this.dom.topicTime.textContent = current.recommendedTime;
     if (this.dom.topicTitle) this.dom.topicTitle.textContent = current.title;
+
+    // Topic Complexity Tier Badge
+    if (this.dom.topicComplexityBadge) {
+      const compLabel = current.complexityLabel || (current.complexity === 1 ? 'Easy' : (current.complexity === 2 ? 'Medium' : 'Hard'));
+      const compClass = current.complexity === 1 ? 'tier-easy' : (current.complexity === 2 ? 'tier-medium' : 'tier-hard');
+      this.dom.topicComplexityBadge.textContent = compLabel;
+      this.dom.topicComplexityBadge.className = `topic-complexity-badge ${compClass}`;
+      this.dom.topicComplexityBadge.title = `Topic Complexity: ${compLabel} Tier`;
+    }
 
     // Tree nodes: Root Subject, Sub-theme 1, Sub-theme 2
     if (this.dom.topicMainSubjectText) {
@@ -16199,9 +16269,48 @@ class FluentEdgeApp {
     this.handleEditorInput();
   }
 
+  setTopicDifficulty(difficulty, reroll = true) {
+    this.topicDifficulty = difficulty || 'all';
+    try {
+      localStorage.setItem('fluentedge_topic_difficulty', this.topicDifficulty);
+    } catch (e) {}
+
+    const labels = {
+      'all': 'All',
+      '1': 'Easy',
+      '2': 'Medium',
+      '3': 'Hard'
+    };
+    const dotClasses = {
+      'all': 'dot-all',
+      '1': 'dot-easy',
+      '2': 'dot-medium',
+      '3': 'dot-hard'
+    };
+
+    if (this.dom.topicDifficultyValue) {
+      this.dom.topicDifficultyValue.textContent = labels[this.topicDifficulty] || 'All';
+    }
+    if (this.dom.diffIndicatorDot) {
+      this.dom.diffIndicatorDot.className = `diff-indicator-dot ${dotClasses[this.topicDifficulty] || 'dot-all'}`;
+    }
+    if (this.dom.topicDifficultyDropdown) {
+      const options = this.dom.topicDifficultyDropdown.querySelectorAll('.difficulty-option');
+      options.forEach(opt => {
+        const isActive = opt.dataset.difficulty === this.topicDifficulty;
+        opt.classList.toggle('active', isActive);
+        opt.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+    }
+
+    if (reroll) {
+      this.rerollTopic();
+    }
+  }
+
   rerollTopic() {
     const currentSubjectId = this.currentTopic?.mainSubject?.id || null;
-    const newTopic = generateRandomTreeTopic(this.targetLevel, currentSubjectId);
+    const newTopic = generateRandomTreeTopic(this.targetLevel, currentSubjectId, Math.random, this.topicDifficulty);
     this.currentTopic = newTopic;
     if (this.dom.essayInput) this.dom.essayInput.value = "";
     this.loadTopic(newTopic);

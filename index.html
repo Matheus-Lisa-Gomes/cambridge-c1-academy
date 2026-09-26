@@ -444,7 +444,7 @@
           <div class="stage2-topic-tree-bar">
             <div class="topic-tree-hierarchy">
 
-              <!-- Row 1: Badge + Root Subject + Draw button -->
+              <!-- Row 1: Badge + Complexity + Root Subject + Difficulty selector + Draw button -->
               <div class="tree-row tree-row-root">
                 <span class="topic-tree-badge" title="Obligatory academic focus generated from subject-subtheme tree">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -454,13 +454,54 @@
                   <span>Obligatory Focus</span>
                 </span>
 
+                <span class="topic-complexity-badge tier-hard" id="topicComplexityBadge" title="Topic Complexity Tier">Hard</span>
+
                 <div class="tree-node tree-root" id="topicMainSubjectNode" title="Randomized Root Subject">
                   <span class="tree-node-label">Root Subject:</span>
                   <span class="tree-node-val" id="topicMainSubjectText">Artificial Intelligence</span>
                 </div>
 
-                <!-- Draw button lives at the end of row 1 -->
+                <!-- Difficulty selector and Draw button live at the end of row 1 -->
                 <div class="stage2-topic-nav">
+                  <div class="topic-difficulty-selector" id="topicDifficultySelector">
+                    <button type="button" id="topicDifficultyBtn" class="btn btn-secondary btn-sm topic-difficulty-btn" title="Filter Topic Difficulty Tier" aria-haspopup="listbox" aria-expanded="false">
+                      <span class="diff-indicator-dot dot-all" id="diffIndicatorDot"></span>
+                      <span class="difficulty-label">Difficulty:</span>
+                      <span class="difficulty-current" id="topicDifficultyValue">All</span>
+                      <svg class="dropdown-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="topic-difficulty-dropdown" id="topicDifficultyDropdown" role="listbox" aria-label="Select Topic Difficulty">
+                      <button type="button" class="difficulty-option active" data-difficulty="all" role="option" aria-selected="true">
+                        <span class="diff-dot dot-all"></span>
+                        <div class="diff-text">
+                          <span class="diff-name">All Tiers</span>
+                          <span class="diff-desc">Easy, Medium &amp; Hard</span>
+                        </div>
+                      </button>
+                      <button type="button" class="difficulty-option" data-difficulty="1" role="option" aria-selected="false">
+                        <span class="diff-dot dot-easy"></span>
+                        <div class="diff-text">
+                          <span class="diff-name">Easy</span>
+                          <span class="diff-desc">Accessible Everyday Topics</span>
+                        </div>
+                      </button>
+                      <button type="button" class="difficulty-option" data-difficulty="2" role="option" aria-selected="false">
+                        <span class="diff-dot dot-medium"></span>
+                        <div class="diff-text">
+                          <span class="diff-name">Medium</span>
+                          <span class="diff-desc">Societal &amp; Public Policy</span>
+                        </div>
+                      </button>
+                      <button type="button" class="difficulty-option" data-difficulty="3" role="option" aria-selected="false">
+                        <span class="diff-dot dot-hard"></span>
+                        <div class="diff-text">
+                          <span class="diff-name">Hard</span>
+                          <span class="diff-desc">Advanced Academic &amp; Tech</span>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
                   <button id="rerollTopicBtn" class="btn btn-secondary btn-sm reroll-topic-btn" title="Draw New Random Tree Topic (Alt+T)" aria-label="Draw New Topic">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                       <polyline points="23 4 23 10 17 10"></polyline>

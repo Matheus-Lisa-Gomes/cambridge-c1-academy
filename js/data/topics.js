@@ -1206,6 +1206,8 @@ export function generateTopicFromTree(subject, primaryTheme, secondaryTheme, tar
     mainSubject: sub,
     subTheme1: th1,
     subTheme2: th2,
+    complexity: sub.complexity || 2,
+    complexityLabel: sub.complexity === 1 ? 'Easy' : (sub.complexity === 2 ? 'Medium' : 'Hard'),
     category: sub.domain || 'Contemporary Academic Discourse',
     type: profile.type,
     cefrTarget: profile.cefrTarget,
@@ -1232,18 +1234,27 @@ export function generateTopicFromTree(subject, primaryTheme, secondaryTheme, tar
 // 13. FULLY RANDOMIZED TREE TOPIC
 // =============================================================================
 
-export function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng) {
+export function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng, difficultyTier) {
   targetLevel      = targetLevel || 'C1';
   excludeSubjectId = excludeSubjectId || null;
   rng              = rng || Math.random;
 
-  var profile = DIFFICULTY_PROFILES[targetLevel] || DIFFICULTY_PROFILES.C1;
-  var preferredComplexities = profile.preferredComplexities || [1, 2, 3];
+  var tier = null;
+  if (difficultyTier === 1 || difficultyTier === '1' || difficultyTier === 'easy') tier = 1;
+  else if (difficultyTier === 2 || difficultyTier === '2' || difficultyTier === 'medium') tier = 2;
+  else if (difficultyTier === 3 || difficultyTier === '3' || difficultyTier === 'hard') tier = 3;
 
-  // Step 1: pick subject (prefer complexity appropriate for level, exclude last)
+  var profile = DIFFICULTY_PROFILES[targetLevel] || DIFFICULTY_PROFILES.C1;
+  var preferredComplexities = tier ? [tier] : (profile.preferredComplexities || [1, 2, 3]);
+
+  // Step 1: pick subject (prefer selected tier or complexity appropriate for level, exclude last)
   var eligibleSubjects = MAIN_SUBJECTS.filter(function(s) {
-    return s.id !== excludeSubjectId;
+    var notExcluded = s.id !== excludeSubjectId;
+    return tier ? (notExcluded && s.complexity === tier) : notExcluded;
   });
+  if (eligibleSubjects.length === 0) {
+    eligibleSubjects = MAIN_SUBJECTS.filter(function(s) { return s.id !== excludeSubjectId; });
+  }
   var subject = _weightedPick(
     eligibleSubjects,
     function(s) { return preferredComplexities.includes(s.complexity) ? 2 : 1; },
@@ -1253,8 +1264,14 @@ export function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng) {
   // Step 2: pick primary theme (cooldown-aware, compatible)
   var compatibleThemeIds = subject.compatibleThemes;
   var eligibleThemes = SUB_THEMES.filter(function(t) {
-    return compatibleThemeIds.includes(t.id) && !_isOnCooldown(subject.id, t.id);
+    var match = compatibleThemeIds.includes(t.id) && !_isOnCooldown(subject.id, t.id);
+    return tier ? (match && t.complexity === tier) : match;
   });
+  if (eligibleThemes.length === 0) {
+    eligibleThemes = SUB_THEMES.filter(function(t) {
+      return compatibleThemeIds.includes(t.id) && !_isOnCooldown(subject.id, t.id);
+    });
+  }
   if (eligibleThemes.length === 0) {
     eligibleThemes = SUB_THEMES.filter(function(t) { return compatibleThemeIds.includes(t.id); });
   }
@@ -1274,8 +1291,14 @@ export function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng) {
 
   // Step 3: secondary theme
   var secondaryCandidates = SUB_THEMES.filter(function(t) {
-    return t.id !== primaryTheme.id && compatibleThemeIds.includes(t.id);
+    var match = t.id !== primaryTheme.id && compatibleThemeIds.includes(t.id);
+    return tier ? (match && t.complexity === tier) : match;
   });
+  if (secondaryCandidates.length === 0) {
+    secondaryCandidates = SUB_THEMES.filter(function(t) {
+      return t.id !== primaryTheme.id && compatibleThemeIds.includes(t.id);
+    });
+  }
   var secondaryTheme = secondaryCandidates.length > 0
     ? _pick(secondaryCandidates, rng)
     : _pick(SUB_THEMES.filter(function(t) { return t.id !== primaryTheme.id; }), rng);

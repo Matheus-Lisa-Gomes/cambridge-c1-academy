@@ -2,20 +2,18 @@
  * FluentEdge: C1–C2 English Training - Main Application Controller
  */
 
-import { TOPICS } from './data/topics.js';
+import { TOPICS, MAIN_SUBJECTS, SUB_THEMES, generateRandomTreeTopic, generateTopicFromTree } from './data/topics.js';
 import { getRandomVocabularySet } from './data/vocabulary.js';
 import { analyzeQuickMetrics, evaluateEssay, checkTargetWordUsage, generateAiEssayPrompt } from './modules/evaluator.js';
 import { SpeechEngine } from './modules/speech.js';
 
 class FluentEdgeApp {
   constructor() {
-    this.topics = TOPICS;
-    this.currentTopicIndex = 0;
-    this.currentTopic = this.topics[0];
     this.targetLevel = 'C1';
     try {
       this.targetLevel = localStorage.getItem('fluentedge_target_level') || 'C1';
     } catch (e) {}
+    this.currentTopic = generateRandomTreeTopic(this.targetLevel);
 
     this.activeVocabulary = [];
     this.speechEngine = new SpeechEngine();
@@ -33,7 +31,7 @@ class FluentEdgeApp {
     this.bindHotkeys();
     this.setupSpeechEngineCallbacks();
     this.setTargetLevel(this.targetLevel, true);
-    this.loadTopic(0);
+    this.loadTopic(this.currentTopic);
     this.renderHistory();
     this.updateEducationalRequirementsCard();
     this.setStage(1);
@@ -86,15 +84,16 @@ class FluentEdgeApp {
       reqsPassMetric: document.getElementById('reqsPassMetric'),
       reqsPassDesc: document.getElementById('reqsPassDesc'),
 
-      // Topic Card
-      topicCounterCurrent: document.getElementById('topicCounterCurrent'),
-      topicCounterTotal: document.getElementById('topicCounterTotal'),
-      prevTopicBtn: document.getElementById('prevTopicBtn'),
-      nextTopicBtn: document.getElementById('nextTopicBtn'),
+      // Topic Card & Tree Architecture
+      rerollTopicBtn: document.getElementById('rerollTopicBtn'),
       topicCategory: document.getElementById('topicCategory'),
       topicType: document.getElementById('topicType'),
       topicTime: document.getElementById('topicTime'),
       topicTitle: document.getElementById('topicTitle'),
+      topicMainSubjectText: document.getElementById('topicMainSubjectText'),
+      topicSubTheme1Text: document.getElementById('topicSubTheme1Text'),
+      topicSubTheme2Text: document.getElementById('topicSubTheme2Text'),
+      topicDirective: document.getElementById('topicDirective'),
       vocabGrid: document.getElementById('vocabGrid'),
       vocabUsedCounter: document.getElementById('vocabUsedCounter'),
       rerollVocabBtn: document.getElementById('rerollVocabBtn'),
@@ -199,12 +198,16 @@ class FluentEdgeApp {
       cefrSwitch.addEventListener('click', toggleStandard);
     }
 
-    // Topic events
-    if (this.dom.prevTopicBtn) {
-      this.dom.prevTopicBtn.addEventListener('click', () => this.cyclePrevTopic());
-    }
-    if (this.dom.nextTopicBtn) {
-      this.dom.nextTopicBtn.addEventListener('click', () => this.cycleNextTopic());
+    // Topic events (Draw New Tree Topic)
+    if (this.dom.rerollTopicBtn) {
+      this.dom.rerollTopicBtn.addEventListener('click', () => {
+        if (this.hasEssayContent()) {
+          if (!confirm("You have an essay in progress. Drawing a new topic will clear your draft and generate a fresh subject-subtheme tree. Are you sure you want to change topics?")) {
+            return;
+          }
+        }
+        this.rerollTopic();
+      });
     }
     if (this.dom.rerollVocabBtn) {
       this.dom.rerollVocabBtn.addEventListener('click', () => {
@@ -402,17 +405,15 @@ class FluentEdgeApp {
         return;
       }
 
-      // Alt+ArrowLeft  →  Previous Topic
-      if (e.altKey && e.key === 'ArrowLeft' && !inTextField && !modalOpen) {
+      // Alt+T  →  Draw New Topic (Randomize tree architecture)
+      if (e.altKey && (e.key === 't' || e.key === 'T') && !modalOpen) {
         e.preventDefault();
-        this.cyclePrevTopic();
-        return;
-      }
-
-      // Alt+ArrowRight  →  Next Topic
-      if (e.altKey && e.key === 'ArrowRight' && !inTextField && !modalOpen) {
-        e.preventDefault();
-        this.cycleNextTopic();
+        if (this.hasEssayContent()) {
+          if (!confirm("You have an essay in progress. Drawing a new topic will clear your draft and generate a fresh subject-subtheme tree. Are you sure you want to change topics?")) {
+            return;
+          }
+        }
+        this.rerollTopic();
         return;
       }
 
@@ -504,6 +505,14 @@ class FluentEdgeApp {
       this.dom.targetWordCountHint.textContent = isC2
         ? "(280-320 target)"
         : "(220-260 target)";
+    }
+
+    if (this.currentTopic) {
+      this.currentTopic.type = isC2 ? 'C2 Proficiency Discursive Essay' : 'C1/C2 Academic Essay';
+      this.currentTopic.cefrTarget = isC2 ? 'C2' : 'C1 / C2';
+      this.currentTopic.recommendedTime = isC2 ? '50 minutes' : '45 minutes';
+      if (this.dom.topicType) this.dom.topicType.textContent = this.currentTopic.type;
+      if (this.dom.topicTime) this.dom.topicTime.textContent = this.currentTopic.recommendedTime;
     }
 
     this.updateEducationalRequirementsCard();
@@ -642,25 +651,43 @@ class FluentEdgeApp {
   }
 
   // ==========================================
-  // TOPIC & VOCABULARY ENGINE
+  // ==========================================
+  // TOPIC & VOCABULARY ENGINE (Tree Architecture)
   // ==========================================
 
-  loadTopic(index) {
-    this.currentTopicIndex = index;
-    this.currentTopic = this.topics[index];
+  loadTopic(topic = null) {
+    if (topic && typeof topic === 'object') {
+      this.currentTopic = topic;
+    } else if (!this.currentTopic) {
+      this.currentTopic = generateRandomTreeTopic(this.targetLevel);
+    }
+    const current = this.currentTopic;
 
-    // Update topic counter badge
-    if (this.dom.topicCounterCurrent) this.dom.topicCounterCurrent.textContent = index + 1;
-    if (this.dom.topicCounterTotal) this.dom.topicCounterTotal.textContent = this.topics.length;
+    if (this.dom.topicCategory) this.dom.topicCategory.textContent = current.category;
+    if (this.dom.topicType) this.dom.topicType.textContent = current.type;
+    if (this.dom.topicTime) this.dom.topicTime.textContent = current.recommendedTime;
+    if (this.dom.topicTitle) this.dom.topicTitle.textContent = current.title;
 
-    if (this.dom.topicCategory) this.dom.topicCategory.textContent = this.currentTopic.category;
-    if (this.dom.topicType) this.dom.topicType.textContent = this.currentTopic.type;
-    if (this.dom.topicTime) this.dom.topicTime.textContent = this.currentTopic.recommendedTime;
-    if (this.dom.topicTitle) this.dom.topicTitle.textContent = this.currentTopic.title;
+    // Tree nodes: Root Subject, Sub-theme 1, Sub-theme 2
+    if (this.dom.topicMainSubjectText) {
+      this.dom.topicMainSubjectText.textContent = current.mainSubject?.name || 'Academic Core';
+      this.dom.topicMainSubjectText.title = `Domain: ${current.category || ''}`;
+    }
+    if (this.dom.topicSubTheme1Text) {
+      this.dom.topicSubTheme1Text.textContent = current.subTheme1?.shortName || current.subTheme1?.name || 'Theme 1';
+      this.dom.topicSubTheme1Text.title = current.subTheme1?.name || '';
+    }
+    if (this.dom.topicSubTheme2Text) {
+      this.dom.topicSubTheme2Text.textContent = current.subTheme2?.shortName || current.subTheme2?.name || 'Theme 2';
+      this.dom.topicSubTheme2Text.title = current.subTheme2?.name || '';
+    }
+    if (this.dom.topicDirective) {
+      this.dom.topicDirective.textContent = current.directive || `Write an academic essay examining the implications of this subject for contemporary society.`;
+    }
 
     if (this.dom.writingTopicPill) {
-      this.dom.writingTopicPill.textContent = this.currentTopic.title;
-      this.dom.writingTopicPill.title = this.currentTopic.title;
+      this.dom.writingTopicPill.textContent = current.title;
+      this.dom.writingTopicPill.title = current.title;
     }
 
     // Draw 10 random target vocabulary items (3 Verbs, 3 Nouns, 2 Adj, 2 Adv)
@@ -670,26 +697,15 @@ class FluentEdgeApp {
     this.handleEditorInput();
   }
 
-  cyclePrevTopic() {
-    if (this.hasEssayContent()) {
-      if (!confirm("You have an essay in progress. Navigating to another topic will discard your current draft. Are you sure you want to leave this prompt?")) {
-        return;
-      }
-    }
-    const prevIndex = (this.currentTopicIndex - 1 + this.topics.length) % this.topics.length;
+  rerollTopic(silent = false) {
+    const currentSubjectId = this.currentTopic?.mainSubject?.id || null;
+    const newTopic = generateRandomTreeTopic(this.targetLevel, currentSubjectId);
+    this.currentTopic = newTopic;
     if (this.dom.essayInput) this.dom.essayInput.value = "";
-    this.loadTopic(prevIndex);
-  }
-
-  cycleNextTopic() {
-    if (this.hasEssayContent()) {
-      if (!confirm("You have an essay in progress. Navigating to another topic will discard your current draft. Are you sure you want to leave this prompt?")) {
-        return;
-      }
+    this.loadTopic(newTopic);
+    if (!silent) {
+      this.showToast(`New topic drawn: ${newTopic.mainSubject?.shortName || newTopic.mainSubject?.name}`, "info");
     }
-    const nextIndex = (this.currentTopicIndex + 1) % this.topics.length;
-    if (this.dom.essayInput) this.dom.essayInput.value = "";
-    this.loadTopic(nextIndex);
   }
 
   renderVocabularyChips() {

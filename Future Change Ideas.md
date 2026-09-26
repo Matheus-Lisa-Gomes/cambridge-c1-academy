@@ -12,7 +12,11 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
 ## 1. Topic & Curriculum Enhancements
 
 - [x] **C2 Proficiency Dedicated Mode**: Introduce C2 essay prompts with stricter word count limits (280–320 words) and higher syntactic thresholds. *(Completed: added dedicated C2 prompts in `topics.js`, 280–320 word count targets with live guidance, and stricter C2 evaluation thresholds)*
-- [ ] **Required Save States**: If any text is written inside the editor-wrapper, any other action that would change the page or close the application should be blocked until the user clicks chooses either "Save" button or "Cancel" button. If the user clicks the "Save" button the text should be saved in the local storage and remove the warning. If the user clicks the "Cancel" button the text should be deleted and the warning should be removed.
+- [x] **Tree Structure Topic Architecture & Dynamic Overhaul**: Replace rigid, pre-defined static topics with an extensible tree structure:
+  - **Randomized Root Subject**: Drawn from an extensible pool of academic domains (`MAIN_SUBJECTS`).
+  - **Universal Sub-Themes (2 Randomized)**: Drawn from an extensible pool of 18 universally combinable themes (`SUB_THEMES`) such as Morality, Ethics, Society, Social Media, Addiction, Governance, Equity, Autonomy, and more.
+  - **Combinatorial Prompt Synthesis**: Dynamically generates authentic Cambridge C1/C2 titles, prompt directives, and CEFR metadata (>3,800 unique topic combinations).
+  - **Stage 2 Topic Card Overhaul**: Enhanced `<div class="stage2-topic-card">` with Root Subject & Sub-theme badges, structured writing directive callout, note confirming linguistic scoring is based on compulsory lexis and syntax (giving free argumentative stance), and 1-click **"Draw New Topic" (Alt+T)** reroll button alongside history navigation. *(Completed)*
 - [ ] **Test Mode with Countdown**: Create a test mode for the user to practice writing essays under timed conditions. Timer must be placed close to the writing box. 
 - [x] **AI Generated Essay Prompt Button**: Create a button that give a AI prompt copy so that the user generate the text with all the compulsory target lexis words in any LLM of his choice, in order to go straight to the reading part if they don't want to write the essay. *(Completed: added 1-click 'AI Prompt' button (Alt+P), preview modal with 10 compulsory lexis mini-chips & syntax radar rules, clipboard copy feedback, and shortcut inside the Requirement Alert modal)*
 

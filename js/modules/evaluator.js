@@ -500,6 +500,10 @@ export function generateAiEssayPrompt(topic, targetVocabulary = [], targetLevel 
   const topicTitle = topic ? topic.title : 'Contemporary Issues & Ethics';
   const topicCategory = topic ? topic.category : 'General Academic';
   const topicType = topic ? topic.type : (isC2 ? 'C2 Proficiency Discursive Essay' : 'C1/C2 Academic Essay');
+  const topicDirective = (topic && topic.directive) ? `\n- Prompt Directive: "${topic.directive}"` : '';
+  const treeDetails = (topic && topic.mainSubject)
+    ? `\n- Root Subject: ${topic.mainSubject.name}\n- Sub-Themes: ${topic.subTheme1?.name || ''} & ${topic.subTheme2?.name || ''}`
+    : '';
 
   const vocabItems = targetVocabulary.map((v, i) => {
     const word = v.headword || v.word || '';
@@ -514,7 +518,7 @@ export function generateAiEssayPrompt(topic, targetVocabulary = [], targetLevel 
 ESSAY TOPIC:
 - Title: "${topicTitle}"
 - Category: ${topicCategory}
-- Genre: ${topicType}
+- Genre: ${topicType}${topicDirective}${treeDetails}
 
 MANDATORY CRITERIA & CONSTRAINTS:
 

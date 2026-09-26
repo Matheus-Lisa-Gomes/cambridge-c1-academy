@@ -12,9 +12,11 @@ $vocabClean = $vocabClean -replace '(?m)^\s*export\s+function\s+', 'function '
 
 # 2. Topics
 $topicsClean = $topicsContent -replace '(?m)^\s*export\s+const\s+', 'const '
+$topicsClean = $topicsClean -replace '(?m)^\s*export\s+function\s+', 'function '
 
 # 3. Evaluator
 $evaluatorClean = $evaluatorContent -replace '(?m)^\s*import\s+[^;]+;\s*\r?\n', ''
+$evaluatorClean = $evaluatorClean -replace '(?m)^\s*export\s+const\s+', 'const '
 $evaluatorClean = $evaluatorClean -replace '(?m)^\s*export\s+function\s+', 'function '
 
 # 4. Speech

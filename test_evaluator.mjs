@@ -1,6 +1,6 @@
 // Automated verification for FluentEdge Assessment Evaluator
-import { TOPICS } from './js/data/topics.js';
-import { evaluateEssay, analyzeQuickMetrics } from './js/modules/evaluator.js';
+import { TOPICS, MAIN_SUBJECTS, SUB_THEMES, generateRandomTreeTopic, generateTopicFromTree } from './js/data/topics.js';
+import { evaluateEssay, analyzeQuickMetrics, generateAiEssayPrompt } from './js/modules/evaluator.js';
 
 const topicAI = TOPICS[0]; // AI topic (C1/C2)
 const topicC2 = TOPICS.find(t => t.id === 'epistemic-authority-truth') || TOPICS[10];
@@ -130,7 +130,6 @@ const isCompleteFulfilled = completeMetrics.targetWordsUsed === completeMetrics.
 console.log("Complete (10/10) Fulfilled:", isCompleteFulfilled, "| Words used:", completeMetrics.targetWordsUsed, "/ 10");
 
 console.log("\n=== TEST 7: AI Essay Generator Prompt Builder ===");
-import { generateAiEssayPrompt } from './js/modules/evaluator.js';
 const promptC1 = generateAiEssayPrompt(topicAI, customVocab, 'C1');
 const promptC2 = generateAiEssayPrompt(topicC2, customVocab, 'C2');
 
@@ -148,6 +147,38 @@ console.log("Prompt embeds all 10 compulsory words:", promptHasAllWords);
 console.log("Prompt includes syntax radar requirements:", promptHasSyntaxRules);
 console.log("Prompt specifies clean raw output:", promptHasOutputRule);
 
+console.log("\n=== TEST 8: Tree Topic Architecture (Main Subject + 2 Sub-Themes) ===");
+const randomTreeTopic = generateRandomTreeTopic('C1');
+console.log("Random Tree Topic ID:", randomTreeTopic.id);
+console.log("Random Tree Topic Title:", randomTreeTopic.title);
+console.log("Root Subject:", randomTreeTopic.mainSubject.name);
+console.log("Sub-Theme 1:", randomTreeTopic.subTheme1.name);
+console.log("Sub-Theme 2:", randomTreeTopic.subTheme2.name);
+console.log("Directive:", randomTreeTopic.directive);
+
+const treeSubjectsValid = MAIN_SUBJECTS.length >= 15;
+const treeSubThemesValid = SUB_THEMES.length >= 15;
+const topicHasTreeProps = Boolean(
+  randomTreeTopic.mainSubject &&
+  randomTreeTopic.subTheme1 &&
+  randomTreeTopic.subTheme2 &&
+  randomTreeTopic.subTheme1.id !== randomTreeTopic.subTheme2.id &&
+  randomTreeTopic.directive &&
+  randomTreeTopic.title
+);
+
+const treePrompt = generateAiEssayPrompt(randomTreeTopic, customVocab, 'C1');
+const treePromptIncludesSubject = treePrompt.includes(randomTreeTopic.mainSubject.name);
+const treePromptIncludesDirective = treePrompt.includes(randomTreeTopic.directive);
+
+console.log("Main Subjects Pool Count >= 15:", treeSubjectsValid, `(${MAIN_SUBJECTS.length})`);
+console.log("Sub-Themes Pool Count >= 15:", treeSubThemesValid, `(${SUB_THEMES.length})`);
+console.log("Random Tree Topic Has 2 Distinct Sub-Themes:", topicHasTreeProps);
+console.log("AI Prompt embeds Root Subject:", treePromptIncludesSubject);
+console.log("AI Prompt embeds Directive:", treePromptIncludesDirective);
+
+const treeTopicTestPassed = treeSubjectsValid && treeSubThemesValid && topicHasTreeProps && treePromptIncludesSubject && treePromptIncludesDirective;
+
 const aiPromptTestPassed = promptC1HasTitle && promptC1HasC1Standard && promptC2HasC2Standard && promptHasAllWords && promptHasSyntaxRules && promptHasOutputRule;
 
 const lexisGuardPassed = isPartialBlocked && 
@@ -163,10 +194,11 @@ const allPassed = evalPassC1.meetsThreshold &&
                   structureValid &&
                   quickMetrics.targetWordsUsed >= 8 &&
                   lexisGuardPassed &&
-                  aiPromptTestPassed;
+                  aiPromptTestPassed &&
+                  treeTopicTestPassed;
 
 if (allPassed) {
-  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard & AI Prompt Generator accurately configured! <<<");
+  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard, AI Prompt Generator & Tree Topic Architecture accurately configured! <<<");
 } else {
   console.error("\n>>> TEST FAILED! <<<", {
     evalPassC1: evalPassC1.meetsThreshold,
@@ -176,7 +208,8 @@ if (allPassed) {
     structureValid,
     targetWordsUsed: quickMetrics.targetWordsUsed,
     lexisGuardPassed,
-    aiPromptTestPassed
+    aiPromptTestPassed,
+    treeTopicTestPassed
   });
   process.exit(1);
 }

@@ -432,36 +432,79 @@
           </div>
         </div>
 
-        <!-- Stage 2 Topic Bar & Navigation -->
-        <div class="stage2-topic-card">
-          <div class="stage2-topic-topbar">
-            <div class="stage2-topic-meta" style="display: none;">
-              <span class="meta-pill" id="topicCategory">Technology &amp; Ethics</span>
-              <span class="meta-pill" id="topicTime">45 minutes</span>
-              <span class="meta-pill" id="topicType" style="display: none;">C1/C2 Academic Essay</span>
+        <!-- Stage 2 Topic Bar & Navigation (Tree Architecture) -->
+        <div class="stage2-topic-card" id="stage2TopicCard">
+          <div class="stage2-topic-meta" style="display: none;">
+            <span class="meta-pill" id="topicCategory">Technology &amp; Ethics</span>
+            <span class="meta-pill" id="topicTime">45 minutes</span>
+            <span class="meta-pill" id="topicType" style="display: none;">C1/C2 Academic Essay</span>
+          </div>
+
+          <!-- Tree Structure Architecture Header -->
+          <div class="stage2-topic-tree-bar">
+            <div class="topic-tree-hierarchy">
+              <span class="topic-tree-badge" title="Obligatory academic focus generated from subject-subtheme tree">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span>Obligatory Focus</span>
+              </span>
+
+              <!-- Root Subject -->
+              <div class="tree-node tree-root" id="topicMainSubjectNode" title="Randomized Root Subject">
+                <span class="tree-node-label">Root Subject:</span>
+                <span class="tree-node-val" id="topicMainSubjectText">Artificial Intelligence</span>
+              </div>
+
+              <span class="tree-branch-connector" aria-hidden="true">→</span>
+
+              <!-- Sub-theme 1 -->
+              <div class="tree-node tree-branch" id="topicSubTheme1Node" title="Universal Sub-theme 1">
+                <span class="tree-node-label">Sub-theme 1:</span>
+                <span class="tree-node-val" id="topicSubTheme1Text">Morality</span>
+              </div>
+
+              <span class="tree-branch-amp" aria-hidden="true">&amp;</span>
+
+              <!-- Sub-theme 2 -->
+              <div class="tree-node tree-branch" id="topicSubTheme2Node" title="Universal Sub-theme 2">
+                <span class="tree-node-label">Sub-theme 2:</span>
+                <span class="tree-node-val" id="topicSubTheme2Text">Society</span>
+              </div>
             </div>
+
+            <!-- Topic Actions & Controls -->
+            <div class="stage2-topic-nav">
+              <button id="rerollTopicBtn" class="btn btn-secondary btn-sm reroll-topic-btn" title="Draw New Random Tree Topic (Alt+T)" aria-label="Draw New Topic">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                <span>Draw New Topic</span>
+                <kbd class="hotkey-badge">Alt+T</kbd>
+              </button>
+            </div>
+          </div>
+
+          <!-- Topic Title & Prompt Directive -->
+          <div class="stage2-topic-content">
             <h3 class="topic-title" id="topicTitle">Artificial Intelligence, Moral Agency &amp; Societal Autonomy</h3>
             <span class="topic-preview-pill" id="writingTopicPill" style="display: none;">Artificial Intelligence, Moral Agency &amp; Societal Autonomy</span>
-            <div class="stage2-topic-nav">
-              <button id="prevTopicBtn" class="btn btn-secondary btn-sm" title="Previous Topic (Alt+←)">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M19 12H5M12 5l-7 7 7 7"></path>
-                </svg>
-                <span>Prev Topic</span>
-                <kbd class="hotkey-badge">Alt+←</kbd>
-              </button>
-              <span class="topic-counter" id="topicCounter" aria-label="Topic index">
-                <span class="topic-counter-current" id="topicCounterCurrent">1</span>
-                <span class="topic-counter-sep">/</span>
-                <span class="topic-counter-total" id="topicCounterTotal">—</span>
-              </span>
-              <button id="nextTopicBtn" class="btn btn-secondary btn-sm" title="Next Topic (Alt+→)">
-                <span>Next Topic</span>
-                <kbd class="hotkey-badge">Alt+→</kbd>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"></path>
-                </svg>
-              </button>
+
+            <div class="topic-directive-box">
+              <span class="directive-marker">PROMPT DIRECTIVE:</span>
+              <p class="topic-directive-text" id="topicDirective">Write an academic essay examining the influence of Artificial Intelligence on morality and societal autonomy. Discuss whether algorithmic delegation threatens human agency.</p>
+            </div>
+
+            <div class="topic-evaluation-note">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span>Linguistic score evaluates compulsory vocabulary and required syntax structures. Argumentative angles may be formulated freely.</span>
             </div>
           </div>
         </div>

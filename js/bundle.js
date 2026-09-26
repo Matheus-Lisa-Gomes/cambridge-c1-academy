@@ -13003,105 +13003,439 @@ function getRandomVocabularySet(level = 'C1') {
   // ==========================================
 /**
  * FluentEdge C1 (Advanced) & C2 (Proficiency) Topics
- * Core topic metadata: id, title, category, type, cefrTarget, recommendedTime.
+ * Tree-Structured Topic Architecture:
+ * - Main Subjects (Randomized academic root domain)
+ * - Sub-Themes (2 randomized universal subtopics available across all main subjects)
+ * - Synthesizes dynamic titles, prompt directives, and CEFR metadata.
+ */
+const MAIN_SUBJECTS = [
+  {
+    id: "artificial-intelligence",
+    name: "Artificial Intelligence",
+    shortName: "AI",
+    category: "Technology & Ethics"
+  },
+  {
+    id: "algorithms",
+    name: "Algorithms & Automated Systems",
+    shortName: "Algorithms",
+    category: "Computer Science & Society"
+  },
+  {
+    id: "biotechnology",
+    name: "Biotechnology & Genetic Engineering",
+    shortName: "Biotechnology",
+    category: "Bioethics & Medicine"
+  },
+  {
+    id: "mass-surveillance",
+    name: "Mass Surveillance & Digital Privacy",
+    shortName: "Surveillance",
+    category: "Civil Liberties & Politics"
+  },
+  {
+    id: "climate-transition",
+    name: "Climate Transition & Renewable Energy",
+    shortName: "Climate Policy",
+    category: "Ecology & Global Governance"
+  },
+  {
+    id: "sustainable-urbanism",
+    name: "Sustainable Megacities & Urbanism",
+    shortName: "Urbanism",
+    category: "Architecture & Sociology"
+  },
+  {
+    id: "higher-education",
+    name: "Higher Education & Academic Commodification",
+    shortName: "Academia",
+    category: "Education & Economics"
+  },
+  {
+    id: "globalization",
+    name: "Globalization & Cultural Identity",
+    shortName: "Globalization",
+    category: "Geopolitics & Anthropology"
+  },
+  {
+    id: "workforce-automation",
+    name: "Workforce Automation & The Future of Labor",
+    shortName: "Automation",
+    category: "Labor Economics & Policy"
+  },
+  {
+    id: "neurotechnology",
+    name: "Neurotechnology & Cognitive Enhancement",
+    shortName: "Neurotechnology",
+    category: "Neuroscience & Philosophy"
+  },
+  {
+    id: "media-monopolies",
+    name: "Media Monopolies & Disinformation",
+    shortName: "Media",
+    category: "Media, Politics & Epistemology"
+  },
+  {
+    id: "circular-economy",
+    name: "The Circular Economy & Consumerism",
+    shortName: "Circular Economy",
+    category: "Economics & Sustainability"
+  },
+  {
+    id: "space-exploration",
+    name: "Space Exploration & Resource Exploitation",
+    shortName: "Space Policy",
+    category: "Science & International Law"
+  },
+  {
+    id: "demographic-shifts",
+    name: "Demographic Aging & Social Welfare",
+    shortName: "Demographics",
+    category: "Demography & Public Health"
+  },
+  {
+    id: "epistemic-authority",
+    name: "Epistemic Authority & Scientific Consensus",
+    shortName: "Epistemology",
+    category: "Philosophy of Science"
+  },
+  {
+    id: "social-platforms",
+    name: "Social Media Architectures & Public Discourse",
+    shortName: "Social Platforms",
+    category: "Digital Sociology"
+  },
+  {
+    id: "autonomous-weapons",
+    name: "Autonomous Weaponry & Modern Warfare",
+    shortName: "Autonomous Weapons",
+    category: "Military Ethics & Geopolitics"
+  },
+  {
+    id: "synthetic-biology",
+    name: "Synthetic Biology & Ecological Intervention",
+    shortName: "Synthetic Biology",
+    category: "Genetics & Ecology"
+  },
+  {
+    id: "financialization",
+    name: "Financialization & Global Wealth Disparity",
+    shortName: "Financial Markets",
+    category: "Macroeconomics & Social Justice"
+  },
+  {
+    id: "transhumanism",
+    name: "Transhumanism & Human Augmentation",
+    shortName: "Transhumanism",
+    category: "Philosophy & Future Studies"
+  }
+];
+const SUB_THEMES = [
+  {
+    id: "morality",
+    name: "Morality & Moral Agency",
+    shortName: "Morality"
+  },
+  {
+    id: "ethics",
+    name: "Ethics & Statutory Accountability",
+    shortName: "Ethics"
+  },
+  {
+    id: "society",
+    name: "Society & Social Cohesion",
+    shortName: "Society"
+  },
+  {
+    id: "social-media",
+    name: "Social Media Dynamics & Echo Chambers",
+    shortName: "Social Media"
+  },
+  {
+    id: "addiction",
+    name: "Addiction & Behavioral Dependency",
+    shortName: "Addiction"
+  },
+  {
+    id: "autonomy",
+    name: "Individual Autonomy & Free Will",
+    shortName: "Autonomy"
+  },
+  {
+    id: "equity",
+    name: "Social Equity & Systemic Inequality",
+    shortName: "Equity"
+  },
+  {
+    id: "governance",
+    name: "Democratic Governance & Public Trust",
+    shortName: "Governance"
+  },
+  {
+    id: "economics",
+    name: "Economic Displacement & Employment",
+    shortName: "Economics"
+  },
+  {
+    id: "identity",
+    name: "Human Identity & Existential Meaning",
+    shortName: "Identity"
+  },
+  {
+    id: "environment",
+    name: "Environmental Resilience & Ecology",
+    shortName: "Environment"
+  },
+  {
+    id: "intergenerational-justice",
+    name: "Intergenerational Justice & Long-Term Heritage",
+    shortName: "Intergenerational Justice"
+  },
+  {
+    id: "oversight",
+    name: "Statutory Oversight & Algorithmic Transparency",
+    shortName: "Oversight"
+  },
+  {
+    id: "cultural-preservation",
+    name: "Cultural Preservation & Linguistic Diversity",
+    shortName: "Cultural Preservation"
+  },
+  {
+    id: "corporate-power",
+    name: "Corporate Monopolies & Commercial Dominance",
+    shortName: "Corporate Power"
+  },
+  {
+    id: "psychological-health",
+    name: "Psychological Well-Being & Mental Health",
+    shortName: "Mental Well-Being"
+  },
+  {
+    id: "civil-liberties",
+    name: "Civil Liberties & State Surveillance",
+    shortName: "Civil Liberties"
+  },
+  {
+    id: "truth-integrity",
+    name: "Discursive Integrity & Post-Truth Realities",
+    shortName: "Truth & Integrity"
+  }
+];
+
+const TITLE_PATTERNS = [
+  (sub, th1, th2) => `${sub.name}: ${th1.shortName} and ${th2.shortName}`,
+  (sub, th1, th2) => `The Impact of ${sub.name} on ${th1.shortName} and ${th2.shortName}`,
+  (sub, th1, th2) => `${sub.name}, ${th1.shortName} & the Crisis of ${th2.shortName}`,
+  (sub, th1, th2) => `${th1.shortName} in the Realm of ${sub.name}: Evaluating ${th2.shortName}`,
+  (sub, th1, th2) => `${sub.name} and ${th1.shortName}: Structural Consequences for ${th2.shortName}`
+];
+
+const DIRECTIVE_PATTERNS = [
+  (sub, th1, th2) => `Write an academic essay examining the implications of ${sub.name} regarding ${th1.name.toLowerCase()} and ${th2.name.toLowerCase()}. Discuss the extent to which these developments threaten or enhance societal well-being.`,
+  (sub, th1, th2) => `Evaluate the effects of ${sub.name} on ${th1.name.toLowerCase()}, focusing specifically on how it influences ${th2.name.toLowerCase()} in contemporary society.`,
+  (sub, th1, th2) => `Critically analyze how ${sub.name} intersects with ${th1.name.toLowerCase()} and ${th2.name.toLowerCase()}. Address the principal tensions and broader societal ramifications.`,
+  (sub, th1, th2) => `Assess the relationship between ${sub.name}, ${th1.name.toLowerCase()}, and ${th2.name.toLowerCase()}, arguing whether the anticipated benefits outweigh the potential systemic risks.`
+];
+
+/**
+ * Builds a concrete topic instance given a main subject and two sub-themes.
+ */
+function generateTopicFromTree(mainSubjectRef, subTheme1Ref, subTheme2Ref, targetLevel = 'C1', options = {}) {
+  const mainSubject = typeof mainSubjectRef === 'string'
+    ? (MAIN_SUBJECTS.find(s => s.id === mainSubjectRef) || MAIN_SUBJECTS[0])
+    : mainSubjectRef;
+
+  const subTheme1 = typeof subTheme1Ref === 'string'
+    ? (SUB_THEMES.find(t => t.id === subTheme1Ref) || SUB_THEMES[0])
+    : subTheme1Ref;
+
+  const subTheme2 = typeof subTheme2Ref === 'string'
+    ? (SUB_THEMES.find(t => t.id === subTheme2Ref) || SUB_THEMES[1])
+    : subTheme2Ref;
+
+  const titleIdx = typeof options.titleIdx === 'number'
+    ? options.titleIdx % TITLE_PATTERNS.length
+    : Math.floor(Math.random() * TITLE_PATTERNS.length);
+
+  const directiveIdx = typeof options.directiveIdx === 'number'
+    ? options.directiveIdx % DIRECTIVE_PATTERNS.length
+    : Math.floor(Math.random() * DIRECTIVE_PATTERNS.length);
+
+  const isC2 = targetLevel === 'C2';
+  const customId = options.id || `tree-${mainSubject.id}-${subTheme1.id}-${subTheme2.id}`;
+  const customTitle = options.customTitle || TITLE_PATTERNS[titleIdx](mainSubject, subTheme1, subTheme2);
+  const customDirective = options.customDirective || DIRECTIVE_PATTERNS[directiveIdx](mainSubject, subTheme1, subTheme2);
+
+  return {
+    id: customId,
+    title: customTitle,
+    directive: customDirective,
+    mainSubject,
+    subTheme1,
+    subTheme2,
+    category: mainSubject.category || 'Contemporary Academic Discourse',
+    type: isC2 ? 'C2 Proficiency Discursive Essay' : 'C1/C2 Academic Essay',
+    cefrTarget: isC2 ? 'C2' : 'C1 / C2',
+    recommendedTime: isC2 ? '50 minutes' : '45 minutes'
+  };
+}
+
+/**
+ * Generates a completely randomized topic from the Subject-Subtheme tree.
+ */
+function generateRandomTreeTopic(targetLevel = 'C1', excludeSubjectId = null) {
+  let eligibleSubjects = MAIN_SUBJECTS;
+  if (excludeSubjectId && MAIN_SUBJECTS.length > 1) {
+    eligibleSubjects = MAIN_SUBJECTS.filter(s => s.id !== excludeSubjectId);
+  }
+  const randomSubject = eligibleSubjects[Math.floor(Math.random() * eligibleSubjects.length)];
+
+  // Draw 2 distinct random sub-themes
+  const shuffledSubThemes = [...SUB_THEMES].sort(() => 0.5 - Math.random());
+  const subTheme1 = shuffledSubThemes[0];
+  const subTheme2 = shuffledSubThemes[1];
+
+  return generateTopicFromTree(randomSubject, subTheme1, subTheme2, targetLevel);
+}
+
+/**
+ * Pre-seeded list of authentic tree topics for deterministic testing and instant initial state.
+ * Preserves backward compatibility with legacy topic IDs.
  */
 const TOPICS = [
-  {
-    "id": "ai-ethics-autonomy",
-    "title": "Artificial Intelligence, Moral Agency & Societal Autonomy",
-    "category": "Technology & Ethics",
-    "type": "C1/C2 Academic Essay",
-    "cefrTarget": "C1 / C2",
-    "recommendedTime": "45 minutes"
-  },
-  {
-    "id": "sustainable-urbanism",
-    "title": "Sustainable Megacities & High-Density Urban Architecture",
-    "category": "Environment & Architecture",
-    "type": "C1/C2 Academic Essay",
-    "cefrTarget": "C1 / C2",
-    "recommendedTime": "45 minutes"
-  },
-  {
-    "id": "language-cultural-heritage",
-    "title": "Global Lingua Franca vs The Preservation of Indigenous Languages",
-    "category": "Culture, Linguistics & Society",
-    "type": "C1/C2 Academic Essay",
-    "cefrTarget": "C1 / C2",
-    "recommendedTime": "45 minutes"
-  },
-  {
-    "id": "higher-education-commodification",
-    "title": "The Commodification of Academia & The Future of Tertiary Education",
-    "category": "Education & Sociology",
-    "type": "C1/C2 Academic Essay",
-    "cefrTarget": "C1 / C2",
-    "recommendedTime": "45 minutes"
-  },
-  {
-    "id": "media-literacy-echo-chambers",
-    "title": "Algorithmic Echo Chambers, Disinformation & Modern Democracy",
-    "category": "Media, Politics & Psychology",
-    "type": "C1/C2 Academic Essay",
-    "cefrTarget": "C1 / C2",
-    "recommendedTime": "45 minutes"
-  },
-  {
-    "id": "circular-economy-consumerism",
-    "title": "The Circular Economy vs Planned Obsolescence & Consumer Culture",
-    "category": "Economics & Sustainability",
-    "type": "C1/C2 Academic Essay",
-    "cefrTarget": "C1 / C2",
-    "recommendedTime": "45 minutes"
-  },
-  {
-    "id": "genetic-enhancement-human-future",
-    "title": "Genetic Enhancement, Human Evolution & Social Equality",
-    "category": "Science, Ethics & Society",
-    "type": "C1/C2 Academic Essay",
-    "cefrTarget": "C1 / C2",
-    "recommendedTime": "45 minutes"
-  },
-  {
-    "id": "four-day-workweek-productivity",
-    "title": "The Four-Day Workweek, Productivity & the Future of Employment",
-    "category": "Work & Society",
-    "type": "C1/C2 Academic Essay",
-    "cefrTarget": "C1 / C2",
-    "recommendedTime": "45 minutes"
-  },
-  {
-    "id": "digital-privacy-surveillance",
-    "title": "Digital Privacy, Mass Surveillance & Personal Autonomy",
-    "category": "Technology & Society",
-    "type": "C1/C2 Academic Essay",
-    "cefrTarget": "C1 / C2",
-    "recommendedTime": "45 minutes"
-  },
-  {
-    "id": "failure-resilience-success",
-    "title": "Failure, Resilience & the Pursuit of Success",
-    "category": "Society & Personal Development",
-    "type": "C1/C2 Academic Essay",
-    "cefrTarget": "C1 / C2",
-    "recommendedTime": "45 minutes"
-  },
-  {
-    "id": "epistemic-authority-truth",
-    "title": "Epistemic Authority, Algorithmic Truth & Post-Empirical Discourse",
-    "category": "Epistemology & Digital Sociology",
-    "type": "C2 Proficiency Discursive Essay",
-    "cefrTarget": "C2",
-    "recommendedTime": "50 minutes"
-  },
-  {
-    "id": "biotech-transhumanism-ethics",
-    "title": "Biotechnological Enhancement, Transhumanism & Existential Ethics",
-    "category": "Bioethics & Human Evolution",
-    "type": "C2 Proficiency Discursive Essay",
-    "cefrTarget": "C2",
-    "recommendedTime": "50 minutes"
-  }
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'artificial-intelligence'),
+    SUB_THEMES.find(t => t.id === 'morality'),
+    SUB_THEMES.find(t => t.id === 'society'),
+    'C1',
+    {
+      id: 'ai-ethics-autonomy',
+      customTitle: 'Artificial Intelligence, Moral Agency & Societal Autonomy',
+      customDirective: 'Write an academic essay examining the influence of Artificial Intelligence on morality and societal autonomy. Discuss whether algorithmic delegation threatens human agency.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'algorithms'),
+    SUB_THEMES.find(t => t.id === 'social-media'),
+    SUB_THEMES.find(t => t.id === 'addiction'),
+    'C1',
+    {
+      id: 'algorithms-social-media-addiction',
+      customTitle: 'Algorithmic Systems: Social Media Dynamics and Behavioral Addiction',
+      customDirective: 'Evaluate the effects of algorithmic recommendation architectures on social media addiction and behavioral dependency among digital citizens.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'sustainable-urbanism'),
+    SUB_THEMES.find(t => t.id === 'environment'),
+    SUB_THEMES.find(t => t.id === 'society'),
+    'C1',
+    {
+      id: 'sustainable-urbanism',
+      customTitle: 'Sustainable Megacities & High-Density Urban Architecture',
+      customDirective: 'Critically assess how megacities balance environmental resilience with social cohesion and human well-being.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'globalization'),
+    SUB_THEMES.find(t => t.id === 'cultural-preservation'),
+    SUB_THEMES.find(t => t.id === 'identity'),
+    'C1',
+    {
+      id: 'language-cultural-heritage',
+      customTitle: 'Global Lingua Franca vs The Preservation of Indigenous Languages',
+      customDirective: 'Assess the tensions between the rise of a global lingua franca, cultural preservation, and individual linguistic identity.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'higher-education'),
+    SUB_THEMES.find(t => t.id === 'corporate-power'),
+    SUB_THEMES.find(t => t.id === 'equity'),
+    'C1',
+    {
+      id: 'higher-education-commodification',
+      customTitle: 'The Commodification of Academia & The Future of Tertiary Education',
+      customDirective: 'Analyze the impact of academic commodification and corporate power on equitable access to higher education.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'media-monopolies'),
+    SUB_THEMES.find(t => t.id === 'social-media'),
+    SUB_THEMES.find(t => t.id === 'governance'),
+    'C1',
+    {
+      id: 'media-literacy-echo-chambers',
+      customTitle: 'Algorithmic Echo Chambers, Disinformation & Modern Democracy',
+      customDirective: 'Evaluate the extent to which media monopolies and social echo chambers undermine democratic governance and institutional trust.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'circular-economy'),
+    SUB_THEMES.find(t => t.id === 'corporate-power'),
+    SUB_THEMES.find(t => t.id === 'environment'),
+    'C1',
+    {
+      id: 'circular-economy-consumerism',
+      customTitle: 'The Circular Economy vs Planned Obsolescence & Consumer Culture',
+      customDirective: 'Examine the viability of the circular economy in curtailing planned obsolescence and rampant corporate consumerism.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'biotechnology'),
+    SUB_THEMES.find(t => t.id === 'equity'),
+    SUB_THEMES.find(t => t.id === 'ethics'),
+    'C1',
+    {
+      id: 'genetic-enhancement-human-future',
+      customTitle: 'Genetic Enhancement, Human Evolution & Social Equality',
+      customDirective: 'Critically analyze the ethical dilemmas and social equity disparities posed by emerging germline genetic engineering.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'workforce-automation'),
+    SUB_THEMES.find(t => t.id === 'economics'),
+    SUB_THEMES.find(t => t.id === 'psychological-health'),
+    'C1',
+    {
+      id: 'four-day-workweek-productivity',
+      customTitle: 'Workforce Automation, Economic Productivity & Employee Well-Being',
+      customDirective: 'Discuss the socioeconomic ramifications of workplace automation, productivity metrics, and psychological well-being.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'mass-surveillance'),
+    SUB_THEMES.find(t => t.id === 'civil-liberties'),
+    SUB_THEMES.find(t => t.id === 'autonomy'),
+    'C1',
+    {
+      id: 'digital-privacy-surveillance',
+      customTitle: 'Digital Privacy, Mass Surveillance & Personal Autonomy',
+      customDirective: 'Assess the degree to which mass surveillance regimes erode civil liberties and personal autonomy in the digital sphere.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'epistemic-authority'),
+    SUB_THEMES.find(t => t.id === 'truth-integrity'),
+    SUB_THEMES.find(t => t.id === 'governance'),
+    'C2',
+    {
+      id: 'epistemic-authority-truth',
+      customTitle: 'Epistemic Authority, Algorithmic Truth & Post-Empirical Discourse',
+      customDirective: 'Deliver a rigorous discursive critique evaluating how the fragmentation of epistemic authority destabilizes democratic consensus and discursive integrity.'
+    }
+  ),
+  generateTopicFromTree(
+    MAIN_SUBJECTS.find(s => s.id === 'transhumanism'),
+    SUB_THEMES.find(t => t.id === 'identity'),
+    SUB_THEMES.find(t => t.id === 'ethics'),
+    'C2',
+    {
+      id: 'biotech-transhumanism-ethics',
+      customTitle: 'Biotechnological Enhancement, Transhumanism & Existential Ethics',
+      customDirective: 'Synthesize competing philosophical arguments regarding whether transhumanist augmentation preserves or dismantles human identity and existential ethics.'
+    }
+  )
 ];
 const CEFR_DESCRIPTORS = {
   "C2": {
@@ -13633,6 +13967,10 @@ function generateAiEssayPrompt(topic, targetVocabulary = [], targetLevel = 'C1')
   const topicTitle = topic ? topic.title : 'Contemporary Issues & Ethics';
   const topicCategory = topic ? topic.category : 'General Academic';
   const topicType = topic ? topic.type : (isC2 ? 'C2 Proficiency Discursive Essay' : 'C1/C2 Academic Essay');
+  const topicDirective = (topic && topic.directive) ? `\n- Prompt Directive: "${topic.directive}"` : '';
+  const treeDetails = (topic && topic.mainSubject)
+    ? `\n- Root Subject: ${topic.mainSubject.name}\n- Sub-Themes: ${topic.subTheme1?.name || ''} & ${topic.subTheme2?.name || ''}`
+    : '';
 
   const vocabItems = targetVocabulary.map((v, i) => {
     const word = v.headword || v.word || '';
@@ -13647,7 +13985,7 @@ function generateAiEssayPrompt(topic, targetVocabulary = [], targetLevel = 'C1')
 ESSAY TOPIC:
 - Title: "${topicTitle}"
 - Category: ${topicCategory}
-- Genre: ${topicType}
+- Genre: ${topicType}${topicDirective}${treeDetails}
 
 MANDATORY CRITERIA & CONSTRAINTS:
 
@@ -14246,13 +14584,11 @@ function levenshteinDistance(a, b) {
  */
 class FluentEdgeApp {
   constructor() {
-    this.topics = TOPICS;
-    this.currentTopicIndex = 0;
-    this.currentTopic = this.topics[0];
     this.targetLevel = 'C1';
     try {
       this.targetLevel = localStorage.getItem('fluentedge_target_level') || 'C1';
     } catch (e) {}
+    this.currentTopic = generateRandomTreeTopic(this.targetLevel);
 
     this.activeVocabulary = [];
     this.speechEngine = new SpeechEngine();
@@ -14270,7 +14606,7 @@ class FluentEdgeApp {
     this.bindHotkeys();
     this.setupSpeechEngineCallbacks();
     this.setTargetLevel(this.targetLevel, true);
-    this.loadTopic(0);
+    this.loadTopic(this.currentTopic);
     this.renderHistory();
     this.updateEducationalRequirementsCard();
     this.setStage(1);
@@ -14323,15 +14659,16 @@ class FluentEdgeApp {
       reqsPassMetric: document.getElementById('reqsPassMetric'),
       reqsPassDesc: document.getElementById('reqsPassDesc'),
 
-      // Topic Card
-      topicCounterCurrent: document.getElementById('topicCounterCurrent'),
-      topicCounterTotal: document.getElementById('topicCounterTotal'),
-      prevTopicBtn: document.getElementById('prevTopicBtn'),
-      nextTopicBtn: document.getElementById('nextTopicBtn'),
+      // Topic Card & Tree Architecture
+      rerollTopicBtn: document.getElementById('rerollTopicBtn'),
       topicCategory: document.getElementById('topicCategory'),
       topicType: document.getElementById('topicType'),
       topicTime: document.getElementById('topicTime'),
       topicTitle: document.getElementById('topicTitle'),
+      topicMainSubjectText: document.getElementById('topicMainSubjectText'),
+      topicSubTheme1Text: document.getElementById('topicSubTheme1Text'),
+      topicSubTheme2Text: document.getElementById('topicSubTheme2Text'),
+      topicDirective: document.getElementById('topicDirective'),
       vocabGrid: document.getElementById('vocabGrid'),
       vocabUsedCounter: document.getElementById('vocabUsedCounter'),
       rerollVocabBtn: document.getElementById('rerollVocabBtn'),
@@ -14436,12 +14773,16 @@ class FluentEdgeApp {
       cefrSwitch.addEventListener('click', toggleStandard);
     }
 
-    // Topic events
-    if (this.dom.prevTopicBtn) {
-      this.dom.prevTopicBtn.addEventListener('click', () => this.cyclePrevTopic());
-    }
-    if (this.dom.nextTopicBtn) {
-      this.dom.nextTopicBtn.addEventListener('click', () => this.cycleNextTopic());
+    // Topic events (Draw New Tree Topic)
+    if (this.dom.rerollTopicBtn) {
+      this.dom.rerollTopicBtn.addEventListener('click', () => {
+        if (this.hasEssayContent()) {
+          if (!confirm("You have an essay in progress. Drawing a new topic will clear your draft and generate a fresh subject-subtheme tree. Are you sure you want to change topics?")) {
+            return;
+          }
+        }
+        this.rerollTopic();
+      });
     }
     if (this.dom.rerollVocabBtn) {
       this.dom.rerollVocabBtn.addEventListener('click', () => {
@@ -14639,17 +14980,15 @@ class FluentEdgeApp {
         return;
       }
 
-      // Alt+ArrowLeft  →  Previous Topic
-      if (e.altKey && e.key === 'ArrowLeft' && !inTextField && !modalOpen) {
+      // Alt+T  →  Draw New Topic (Randomize tree architecture)
+      if (e.altKey && (e.key === 't' || e.key === 'T') && !modalOpen) {
         e.preventDefault();
-        this.cyclePrevTopic();
-        return;
-      }
-
-      // Alt+ArrowRight  →  Next Topic
-      if (e.altKey && e.key === 'ArrowRight' && !inTextField && !modalOpen) {
-        e.preventDefault();
-        this.cycleNextTopic();
+        if (this.hasEssayContent()) {
+          if (!confirm("You have an essay in progress. Drawing a new topic will clear your draft and generate a fresh subject-subtheme tree. Are you sure you want to change topics?")) {
+            return;
+          }
+        }
+        this.rerollTopic();
         return;
       }
 
@@ -14741,6 +15080,14 @@ class FluentEdgeApp {
       this.dom.targetWordCountHint.textContent = isC2
         ? "(280-320 target)"
         : "(220-260 target)";
+    }
+
+    if (this.currentTopic) {
+      this.currentTopic.type = isC2 ? 'C2 Proficiency Discursive Essay' : 'C1/C2 Academic Essay';
+      this.currentTopic.cefrTarget = isC2 ? 'C2' : 'C1 / C2';
+      this.currentTopic.recommendedTime = isC2 ? '50 minutes' : '45 minutes';
+      if (this.dom.topicType) this.dom.topicType.textContent = this.currentTopic.type;
+      if (this.dom.topicTime) this.dom.topicTime.textContent = this.currentTopic.recommendedTime;
     }
 
     this.updateEducationalRequirementsCard();
@@ -14879,25 +15226,43 @@ class FluentEdgeApp {
   }
 
   // ==========================================
-  // TOPIC & VOCABULARY ENGINE
+  // ==========================================
+  // TOPIC & VOCABULARY ENGINE (Tree Architecture)
   // ==========================================
 
-  loadTopic(index) {
-    this.currentTopicIndex = index;
-    this.currentTopic = this.topics[index];
+  loadTopic(topic = null) {
+    if (topic && typeof topic === 'object') {
+      this.currentTopic = topic;
+    } else if (!this.currentTopic) {
+      this.currentTopic = generateRandomTreeTopic(this.targetLevel);
+    }
+    const current = this.currentTopic;
 
-    // Update topic counter badge
-    if (this.dom.topicCounterCurrent) this.dom.topicCounterCurrent.textContent = index + 1;
-    if (this.dom.topicCounterTotal) this.dom.topicCounterTotal.textContent = this.topics.length;
+    if (this.dom.topicCategory) this.dom.topicCategory.textContent = current.category;
+    if (this.dom.topicType) this.dom.topicType.textContent = current.type;
+    if (this.dom.topicTime) this.dom.topicTime.textContent = current.recommendedTime;
+    if (this.dom.topicTitle) this.dom.topicTitle.textContent = current.title;
 
-    if (this.dom.topicCategory) this.dom.topicCategory.textContent = this.currentTopic.category;
-    if (this.dom.topicType) this.dom.topicType.textContent = this.currentTopic.type;
-    if (this.dom.topicTime) this.dom.topicTime.textContent = this.currentTopic.recommendedTime;
-    if (this.dom.topicTitle) this.dom.topicTitle.textContent = this.currentTopic.title;
+    // Tree nodes: Root Subject, Sub-theme 1, Sub-theme 2
+    if (this.dom.topicMainSubjectText) {
+      this.dom.topicMainSubjectText.textContent = current.mainSubject?.name || 'Academic Core';
+      this.dom.topicMainSubjectText.title = `Domain: ${current.category || ''}`;
+    }
+    if (this.dom.topicSubTheme1Text) {
+      this.dom.topicSubTheme1Text.textContent = current.subTheme1?.shortName || current.subTheme1?.name || 'Theme 1';
+      this.dom.topicSubTheme1Text.title = current.subTheme1?.name || '';
+    }
+    if (this.dom.topicSubTheme2Text) {
+      this.dom.topicSubTheme2Text.textContent = current.subTheme2?.shortName || current.subTheme2?.name || 'Theme 2';
+      this.dom.topicSubTheme2Text.title = current.subTheme2?.name || '';
+    }
+    if (this.dom.topicDirective) {
+      this.dom.topicDirective.textContent = current.directive || `Write an academic essay examining the implications of this subject for contemporary society.`;
+    }
 
     if (this.dom.writingTopicPill) {
-      this.dom.writingTopicPill.textContent = this.currentTopic.title;
-      this.dom.writingTopicPill.title = this.currentTopic.title;
+      this.dom.writingTopicPill.textContent = current.title;
+      this.dom.writingTopicPill.title = current.title;
     }
 
     // Draw 10 random target vocabulary items (3 Verbs, 3 Nouns, 2 Adj, 2 Adv)
@@ -14907,26 +15272,15 @@ class FluentEdgeApp {
     this.handleEditorInput();
   }
 
-  cyclePrevTopic() {
-    if (this.hasEssayContent()) {
-      if (!confirm("You have an essay in progress. Navigating to another topic will discard your current draft. Are you sure you want to leave this prompt?")) {
-        return;
-      }
-    }
-    const prevIndex = (this.currentTopicIndex - 1 + this.topics.length) % this.topics.length;
+  rerollTopic(silent = false) {
+    const currentSubjectId = this.currentTopic?.mainSubject?.id || null;
+    const newTopic = generateRandomTreeTopic(this.targetLevel, currentSubjectId);
+    this.currentTopic = newTopic;
     if (this.dom.essayInput) this.dom.essayInput.value = "";
-    this.loadTopic(prevIndex);
-  }
-
-  cycleNextTopic() {
-    if (this.hasEssayContent()) {
-      if (!confirm("You have an essay in progress. Navigating to another topic will discard your current draft. Are you sure you want to leave this prompt?")) {
-        return;
-      }
+    this.loadTopic(newTopic);
+    if (!silent) {
+      this.showToast(`New topic drawn: ${newTopic.mainSubject?.shortName || newTopic.mainSubject?.name}`, "info");
     }
-    const nextIndex = (this.currentTopicIndex + 1) % this.topics.length;
-    if (this.dom.essayInput) this.dom.essayInput.value = "";
-    this.loadTopic(nextIndex);
   }
 
   renderVocabularyChips() {

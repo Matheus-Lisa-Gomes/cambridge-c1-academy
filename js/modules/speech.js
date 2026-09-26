@@ -25,7 +25,7 @@ export class SpeechEngine {
     this.currentWordIndex = 0;
 
     // Kokoro Neural TTS & Multi-Voice Engine State
-    this.currentVoiceId = 'bf_emma'; // Default: UK English Female (Emma)
+    this.currentVoiceId = 'bf_isabella'; // Default: UK English Female (Isabella: Feminine & Mellow)
     this.currentAccent = 'uk';       // 'uk' | 'us'
     this.currentGender = 'female';   // 'female' | 'male'
     this.engineMode = 'neural';      // 'neural' | 'native'
@@ -36,6 +36,7 @@ export class SpeechEngine {
     this.kokoroLoading = false;
     this.isKokoroReady = false;
     this.currentAudio = null;
+    this.effectsAudioContext = null;
     this.audioCache = new Map();
     this.warmedVoices = new Set();
     this.isPrecaching = false;
@@ -385,6 +386,12 @@ export class SpeechEngine {
    */
   setVoice(voiceId) {
     if (!voiceId) return;
+    // Map legacy voice IDs to the tuned mellow & deep models
+    if (voiceId === 'bf_emma') voiceId = 'bf_isabella';
+    if (voiceId === 'af_sarah' || voiceId === 'af_bella') voiceId = 'af_heart';
+    if (voiceId === 'bm_george') voiceId = 'bm_fable';
+    if (voiceId === 'am_adam') voiceId = 'am_michael';
+
     this.currentVoiceId = voiceId;
 
     if (voiceId.startsWith('bf_')) {
@@ -552,7 +559,7 @@ export class SpeechEngine {
           isNeural ? 'ready' : 'fallback',
           isNeural ? 'Kokoro Neural' : 'Fast Native (0ms)'
         );
-        console.log('Kokoro TTS initialized successfully with voices: UK (Emma, George) & USA (Sarah, Adam).');
+        console.log('Kokoro TTS initialized successfully with voices: UK (Isabella, Fable) & USA (Heart, Michael).');
 
         // Pre-warm initial voice immediately
         await this.warmupVoice(this.currentVoiceId);
@@ -563,7 +570,7 @@ export class SpeechEngine {
         }
 
         // Background pre-warm the remaining 3 voices so voice switches are also cold-start free
-        const remainingVoices = ['bf_emma', 'bm_george', 'af_sarah', 'am_adam'].filter(v => v !== this.currentVoiceId);
+        const remainingVoices = ['bf_isabella', 'bm_fable', 'af_heart', 'am_michael'].filter(v => v !== this.currentVoiceId);
         setTimeout(async () => {
           for (const vId of remainingVoices) {
             await this.warmupVoice(vId);
@@ -584,6 +591,73 @@ export class SpeechEngine {
   }
 
   /**
+   * Apply real-time acoustic shaping:
+   * - Female: Silky, feminine, mellow presence with softened sibilance
+   * - Male: Calm, deep chest resonance (175 Hz) with sub-bass rumble cutoff (85 Hz)
+   */
+  applyAcousticFilter(audioElement, isMale) {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+
+      if (!this.effectsAudioContext || this.effectsAudioContext.state === 'closed') {
+        this.effectsAudioContext = new AudioCtx();
+      } else if (this.effectsAudioContext.state === 'suspended') {
+        this.effectsAudioContext.resume().catch(() => {});
+      }
+
+      const source = this.effectsAudioContext.createMediaElementSource(audioElement);
+
+      if (isMale) {
+        // Calm & Deep (without being too bassy)
+        const hp = this.effectsAudioContext.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 85; // Cuts sub-85Hz muddy rumble
+
+        const warmPeak = this.effectsAudioContext.createBiquadFilter();
+        warmPeak.type = 'peaking';
+        warmPeak.frequency.value = 175; // Warm, calm masculine fundamental
+        warmPeak.Q.value = 1.0;
+        warmPeak.gain.value = 2.6;
+
+        const calmSmooth = this.effectsAudioContext.createBiquadFilter();
+        calmSmooth.type = 'peaking';
+        calmSmooth.frequency.value = 3200; // Softens aggressive upper-mids
+        calmSmooth.Q.value = 1.2;
+        calmSmooth.gain.value = -1.8;
+
+        source.connect(hp);
+        hp.connect(warmPeak);
+        warmPeak.connect(calmSmooth);
+        calmSmooth.connect(this.effectsAudioContext.destination);
+      } else {
+        // Feminine & Mellow
+        const hp = this.effectsAudioContext.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 130; // Clean low-end
+
+        const mellowFilter = this.effectsAudioContext.createBiquadFilter();
+        mellowFilter.type = 'peaking';
+        mellowFilter.frequency.value = 2800; // Softens sharp presence
+        mellowFilter.Q.value = 1.3;
+        mellowFilter.gain.value = -1.8;
+
+        const airFilter = this.effectsAudioContext.createBiquadFilter();
+        airFilter.type = 'highshelf';
+        airFilter.frequency.value = 5800; // Velvety feminine sheen
+        airFilter.gain.value = 2.0;
+
+        source.connect(hp);
+        hp.connect(mellowFilter);
+        mellowFilter.connect(airFilter);
+        airFilter.connect(this.effectsAudioContext.destination);
+      }
+    } catch (e) {
+      // Graceful pass-through to element default output
+    }
+  }
+
+  /**
    * Play Model Audio using Kokoro Neural TTS (with SpeechSynthesis fallback and instant audioCache)
    */
   async speakText(text, rate = 0.95, onEndCallback = null, onStartCallback = null) {
@@ -591,7 +665,9 @@ export class SpeechEngine {
 
     if (!text || !text.trim()) return;
     const cleanText = text.toLowerCase().trim();
-    const cacheKey = `${this.currentVoiceId}_${rate.toFixed(2)}_${cleanText}`;
+    const isMale = this.currentGender === 'male';
+    const effectiveRate = isMale ? rate * 0.94 : rate * 0.96;
+    const cacheKey = `${this.currentVoiceId}_${effectiveRate.toFixed(2)}_${cleanText}`;
 
     // Fast-path: Check in-memory audio cache for 0ms instant playback
     const cachedBlob = this.audioCache.get(cacheKey);
@@ -603,6 +679,7 @@ export class SpeechEngine {
       const audioUrl = URL.createObjectURL(cachedBlob);
       const audio = new Audio(audioUrl);
       this.currentAudio = audio;
+      this.applyAcousticFilter(audio, isMale);
 
       audio.onended = () => {
         this.isSpeakingModel = false;
@@ -661,6 +738,7 @@ export class SpeechEngine {
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
         this.currentAudio = audio;
+        this.applyAcousticFilter(audio, isMale);
 
         audio.onended = () => {
           this.isSpeakingModel = false;
@@ -715,17 +793,17 @@ export class SpeechEngine {
     if (isUK) {
       const ukVoices = voices.filter(v => v.lang === 'en-GB' || v.lang === 'en_GB' || v.lang.startsWith('en-GB'));
       if (isMale) {
-        selectedVoice = ukVoices.find(v => /male|george|daniel|oliver|ryan|arthur/i.test(v.name)) || ukVoices[1] || ukVoices[0];
+        selectedVoice = ukVoices.find(v => /fable|george|daniel|oliver|ryan|arthur|guy|natural.*male/i.test(v.name)) || ukVoices[1] || ukVoices[0];
       } else {
-        selectedVoice = ukVoices.find(v => /female|victoria|alice|hazel|susan|libby|sonia|emma/i.test(v.name)) || ukVoices[0];
+        selectedVoice = ukVoices.find(v => /isabella|victoria|alice|hazel|susan|libby|sonia|natural.*female/i.test(v.name)) || ukVoices[0];
       }
       if (!selectedVoice) selectedVoice = ukVoices[0];
     } else {
       const usVoices = voices.filter(v => v.lang === 'en-US' || v.lang === 'en_US' || v.lang.startsWith('en-US'));
       if (isMale) {
-        selectedVoice = usVoices.find(v => /male|david|guy|christopher|mark|eric|alex|adam/i.test(v.name)) || usVoices[1] || usVoices[0];
+        selectedVoice = usVoices.find(v => /michael|fenrir|guy|christopher|mark|eric|alex|natural.*male/i.test(v.name)) || usVoices[1] || usVoices[0];
       } else {
-        selectedVoice = usVoices.find(v => /female|samantha|zira|jenny|aria|ava|sara|sarah/i.test(v.name)) || usVoices[0];
+        selectedVoice = usVoices.find(v => /heart|bella|jenny|aria|samantha|zira|ava|sara|natural.*female/i.test(v.name)) || usVoices[0];
       }
       if (!selectedVoice) selectedVoice = usVoices[0];
     }
@@ -736,6 +814,14 @@ export class SpeechEngine {
 
     if (selectedVoice) {
       utterance.voice = selectedVoice;
+    }
+
+    if (isMale) {
+      utterance.pitch = 0.88; // Calm & deep
+      utterance.rate = rate * 0.94; // Calm, grounded cadence
+    } else {
+      utterance.pitch = 1.10; // Feminine, warm
+      utterance.rate = rate * 0.96; // Mellow, relaxed cadence
     }
 
     utterance.onstart = () => {

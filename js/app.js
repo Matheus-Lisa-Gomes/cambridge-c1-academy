@@ -541,12 +541,16 @@ class FluentEdgeApp {
   }
 
   initVoiceSelection() {
-    let savedVoice = 'bf_emma';
+    let savedVoice = 'bf_isabella';
     try {
-      savedVoice = localStorage.getItem('fluentedge_selected_voice') || 'bf_emma';
+      savedVoice = localStorage.getItem('fluentedge_selected_voice') || 'bf_isabella';
+      if (savedVoice === 'bf_emma') savedVoice = 'bf_isabella';
+      if (savedVoice === 'af_sarah' || savedVoice === 'af_bella') savedVoice = 'af_heart';
+      if (savedVoice === 'bm_george') savedVoice = 'bm_fable';
+      if (savedVoice === 'am_adam') savedVoice = 'am_michael';
     } catch (e) {}
     this.speechEngine.setVoice(savedVoice);
-    this.updateVoiceUI(savedVoice);
+    this.updateVoiceUI(this.speechEngine.currentVoiceId);
     // Background load Kokoro Neural TTS model
     this.speechEngine.initKokoro().catch(err => {
       console.warn("Kokoro TTS background initialization note:", err);

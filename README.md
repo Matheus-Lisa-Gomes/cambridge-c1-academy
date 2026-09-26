@@ -145,13 +145,16 @@ Once an essay achieves a passing score (**Band 4 / C1** or **Band 5 / C2**), Sta
 * **Neural Speech Engine (Kokoro TTS)**:
   * Powered by Kokoro-82M ONNX model running entirely in the browser via WebAssembly (WASM).
   * High-fidelity, natural, human-like neural intonation and phonological precision.
-  * **Multi-Voice & Accent Selector (4 Distinct Options)**:
+  * **Multi-Voice & Accent Selector (4 Specially Tuned Options)**:
     * **🇬🇧 UK English (British RP)**:
-      * ♀ **Female**: `Emma` (`bf_emma`)
-      * ♂ **Male**: `George` (`bm_george`)
+      * ♀ **Female**: `Isabella` (`bf_isabella` — feminine, velvety, and mellow)
+      * ♂ **Male**: `Fable` (`bm_fable` — calm, deep British narrative baritone)
     * **🇺🇸 USA English (General American)**:
-      * ♀ **Female**: `Sarah` (`af_sarah`)
-      * ♂ **Male**: `Adam` (`am_adam`)
+      * ♀ **Female**: `Heart` (`af_heart` — Kokoro flagship Grade-A warm, feminine, mellow voice)
+      * ♂ **Male**: `Michael` (`am_michael` — calm, deep, clear American baritone without bass boominess)
+  * **Real-time Acoustic DSP Equalization**: Web Audio biquad filter chain applies custom curves:
+    * *Female Profile*: De-harshness at 2.8 kHz with a silky 5.8 kHz air shelf for a gentle, mellow presence.
+    * *Male Profile*: 175 Hz chest resonance for depth and calm authority, coupled with an 85 Hz high-pass filter that eliminates muddiness and boom.
   * **Header Flag Bar**: Placed prominently directly beneath the application header, featuring 2 national flag cards divided into Female and Male buttons for instantaneous switching.
   * **Real-time Voice Preview**: Test any selected voice with an immediate phonological sample.
   * **Seamless Dual-Engine Fallback**: Operates with browser SpeechSynthesis when offline or running under strict local `file://` sandboxes, ensuring 100% audio uptime.

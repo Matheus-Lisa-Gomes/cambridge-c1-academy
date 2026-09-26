@@ -1187,6 +1187,8 @@ body.theme-c2 .stage-cta-btn:hover {
   -webkit-backdrop-filter: blur(14px);
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
+  /* Stable height — card never shifts when topics change */
+  min-height: 220px;
 }
 
 .stage2-topic-card:hover {
@@ -1356,6 +1358,12 @@ body.theme-c2 .reroll-topic-btn:hover {
   font-family: var(--font-serif);
   color: var(--text-primary);
   line-height: 1.35;
+  /* Fixed 2-line slot — titles never push the card taller */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.35em * 2);
 }
 
 .topic-directive-box {
@@ -1389,6 +1397,12 @@ body.theme-c2 .directive-marker {
   color: var(--text-secondary);
   line-height: 1.5;
   margin: 0;
+  /* Fixed 3-line slot — directive never shifts layout */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.5em * 3);
 }
 
 .topic-evaluation-note {

@@ -41,7 +41,16 @@ A working backlog and brainstorm document for upcoming enhancements, architectur
 
 ## 3. Speaking Studio & Audio Engine
 
-- [x] **Kokoro TTS (In-Browser Neural Engine)**: Use Kokoro TTS for generating natural, human-like neural audio for model pronunciation. Integrated Kokoro-82M ONNX model with multi-accent support: British English (🇬🇧 UK) and American English (🇺🇸 USA), with both Male (George, Adam) and Female (Emma, Sarah) voices, 4-button header selector bar, instant preview, memory caching, and seamless browser synthesis fallback for offline/`file://` environments. *(Completed)*
+- [x] **Kokoro TTS (In-Browser Neural Engine)**: Use Kokoro TTS for generating natural, human-like neural audio for model pronunciation. Integrated Kokoro-82M ONNX model with multi-accent support: British English (🇬🇧 UK: Isabella for feminine/mellow, Fable for calm/deep) and American English (🇺🇸 USA: Heart for feminine/mellow, Michael for calm/deep), 4-button header selector bar, zero-CPU background HTTP voice binary pre-fetching into browser cache, memory caching, and seamless browser synthesis fallback for offline/`file://` environments. *(Completed)*
+- [ ] **Sequential Voice Engine Roadmap (Phase 1 & Phase 2)**:
+  - **Phase 1: Perfect Stage 1 & 2 Vocabulary Audio**:
+    - **Web Worker Offload**: Run Kokoro ONNX inference inside a dedicated Web Worker (`Worker`) so all AI matrix computation executes entirely off the main JavaScript thread, ensuring a permanent 60 FPS UI under all conditions.
+    - **Pre-rendered Static Audio Asset Pipeline (Instant 0ms Clicks)**: Pre-generate lightweight compressed WebM/Opus audio clips for the curated C1/C2 vocabulary pool and host them statically in the repository. Provides 0ms playback, 0% CPU consumption, and instant offline-ready dictionary audio without client generation delays.
+    - **Instant Hybrid Playback**: Play instant native onset while neural audio buffers, guaranteeing zero perceived latency on first click.
+  - **Phase 2: Stage 3 Streaming Long-Form Essay Model Reader**:
+    - **Sentence-by-Sentence Streaming Pipeline**: Split 220–320 word essays into sentence chunks (`.`, `!`, `?`). Synthesize and play Sentence 1 in under 1 second (<800ms) while dynamically pre-generating subsequent sentences in a seamless audio buffer queue.
+    - **Teleprompter Word Synchronization**: Live word-by-word visual highlight tracking on the teleprompter synchronized with real-time sentence audio playback.
+    - **Instant Playback Cancellation**: Immediately flush streaming audio buffers and release audio nodes if user clicks "Stop Audio" or returns to writing.
 - [ ] **RP Model Audio Speed Adjustment**: Playback rate selector ($0.8\times$, $1.0\times$, $1.2\times$) for the native British English model reading.
 - [ ] **Audio Recording Playback**: Allow candidates to listen back to their recorded audio alongside the phonetic transcription to pinpoint pronunciation nuances.
 - [ ] **Microphone Input Level Meter**: Add visual gain/clipping indicators to help candidates adjust mic distance before speaking.

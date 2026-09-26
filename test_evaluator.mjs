@@ -287,8 +287,8 @@ console.log("Default Sub-theme 2:", startTopic.subTheme2.name);
 
 const startTopicValid = startTopic.complexity === 1 &&
                         startTopic.mainSubject.id === 'social-media-daily' &&
-                        startTopic.subTheme1.id === 'community' &&
-                        startTopic.subTheme2.id === 'family-relationships';
+                        startTopic.subTheme1.id === 'personal-growth' &&
+                        startTopic.subTheme2.id === 'creativity';
 
 console.log("Default Starting Topic Valid & Easy:", startTopicValid);
 

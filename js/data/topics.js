@@ -1339,14 +1339,21 @@ export function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng, diff
 
 /**
  * Returns the default starting topic for the website.
- * Always returns a consistent Easy-tier topic (Social Media & Daily Life
- * + Community & Belonging + Family & Social Relationships).
+ * Always returns a consistent, accessible Easy-tier topic (Social Media & Daily Life
+ * + Personal Growth & Self-Improvement + Creativity & Innovation).
  */
 export function getDefaultStartingTopic(targetLevel = 'C1') {
   var subject = MAIN_SUBJECTS.find(function(s) { return s.id === 'social-media-daily'; }) || MAIN_SUBJECTS[0];
-  var sub1 = SUB_THEMES.find(function(t) { return t.id === 'community'; }) || SUB_THEMES[0];
-  var sub2 = SUB_THEMES.find(function(t) { return t.id === 'family-relationships'; }) || SUB_THEMES[1];
-  return generateTopicFromTree(subject, sub1, sub2, targetLevel);
+  var sub1 = SUB_THEMES.find(function(t) { return t.id === 'personal-growth'; }) || SUB_THEMES[0];
+  var sub2 = SUB_THEMES.find(function(t) { return t.id === 'creativity'; }) || SUB_THEMES[1];
+  var promptType = PROMPT_TYPES.find(function(p) { return p.id === 'evaluate'; }) || PROMPT_TYPES[1];
+  var scope = SCOPES.find(function(sc) { return sc.id === 'individual'; }) || SCOPES[0];
+  var tension = TENSIONS.find(function(tn) { return tn.id === 'convenience-vs-independence'; }) || TENSIONS[3];
+  return generateTopicFromTree(subject, sub1, sub2, targetLevel, {
+    promptType: promptType,
+    scope: scope,
+    tension: tension
+  });
 }
 
 // =============================================================================

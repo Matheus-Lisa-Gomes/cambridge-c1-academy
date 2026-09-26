@@ -666,7 +666,7 @@ class FluentEdgeApp {
     if (stageNum === 1) {
       this.updateEducationalRequirementsCard();
     } else if (stageNum === 2) {
-      if (!this.hasDrawnTopic && (!this.currentTopic || this.currentTopic.mainSubject?.id !== 'social-media-daily')) {
+      if (!this.hasDrawnTopic && (!this.currentTopic || this.currentTopic.mainSubject?.id !== 'social-media-daily' || this.currentTopic.subTheme1?.id !== 'personal-growth')) {
         this.currentTopic = getDefaultStartingTopic(this.targetLevel);
         this.loadTopic(this.currentTopic);
       }

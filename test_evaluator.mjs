@@ -1,5 +1,5 @@
 // Automated verification for FluentEdge Assessment Evaluator
-import { TOPICS, MAIN_SUBJECTS, SUB_THEMES, generateRandomTreeTopic, generateTopicFromTree } from './js/data/topics.js';
+import { TOPICS, MAIN_SUBJECTS, SUB_THEMES, generateRandomTreeTopic, generateTopicFromTree, checkTopicAdherence } from './js/data/topics.js';
 import { evaluateEssay, analyzeQuickMetrics, generateAiEssayPrompt } from './js/modules/evaluator.js';
 
 const topicAI = TOPICS[0]; // AI topic (C1/C2)
@@ -187,6 +187,26 @@ const lexisGuardPassed = isPartialBlocked &&
                          isCompleteFulfilled &&
                          missingWordsComplete.length === 0;
 
+console.log("\n=== TEST 9: Obligatory Topic Adherence Guard (Root Subject + 2 Sub-Themes) ===");
+const adherenceC1Pass = checkTopicAdherence(c1ModelEssay, topicAI);
+const adherenceOffTopic = checkTopicAdherence("Culinary traditions require fresh herbs and delicate seasoning.", topicAI);
+const adherenceC2Pass = checkTopicAdherence(c2ModelEssay, topicC2);
+
+console.log("C1 Essay on AI Topic Passes:", adherenceC1Pass.passes, "(Expected: true)");
+console.log("C1 Subject Terms Found:", adherenceC1Pass.subjectFound.length, "(Expected: >= 2)");
+console.log("C1 Theme 1 Terms Found:", adherenceC1Pass.theme1Found.length, "(Expected: >= 1)");
+console.log("C1 Theme 2 Terms Found:", adherenceC1Pass.theme2Found.length, "(Expected: >= 1)");
+console.log("Off-Topic Essay Passes:", adherenceOffTopic.passes, "(Expected: false)");
+console.log("Off-Topic Feedback:", adherenceOffTopic.feedback);
+console.log("C2 Essay on Epistemic Topic Passes:", adherenceC2Pass.passes, "(Expected: true)");
+
+const topicAdherenceTestPassed = adherenceC1Pass.passes &&
+                                 adherenceC1Pass.subjectOk &&
+                                 adherenceC1Pass.theme1Ok &&
+                                 adherenceC1Pass.theme2Ok &&
+                                 !adherenceOffTopic.passes &&
+                                 adherenceC2Pass.passes;
+
 const allPassed = evalPassC1.meetsThreshold && 
                   !evalFailB1.meetsThreshold && 
                   evalPassC2.meetsThreshold && 
@@ -195,10 +215,11 @@ const allPassed = evalPassC1.meetsThreshold &&
                   quickMetrics.targetWordsUsed >= 8 &&
                   lexisGuardPassed &&
                   aiPromptTestPassed &&
-                  treeTopicTestPassed;
+                  treeTopicTestPassed &&
+                  topicAdherenceTestPassed;
 
 if (allPassed) {
-  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard, AI Prompt Generator & Tree Topic Architecture accurately configured! <<<");
+  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard, AI Prompt Generator, Tree Topic Architecture & Obligatory Topic Adherence Guard accurately configured! <<<");
 } else {
   console.error("\n>>> TEST FAILED! <<<", {
     evalPassC1: evalPassC1.meetsThreshold,

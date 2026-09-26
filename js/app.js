@@ -2,7 +2,7 @@
  * FluentEdge: C1–C2 English Training - Main Application Controller
  */
 
-import { TOPICS, MAIN_SUBJECTS, SUB_THEMES, generateRandomTreeTopic, generateTopicFromTree } from './data/topics.js';
+import { TOPICS, MAIN_SUBJECTS, SUB_THEMES, generateRandomTreeTopic, generateTopicFromTree, checkTopicAdherence } from './data/topics.js';
 import { getRandomVocabularySet } from './data/vocabulary.js';
 import { analyzeQuickMetrics, evaluateEssay, checkTargetWordUsage, generateAiEssayPrompt } from './modules/evaluator.js';
 import { SpeechEngine } from './modules/speech.js';
@@ -90,8 +90,11 @@ class FluentEdgeApp {
       topicType: document.getElementById('topicType'),
       topicTime: document.getElementById('topicTime'),
       topicTitle: document.getElementById('topicTitle'),
+      topicMainSubjectNode: document.getElementById('topicMainSubjectNode'),
       topicMainSubjectText: document.getElementById('topicMainSubjectText'),
+      topicSubTheme1Node: document.getElementById('topicSubTheme1Node'),
       topicSubTheme1Text: document.getElementById('topicSubTheme1Text'),
+      topicSubTheme2Node: document.getElementById('topicSubTheme2Node'),
       topicSubTheme2Text: document.getElementById('topicSubTheme2Text'),
       topicDirective: document.getElementById('topicDirective'),
       vocabGrid: document.getElementById('vocabGrid'),
@@ -874,23 +877,51 @@ class FluentEdgeApp {
       }
     }
 
-    // Update Evaluate Essay Button state based on BOTH compulsory lexis AND minimum syntax fulfillment
+    // Evaluate Topic Adherence against Obligatory Tree (Root Subject + 2 Sub-themes)
+    const topicAdherence = checkTopicAdherence(text, this.currentTopic);
+    if (this.dom.topicMainSubjectNode) {
+      this.dom.topicMainSubjectNode.classList.toggle('fulfilled', topicAdherence.subjectOk);
+      if (topicAdherence.subjectOk) {
+        this.dom.topicMainSubjectNode.title = `Root Subject Addressed (${topicAdherence.subjectFound.join(', ')})`;
+      } else {
+        this.dom.topicMainSubjectNode.title = `Root Subject: Need at least ${topicAdherence.subjectNeeded} mentions/concepts (found ${topicAdherence.subjectFound.length})`;
+      }
+    }
+    if (this.dom.topicSubTheme1Node) {
+      this.dom.topicSubTheme1Node.classList.toggle('fulfilled', topicAdherence.theme1Ok);
+      if (topicAdherence.theme1Ok) {
+        this.dom.topicSubTheme1Node.title = `Sub-theme 1 Addressed (${topicAdherence.theme1Found.join(', ')})`;
+      } else {
+        this.dom.topicSubTheme1Node.title = `Sub-theme 1: Need at least ${topicAdherence.theme1Needed} mention/concept (found ${topicAdherence.theme1Found.length})`;
+      }
+    }
+    if (this.dom.topicSubTheme2Node) {
+      this.dom.topicSubTheme2Node.classList.toggle('fulfilled', topicAdherence.theme2Ok);
+      if (topicAdherence.theme2Ok) {
+        this.dom.topicSubTheme2Node.title = `Sub-theme 2 Addressed (${topicAdherence.theme2Found.join(', ')})`;
+      } else {
+        this.dom.topicSubTheme2Node.title = `Sub-theme 2: Need at least ${topicAdherence.theme2Needed} mention/concept (found ${topicAdherence.theme2Found.length})`;
+      }
+    }
+
+    // Update Evaluate Essay Button state based on compulsory lexis, syntax, AND topic adherence
     const allLexisFulfilled = metrics.targetWordsTotal > 0 && metrics.targetWordsUsed >= metrics.targetWordsTotal;
     const allSyntaxFulfilled = structuresMet;
-    const allReady = allLexisFulfilled && allSyntaxFulfilled;
+    const allTopicFulfilled = topicAdherence.passes;
+    const allReady = allLexisFulfilled && allSyntaxFulfilled && allTopicFulfilled;
 
     if (this.dom.evaluateEssayBtn) {
       if (allReady) {
         this.dom.evaluateEssayBtn.classList.remove('btn-locked-lexis');
         this.dom.evaluateEssayBtn.classList.add('btn-lexis-ready');
         this.dom.evaluateEssayBtn.setAttribute('aria-disabled', 'false');
-        this.dom.evaluateEssayBtn.title = `All ${metrics.targetWordsTotal} compulsory target words and ${detectedStructuresCount}/${minRequiredStructures} syntactic structures fulfilled! Click or press Ctrl+Enter to evaluate.`;
+        this.dom.evaluateEssayBtn.title = `All requirements fulfilled! Compulsory lexis, syntactic complexity, and topic adherence satisfied. Click or press Ctrl+Enter to evaluate.`;
         this.dom.evaluateEssayBtn.innerHTML = `
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-          Evaluate Text (All Lexis &amp; Syntax Fulfilled)
+          Evaluate Text (All Requirements Met)
           <kbd class="hotkey-badge">Ctrl+↵</kbd>
         `;
       } else {
@@ -898,16 +929,14 @@ class FluentEdgeApp {
         this.dom.evaluateEssayBtn.classList.add('btn-locked-lexis');
         this.dom.evaluateEssayBtn.setAttribute('aria-disabled', 'true');
 
-        let statusSummary = '';
-        if (!allLexisFulfilled && !allSyntaxFulfilled) {
-          statusSummary = `${metrics.targetWordsUsed}/${metrics.targetWordsTotal} Lexis • ${detectedStructuresCount}/${minRequiredStructures} Syntax`;
-        } else if (!allLexisFulfilled) {
-          statusSummary = `${metrics.targetWordsUsed}/${metrics.targetWordsTotal} Lexis • Syntax Met`;
-        } else {
-          statusSummary = `Lexis Met • ${detectedStructuresCount}/${minRequiredStructures} Syntax`;
-        }
+        const parts = [];
+        if (!allLexisFulfilled) parts.push(`${metrics.targetWordsUsed}/${metrics.targetWordsTotal} Lexis`);
+        if (!allSyntaxFulfilled) parts.push(`${detectedStructuresCount}/${minRequiredStructures} Syntax`);
+        if (!allTopicFulfilled) parts.push('Topic Focus Needed');
 
-        this.dom.evaluateEssayBtn.title = `Incorporate all ${metrics.targetWordsTotal} compulsory target words and at least ${minRequiredStructures} syntactic structures to unlock evaluation (currently ${metrics.targetWordsUsed}/${metrics.targetWordsTotal} words, ${detectedStructuresCount}/${minRequiredStructures} structures).`;
+        const statusSummary = parts.join(' • ') || 'Requirements Incomplete';
+
+        this.dom.evaluateEssayBtn.title = `Incorporate compulsory target words, complex syntax, and address the obligatory topic focus to unlock evaluation.`;
         this.dom.evaluateEssayBtn.innerHTML = `
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -970,7 +999,8 @@ class FluentEdgeApp {
     detectedStructures = [],
     detectedStructuresCount = 0,
     minRequiredStructures = 4,
-    isMissingStructures = false
+    isMissingStructures = false,
+    topicAdherence = null
   }) {
     if (!this.dom.reqAlertBackdrop || !this.dom.reqAlertBody) return;
 
@@ -1162,6 +1192,67 @@ class FluentEdgeApp {
       `;
     }
 
+    // 4. Obligatory Topic Focus Requirement Item
+    if (topicAdherence) {
+      if (!topicAdherence.passes) {
+        const sStatus = topicAdherence.subjectOk
+          ? `<span style="color: #34d399; font-weight: 600;">✓ Met (${topicAdherence.subjectFound.length} terms)</span>`
+          : `<span style="color: #fbbf24; font-weight: 600;">✕ Incomplete (${topicAdherence.subjectFound.length}/${topicAdherence.subjectNeeded} needed)</span>`;
+
+        const t1Status = topicAdherence.theme1Ok
+          ? `<span style="color: #34d399; font-weight: 600;">✓ Met (${topicAdherence.theme1Found.length} terms)</span>`
+          : `<span style="color: #fbbf24; font-weight: 600;">✕ Incomplete (${topicAdherence.theme1Found.length}/${topicAdherence.theme1Needed} needed)</span>`;
+
+        const t2Status = topicAdherence.theme2Ok
+          ? `<span style="color: #34d399; font-weight: 600;">✓ Met (${topicAdherence.theme2Found.length} terms)</span>`
+          : `<span style="color: #fbbf24; font-weight: 600;">✕ Incomplete (${topicAdherence.theme2Found.length}/${topicAdherence.theme2Needed} needed)</span>`;
+
+        itemsHtml += `
+          <div class="req-item item-missing">
+            <div class="req-item-icon">✕</div>
+            <div class="req-item-content">
+              <div class="req-item-title">
+                <span>Obligatory Topic Focus</span>
+                <span style="font-size: 11px; color: #fbbf24; font-weight: 700;">Content Adherence Required</span>
+              </div>
+              <div class="req-item-subtitle">
+                ${topicAdherence.feedback}
+              </div>
+              <div class="req-missing-chips-box">
+                <div class="req-chips-label">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  Required Focus Tree Status:
+                </div>
+                <div style="font-size: 11.5px; color: #cbd5e1; display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
+                  <div><strong style="color: #fbbf24;">• Root Subject:</strong> ${topicAdherence.subjectName} — ${sStatus}</div>
+                  <div><strong style="color: #93c5fd;">• Sub-theme 1:</strong> ${topicAdherence.theme1Name} — ${t1Status}</div>
+                  <div><strong style="color: #c084fc;">• Sub-theme 2:</strong> ${topicAdherence.theme2Name} — ${t2Status}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        itemsHtml += `
+          <div class="req-item item-met">
+            <div class="req-item-icon">✓</div>
+            <div class="req-item-content">
+              <div class="req-item-title">
+                <span>Obligatory Topic Focus Satisfied</span>
+                <span style="font-size: 11px; color: #34d399; font-weight: 700;">Topic Addressed</span>
+              </div>
+              <div class="req-item-subtitle">
+                Draft engages directly with root subject <em>${topicAdherence.subjectName}</em> across required sub-themes (<em>${topicAdherence.theme1Name}</em> &amp; <em>${topicAdherence.theme2Name}</em>).
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
     this.dom.reqAlertBody.innerHTML = itemsHtml;
 
     // Show modal front and center
@@ -1206,8 +1297,11 @@ class FluentEdgeApp {
     const minRequiredStructures = metrics.minRequiredStructures;
     const isMissingStructures = detectedStructuresCount < minRequiredStructures;
 
+    const adherence = checkTopicAdherence(text, this.currentTopic);
+    const isTopicMissing = !isTextEmpty && !adherence.passes;
+
     // Front-and-Center Alert when requirements are not met yet
-    if (isTextEmpty || isUnderMinWords || isMissingLexis || isMissingStructures) {
+    if (isTextEmpty || isUnderMinWords || isMissingLexis || isMissingStructures || isTopicMissing) {
       this.showRequirementAlert({
         isTextEmpty,
         isUnderMinWords,
@@ -1219,13 +1313,14 @@ class FluentEdgeApp {
         detectedStructures: metrics.detectedGrammar,
         detectedStructuresCount,
         minRequiredStructures,
-        isMissingStructures
+        isMissingStructures,
+        topicAdherence: adherence
       });
       return;
     }
 
     // Confirmation before moving forward to evaluation and assessment modal
-    if (!confirm(`Are you ready to submit your essay for evaluation? All ${metrics.targetWordsTotal} compulsory target words and ${detectedStructuresCount} complex syntactic structures have been fulfilled. Your draft will be assessed against the CEFR scales.`)) {
+    if (!confirm(`Are you ready to submit your essay for evaluation? All ${metrics.targetWordsTotal} compulsory target words, ${detectedStructuresCount} complex syntactic structures, and the obligatory topic focus have been fulfilled. Your draft will be assessed against the CEFR scales.`)) {
       return;
     }
 

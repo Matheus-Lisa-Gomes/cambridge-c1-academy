@@ -1347,6 +1347,24 @@ body.theme-c2 .tree-node.tree-branch .tree-node-val {
   user-select: none;
 }
 
+.tree-node.fulfilled {
+  border-color: rgba(52, 211, 153, 0.5) !important;
+  background: rgba(52, 211, 153, 0.1) !important;
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.15);
+}
+
+.tree-node.fulfilled .tree-node-val {
+  color: #34d399 !important;
+}
+
+.tree-node.fulfilled::after {
+  content: '✓';
+  color: #34d399;
+  font-size: 11px;
+  font-weight: 800;
+  margin-left: 2px;
+}
+
 /* Topic Nav & Actions */
 .stage2-topic-nav {
   display: flex;

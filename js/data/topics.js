@@ -1337,6 +1337,18 @@ export function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng, diff
   return topic;
 }
 
+/**
+ * Returns the default starting topic for the website.
+ * Always returns a consistent Easy-tier topic (Social Media & Daily Life
+ * + Community & Belonging + Family & Social Relationships).
+ */
+export function getDefaultStartingTopic(targetLevel = 'C1') {
+  var subject = MAIN_SUBJECTS.find(function(s) { return s.id === 'social-media-daily'; }) || MAIN_SUBJECTS[0];
+  var sub1 = SUB_THEMES.find(function(t) { return t.id === 'community'; }) || SUB_THEMES[0];
+  var sub2 = SUB_THEMES.find(function(t) { return t.id === 'family-relationships'; }) || SUB_THEMES[1];
+  return generateTopicFromTree(subject, sub1, sub2, targetLevel);
+}
+
 // =============================================================================
 // 14. LEGACY SEED TOPICS (backward compat)
 // =============================================================================

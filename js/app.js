@@ -2,7 +2,7 @@
  * FluentEdge: C1–C2 English Training - Main Application Controller
  */
 
-import { TOPICS, MAIN_SUBJECTS, SUB_THEMES, generateRandomTreeTopic, generateTopicFromTree, checkTopicAdherence } from './data/topics.js';
+import { TOPICS, MAIN_SUBJECTS, SUB_THEMES, generateRandomTreeTopic, generateTopicFromTree, getDefaultStartingTopic, checkTopicAdherence } from './data/topics.js';
 import { getRandomVocabularySet } from './data/vocabulary.js';
 import { analyzeQuickMetrics, evaluateEssay, checkTargetWordUsage, generateAiEssayPrompt } from './modules/evaluator.js';
 import { SpeechEngine } from './modules/speech.js';
@@ -17,7 +17,8 @@ class FluentEdgeApp {
     try {
       this.topicDifficulty = localStorage.getItem('fluentedge_topic_difficulty') || 'all';
     } catch (e) {}
-    this.currentTopic = generateRandomTreeTopic(this.targetLevel, null, Math.random, this.topicDifficulty);
+    this.hasDrawnTopic = false;
+    this.currentTopic = getDefaultStartingTopic(this.targetLevel);
 
     this.activeVocabulary = [];
     this.speechEngine = new SpeechEngine();
@@ -665,9 +666,10 @@ class FluentEdgeApp {
     if (stageNum === 1) {
       this.updateEducationalRequirementsCard();
     } else if (stageNum === 2) {
-      setTimeout(() => {
-        if (this.dom.essayInput) this.dom.essayInput.focus();
-      }, 50);
+      if (!this.hasDrawnTopic && (!this.currentTopic || this.currentTopic.mainSubject?.id !== 'social-media-daily')) {
+        this.currentTopic = getDefaultStartingTopic(this.targetLevel);
+        this.loadTopic(this.currentTopic);
+      }
       this.handleEditorInput();
     } else if (stageNum === 3) {
       const text = this.dom.essayInput ? this.dom.essayInput.value.trim() : "";
@@ -677,7 +679,7 @@ class FluentEdgeApp {
       }
     }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   }
 
   refreshRandomVocabulary(force = false) {
@@ -786,6 +788,7 @@ class FluentEdgeApp {
   }
 
   rerollTopic() {
+    this.hasDrawnTopic = true;
     const currentSubjectId = this.currentTopic?.mainSubject?.id || null;
     const newTopic = generateRandomTreeTopic(this.targetLevel, currentSubjectId, Math.random, this.topicDifficulty);
     this.currentTopic = newTopic;

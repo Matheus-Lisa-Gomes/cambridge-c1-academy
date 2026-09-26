@@ -1,5 +1,5 @@
 // Automated verification for FluentEdge Assessment Evaluator
-import { TOPICS, MAIN_SUBJECTS, SUB_THEMES, generateRandomTreeTopic, generateTopicFromTree, checkTopicAdherence } from './js/data/topics.js';
+import { TOPICS, MAIN_SUBJECTS, SUB_THEMES, generateRandomTreeTopic, generateTopicFromTree, getDefaultStartingTopic, checkTopicAdherence } from './js/data/topics.js';
 import { evaluateEssay, analyzeQuickMetrics, generateAiEssayPrompt } from './js/modules/evaluator.js';
 
 const topicAI = TOPICS[0]; // AI topic (C1/C2)
@@ -277,6 +277,21 @@ const wordParaGateTestPassed = evalPassC1.metrics.wordsGateMet &&
                                !evalFiveParaC1.meetsThreshold &&
                                !evalThreeParaC2.meetsThreshold;
 
+console.log("\n=== TEST 12: Fixed Easy Default Starting Topic ===");
+const startTopic = getDefaultStartingTopic('C1');
+console.log("Default Starting Topic ID:", startTopic.id);
+console.log("Default Starting Topic Title:", startTopic.title);
+console.log("Default Root Subject:", startTopic.mainSubject.name, "| Complexity:", startTopic.complexity, "(Expected: 1 / Easy)");
+console.log("Default Sub-theme 1:", startTopic.subTheme1.name);
+console.log("Default Sub-theme 2:", startTopic.subTheme2.name);
+
+const startTopicValid = startTopic.complexity === 1 &&
+                        startTopic.mainSubject.id === 'social-media-daily' &&
+                        startTopic.subTheme1.id === 'community' &&
+                        startTopic.subTheme2.id === 'family-relationships';
+
+console.log("Default Starting Topic Valid & Easy:", startTopicValid);
+
 const allPassed = evalPassC1.meetsThreshold && 
                   !evalFailB1.meetsThreshold && 
                   evalPassC2.meetsThreshold && 
@@ -288,10 +303,11 @@ const allPassed = evalPassC1.meetsThreshold &&
                   treeTopicTestPassed &&
                   topicAdherenceTestPassed &&
                   difficultyFilterTestPassed &&
-                  wordParaGateTestPassed;
+                  wordParaGateTestPassed &&
+                  startTopicValid;
 
 if (allPassed) {
-  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard, AI Prompt Generator, Tree Topic Architecture, Obligatory Topic Adherence Guard, Topic Difficulty Tier Filter & Obligatory Word/Paragraph Gates accurately configured! <<<");
+  console.log("\n>>> ALL TESTS PASSED: FluentEdge Assessment Evaluator, 10-Word Lexicon Engine, 100% Compulsory Lexis Guard, AI Prompt Generator, Tree Topic Architecture, Obligatory Topic Adherence Guard, Topic Difficulty Tier Filter, Obligatory Word/Paragraph Gates & Fixed Easy Starting Topic accurately configured! <<<");
 } else {
   console.error("\n>>> TEST FAILED! <<<", {
     evalPassC1: evalPassC1.meetsThreshold,

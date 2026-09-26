@@ -14329,6 +14329,18 @@ function generateRandomTreeTopic(targetLevel, excludeSubjectId, rng, difficultyT
   return topic;
 }
 
+/**
+ * Returns the default starting topic for the website.
+ * Always returns a consistent Easy-tier topic (Social Media & Daily Life
+ * + Community & Belonging + Family & Social Relationships).
+ */
+function getDefaultStartingTopic(targetLevel = 'C1') {
+  var subject = MAIN_SUBJECTS.find(function(s) { return s.id === 'social-media-daily'; }) || MAIN_SUBJECTS[0];
+  var sub1 = SUB_THEMES.find(function(t) { return t.id === 'community'; }) || SUB_THEMES[0];
+  var sub2 = SUB_THEMES.find(function(t) { return t.id === 'family-relationships'; }) || SUB_THEMES[1];
+  return generateTopicFromTree(subject, sub1, sub2, targetLevel);
+}
+
 // =============================================================================
 // 14. LEGACY SEED TOPICS (backward compat)
 // =============================================================================
@@ -15630,7 +15642,8 @@ class FluentEdgeApp {
     try {
       this.topicDifficulty = localStorage.getItem('fluentedge_topic_difficulty') || 'all';
     } catch (e) {}
-    this.currentTopic = generateRandomTreeTopic(this.targetLevel, null, Math.random, this.topicDifficulty);
+    this.hasDrawnTopic = false;
+    this.currentTopic = getDefaultStartingTopic(this.targetLevel);
 
     this.activeVocabulary = [];
     this.speechEngine = new SpeechEngine();
@@ -16278,9 +16291,10 @@ class FluentEdgeApp {
     if (stageNum === 1) {
       this.updateEducationalRequirementsCard();
     } else if (stageNum === 2) {
-      setTimeout(() => {
-        if (this.dom.essayInput) this.dom.essayInput.focus();
-      }, 50);
+      if (!this.hasDrawnTopic && (!this.currentTopic || this.currentTopic.mainSubject?.id !== 'social-media-daily')) {
+        this.currentTopic = getDefaultStartingTopic(this.targetLevel);
+        this.loadTopic(this.currentTopic);
+      }
       this.handleEditorInput();
     } else if (stageNum === 3) {
       const text = this.dom.essayInput ? this.dom.essayInput.value.trim() : "";
@@ -16290,7 +16304,7 @@ class FluentEdgeApp {
       }
     }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   }
 
   refreshRandomVocabulary(force = false) {
@@ -16399,6 +16413,7 @@ class FluentEdgeApp {
   }
 
   rerollTopic() {
+    this.hasDrawnTopic = true;
     const currentSubjectId = this.currentTopic?.mainSubject?.id || null;
     const newTopic = generateRandomTreeTopic(this.targetLevel, currentSubjectId, Math.random, this.topicDifficulty);
     this.currentTopic = newTopic;
